@@ -2,8 +2,8 @@
  * 吸附在设定的距离的顶吸组件
  */
 
-import React, {useCallback, useMemo, memo, useState} from 'react';
-import {Animated, ViewStyle, StyleSheet} from 'react-native';
+import React, { useCallback, useMemo, memo, useState } from "react";
+import { Animated, ViewStyle, StyleSheet } from "react-native";
 
 interface StickyHeaderProps {
   stickyHeaderY: number;
@@ -13,7 +13,7 @@ interface StickyHeaderProps {
   onLayout?: (event: any) => void;
 }
 
-const StickyHeader: React.FC<StickyHeaderProps> = memo(props => {
+const StickyHeader: React.FC<StickyHeaderProps> = memo((props) => {
   const {
     stickyHeaderY,
     stickyScrollY,
@@ -26,7 +26,9 @@ const StickyHeader: React.FC<StickyHeaderProps> = memo(props => {
   const [stickyLayoutY, setStickyLayoutY] = useState(0);
 
   const _onLayout = useCallback(
-    (event: {nativeEvent: {layout: {y: React.SetStateAction<number>}}}) => {
+    (event: {
+      nativeEvent: { layout: { y: React.SetStateAction<number> } };
+    }) => {
       if (event && event.nativeEvent) {
         setStickyLayoutY(event.nativeEvent.layout.y);
       }
@@ -46,8 +48,9 @@ const StickyHeader: React.FC<StickyHeaderProps> = memo(props => {
   return (
     <Animated.View
       onLayout={_onLayout}
-      style={[style, styles.view, {transform: [{translateY}]}]}
-      {...otherProps}>
+      style={[style, styles.view, { transform: [{ translateY }] }]}
+      {...otherProps}
+    >
       {children}
     </Animated.View>
   );

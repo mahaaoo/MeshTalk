@@ -1,7 +1,7 @@
-import React from 'react';
-import {Text} from 'react-native';
+import React from "react";
+import { Text } from "react-native";
 
-const Message: React.FC<{}> = () => {
+const Message: React.FC<object> = () => {
   return <Text>Message</Text>;
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   TouchableOpacity,
   StyleProp,
@@ -6,21 +6,21 @@ import {
   Text,
   StyleSheet,
   TextStyle,
-} from 'react-native';
+} from "react-native";
 
-import Color from '../../config/colors';
-import {useDebounce} from '../../utils/hooks';
+import Color from "../../config/colors";
+import { useDebounce } from "../../utils/hooks";
 
 interface ButtonType {
   onPress: () => void;
-  text: String;
+  text: string;
 
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
 }
 
-const Button: React.FC<ButtonType> = props => {
-  const {onPress, style, text, textStyle} = props;
+const Button: React.FC<ButtonType> = (props) => {
+  const { onPress, style, text, textStyle } = props;
 
   const handlePress = useDebounce(
     () => {
@@ -42,8 +42,8 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: Color.buttonDefaultBackground,
     borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   inner_view: {
     color: Color.defaultWhite,

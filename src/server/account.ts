@@ -1,8 +1,8 @@
-import {get, post} from '../utils/request';
-import {Timelines, Account, Relationship} from '../config/interface';
+import { Timelines, Account, Relationship } from "../config/interface";
+import { get, post } from "../utils/request";
 
 export const getAccountsById = (id: string): Promise<any> => {
-  const url = '/api/v1/accounts/' + id;
+  const url = "/api/v1/accounts/" + id;
 
   return get<any>(url);
 };
@@ -10,16 +10,16 @@ export const getAccountsById = (id: string): Promise<any> => {
 // 获取当前账号的所有推文
 export const getStatusesById = (
   id: string,
-  params: string = '',
-): Promise<Array<Timelines>> => {
-  const url = '/api/v1/accounts/' + id + '/statuses' + params;
+  params: string = "",
+): Promise<Timelines[]> => {
+  const url = "/api/v1/accounts/" + id + "/statuses" + params;
 
-  return get<Array<Timelines>>(url);
+  return get<Timelines[]>(url);
 };
 
 // 获取当前账号的用户信息
 export const getSelfInformation = (): Promise<Account> => {
-  const url = '/api/v1/accounts/verify_credentials';
+  const url = "/api/v1/accounts/verify_credentials";
 
   return get<Account>(url);
 };
@@ -27,67 +27,67 @@ export const getSelfInformation = (): Promise<Account> => {
 // 获取当前账号的所有推文和回复
 export const getStatusesReplyById = (
   id: string,
-  params: string = '',
-): Promise<Array<Timelines>> => {
+  params: string = "",
+): Promise<Timelines[]> => {
   const url =
-    '/api/v1/accounts/' + id + '/statuses?exclude_replies=false&' + params;
+    "/api/v1/accounts/" + id + "/statuses?exclude_replies=false&" + params;
 
-  return get<Array<Timelines>>(url);
+  return get<Timelines[]>(url);
 };
 
 // 获取当前账号的所有媒体信息
 export const getStatusesMediaById = (
   id: string,
-  params: string = '',
-): Promise<Array<Timelines>> => {
-  const url = '/api/v1/accounts/' + id + '/statuses?only_media=true&' + params;
+  params: string = "",
+): Promise<Timelines[]> => {
+  const url = "/api/v1/accounts/" + id + "/statuses?only_media=true&" + params;
 
-  return get<Array<Timelines>>(url);
+  return get<Timelines[]>(url);
 };
 
 // 获取当前账号的所有置顶消息
 export const getStatusesPinById = (
   id: string,
-  params: string = '',
-): Promise<Array<Timelines>> => {
-  const url = '/api/v1/accounts/' + id + '/statuses?pinned=true&' + params;
+  params: string = "",
+): Promise<Timelines[]> => {
+  const url = "/api/v1/accounts/" + id + "/statuses?pinned=true&" + params;
 
-  return get<Array<Timelines>>(url);
+  return get<Timelines[]>(url);
 };
 
 // 获取点赞的内容
 export const getFavouritesById = (
-  params: string = '',
-): Promise<Array<Timelines>> => {
-  const url = '/api/v1/favourites' + params;
+  params: string = "",
+): Promise<Timelines[]> => {
+  const url = "/api/v1/favourites" + params;
 
-  return get<Array<Timelines>>(url);
+  return get<Timelines[]>(url);
 };
 
 // 获取当前登录用户与所传递用户的关系
 export const getRelationships = (
   id: string[] | string,
-): Promise<Array<Relationship>> => {
-  let url = '/api/v1/accounts/relationships?';
+): Promise<Relationship[]> => {
+  let url = "/api/v1/accounts/relationships?";
   if (Array.isArray(id)) {
-    url += id.map(item => `id[]=${item}`).join('&');
+    url += id.map((item) => `id[]=${item}`).join("&");
   } else {
-    url = url + 'id=' + id;
+    url = url + "id=" + id;
   }
 
-  return get<Array<Relationship>>(url);
+  return get<Relationship[]>(url);
 };
 
 // 关注一个用户
-export const followById = (id: string = ''): Promise<Relationship> => {
-  const url = '/api/v1/accounts/' + id + '/follow';
+export const followById = (id: string = ""): Promise<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/follow";
 
   return post<Relationship>(url);
 };
 
 // 取关一个用户
-export const unfollowById = (id: string = ''): Promise<Relationship> => {
-  const url = '/api/v1/accounts/' + id + '/unfollow';
+export const unfollowById = (id: string = ""): Promise<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/unfollow";
 
   return post<Relationship>(url);
 };
@@ -95,10 +95,10 @@ export const unfollowById = (id: string = ''): Promise<Relationship> => {
 // https://mastodon.example/api/v1/accounts/:id/followers
 // 获取用户所有的粉丝
 export const getFollowersById = (
-  id: string = '',
-  params: string = '',
+  id: string = "",
+  params: string = "",
 ): Promise<Account[]> => {
-  const url = '/api/v1/accounts/' + id + '/followers' + params;
+  const url = "/api/v1/accounts/" + id + "/followers" + params;
 
   return get<Account[]>(url);
 };
@@ -106,10 +106,10 @@ export const getFollowersById = (
 // https://mastodon.example/api/v1/accounts/:id/following
 // 获取用户的所有关注人
 export const getFollowingById = (
-  id: string = '',
-  params: string = '',
+  id: string = "",
+  params: string = "",
 ): Promise<Account[]> => {
-  const url = '/api/v1/accounts/' + id + '/following' + params;
+  const url = "/api/v1/accounts/" + id + "/following" + params;
 
   return get<Account[]>(url);
 };

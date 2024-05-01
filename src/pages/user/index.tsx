@@ -1,8 +1,15 @@
-import React, {useRef, useEffect, useCallback, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Animated} from 'react-native';
+import React, { useRef, useEffect, useCallback, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
+} from "react-native";
 // @ts-ignore
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
+import UseLine from "./userLine";
 import {
   MyTabBar,
   Avatar,
@@ -13,15 +20,8 @@ import {
   FollowButton,
   Icon,
   HTMLContent,
-} from '../../components';
-import {Screen, Colors} from '../../config';
-import {
-  StringUtil,
-  useRequest,
-  goBack,
-  replaceContentEmoji,
-  navigate,
-} from '../../utils';
+} from "../../components";
+import { Screen, Colors } from "../../config";
 import {
   getAccountsById,
   getStatusesById,
@@ -29,12 +29,18 @@ import {
   getStatusesMediaById,
   getStatusesPinById,
   getRelationships,
-} from '../../server/account';
-import LineItemName from '../home/LineItemName';
-import UseLine from './userLine';
-import {RouterProps} from '../index';
+} from "../../server/account";
+import {
+  StringUtil,
+  useRequest,
+  goBack,
+  replaceContentEmoji,
+  navigate,
+} from "../../utils";
+import LineItemName from "../home/LineItemName";
+import { RouterProps } from "../index";
 
-const fetchUserById = (id: string = '') => {
+const fetchUserById = (id: string = "") => {
   const fn = () => {
     return getAccountsById(id);
   };
@@ -48,22 +54,22 @@ const fetchRelationships = (id: string) => {
   return fn;
 };
 
-interface UserProps extends RouterProps<'User'> {}
+interface UserProps extends RouterProps<"User"> {}
 
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const HEADERHEIGHT = 104; // 上滑逐渐显示的Header的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
-const User: React.FC<UserProps> = props => {
+const User: React.FC<UserProps> = (props) => {
   const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
-  const {id} = props?.route?.params;
+  const { id } = props?.route?.params;
 
   const inset = useSafeAreaInsets();
-  const {data: userData, run: getUserData} = useRequest(fetchUserById(id), {
+  const { data: userData, run: getUserData } = useRequest(fetchUserById(id), {
     manual: true,
     loading: true,
   }); // 获取用户的个人信息
-  const {data: relationship, run: getRelationship} = useRequest(
+  const { data: relationship, run: getRelationship } = useRequest(
     fetchRelationships(id),
     {
       manual: true,
@@ -84,7 +90,7 @@ const User: React.FC<UserProps> = props => {
   const handleBack = useCallback(goBack, []);
   // 设置顶吸组件所在位置
   const handleOnLayout = (e: any) => {
-    const {height} = e.nativeEvent.layout;
+    const { height } = e.nativeEvent.layout;
     setHeadHeight(height + IMAGEHEIGHT - HEADERHEIGHT);
   };
   // 监听当前滚动位置
@@ -110,25 +116,26 @@ const User: React.FC<UserProps> = props => {
   }, []);
 
   const handleNavigateToFans = useCallback(() => {
-    navigate('UserFans', {id: id});
+    navigate("UserFans", { id });
   }, []);
 
   const handleNavigateToFollowing = useCallback(() => {
-    navigate('UserFollow', {id: id});
+    navigate("UserFollow", { id });
   }, []);
 
   return (
     <>
       <Animated.ScrollView
         style={styles.container}
-        bounces={true}
+        bounces
         onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {y: scrollY}}}],
-          {useNativeDriver: true, listener: handleListener},
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true, listener: handleListener },
         )}
         scrollEventThrottle={1}
         scrollEnabled={enableScrollViewScroll}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+      >
         <StretchableImage
           isblur={refreshing}
           scrollY={scrollY}
@@ -142,7 +149,7 @@ const User: React.FC<UserProps> = props => {
                 <Avatar
                   url={userData?.avatar}
                   size={65}
-                  borderColor={'#fff'}
+                  borderColor="#fff"
                   borderWidth={4}
                 />
               </View>
@@ -166,13 +173,15 @@ const User: React.FC<UserProps> = props => {
               </Text>
               <Text
                 onPress={handleNavigateToFollowing}
-                style={[styles.msgNumber, styles.msgLeft]}>
+                style={[styles.msgNumber, styles.msgLeft]}
+              >
                 {StringUtil.stringAddComma(userData?.following_count)}
                 <Text style={styles.msg}>&nbsp;关注</Text>
               </Text>
               <Text
                 onPress={handleNavigateToFans}
-                style={[styles.msgNumber, styles.msgLeft]}>
+                style={[styles.msgNumber, styles.msgLeft]}
+              >
                 {StringUtil.stringAddComma(userData?.followers_count)}
                 <Text style={styles.msg}>&nbsp;粉丝</Text>
               </Text>
@@ -228,8 +237,9 @@ const User: React.FC<UserProps> = props => {
       <SlideHeader
         offsetY={IMAGEHEIGHT}
         scrollY={scrollY}
-        height={HEADERHEIGHT}>
-        <View style={[styles.slider, {marginTop: inset.top}]}>
+        height={HEADERHEIGHT}
+      >
+        <View style={[styles.slider, { marginTop: inset.top }]}>
           <LineItemName displayname={userData?.display_name} fontSize={18} />
         </View>
       </SlideHeader>
@@ -241,8 +251,9 @@ const User: React.FC<UserProps> = props => {
         offsetY={PULLOFFSETY}
       />
       <TouchableOpacity
-        style={[styles.back, {top: inset.top + 10}]}
-        onPress={handleBack}>
+        style={[styles.back, { top: inset.top + 10 }]}
+        onPress={handleBack}
+      >
         <Icon name="arrowLeft" color="#fff" size={18} />
       </TouchableOpacity>
     </>
@@ -252,21 +263,21 @@ const User: React.FC<UserProps> = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   main: {
     flex: 1,
     backgroundColor: Colors.pageDefaultBackground,
   },
   back: {
-    position: 'absolute',
+    position: "absolute",
     left: 15,
     height: 30,
     width: 30,
     borderRadius: 15,
-    backgroundColor: 'rgba(0, 0, 0, 0.35)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     backgroundColor: Colors.defaultWhite,
@@ -278,17 +289,17 @@ const styles = StyleSheet.create({
     marginTop: -20,
   },
   title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
   act: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingBottom: 10,
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   acct: {
     fontSize: 14,
@@ -296,23 +307,23 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   msgNumber: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   msgLeft: {
     marginLeft: 10,
   },
   msg: {
-    fontWeight: 'normal',
+    fontWeight: "normal",
     color: Colors.grayTextColor,
   },
   headerTab: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   tabBar: {
-    justifyContent: 'flex-start',
+    justifyContent: "flex-start",
   },
   slider: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
 });
 

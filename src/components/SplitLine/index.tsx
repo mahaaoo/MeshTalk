@@ -1,21 +1,21 @@
-import React from 'react';
-import {Line, Svg} from 'react-native-svg';
+import React from "react";
+import { Line, Svg } from "react-native-svg";
 
-import Colors from '../../config/colors';
-import Screen from '../../config/screen';
+import Colors from "../../config/colors";
+import Screen from "../../config/screen";
 
 interface SplitLineProps {
   color?: string;
   start: number;
   end: number;
   width?: number;
-  type?: 'Vertical' | 'Horizontal';
+  type?: "Vertical" | "Horizontal";
 }
 
-const SplitLine: React.FC<SplitLineProps> = props => {
-  const {color, start, end, type, width} = props;
+const SplitLine: React.FC<SplitLineProps> = (props) => {
+  const { color, start, end, type, width } = props;
 
-  if (type === 'Vertical') {
+  if (type === "Vertical") {
     return (
       <Svg height={Screen.height} width={width}>
         <Line
@@ -47,7 +47,7 @@ SplitLine.defaultProps = {
   color: Colors.defaultLineGreyColor,
   start: 0,
   end: 0,
-  type: 'Horizontal',
+  type: "Horizontal",
   width: 1,
 };
 

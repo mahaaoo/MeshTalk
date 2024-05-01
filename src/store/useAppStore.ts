@@ -32,14 +32,14 @@
 
 // export default new AppStore();
 
+import { create } from "zustand";
 
-import { create } from 'zustand'
-import {setItem, getItem} from '../utils/storage';
-import * as constant from '../config/constant';
+import * as constant from "../config/constant";
+import { setItem, getItem } from "../utils/storage";
 
 interface AppStoreState {
-  hostURL: string | undefined,
-  token: string | undefined,
+  hostURL: string | undefined;
+  token: string | undefined;
   setHostURL: (url: string) => void;
   setToken: (token: string) => void;
   initApp: () => void;
@@ -49,18 +49,16 @@ const useAppStore = create<AppStoreState>((set) => ({
   hostURL: undefined,
   token: undefined,
   setHostURL: (url: string) => {
-    set({ hostURL: url }),
-    setItem(constant.HOSTURL, url);
+    set({ hostURL: url }), setItem(constant.HOSTURL, url);
   },
   setToken(token: string) {
-    set({ token: token }),
-    setItem(constant.ACCESSTOKEN, token);
+    set({ token }), setItem(constant.ACCESSTOKEN, token);
   },
   initApp() {
-    const localHostUrl = getItem(constant.HOSTURL) || '';
-    const localToekn = getItem(constant.ACCESSTOKEN) || '';
+    const localHostUrl = getItem(constant.HOSTURL) || "";
+    const localToekn = getItem(constant.ACCESSTOKEN) || "";
     set({ token: localToekn as string, hostURL: localHostUrl as string });
-  }
+  },
 }));
 
 export default useAppStore;

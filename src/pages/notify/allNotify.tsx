@@ -1,18 +1,16 @@
-import React, {useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Header} from '@react-navigation/elements';
+import { Header } from "@react-navigation/elements";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {Colors, Screen} from '../../config';
-import {Notification} from '../../config/interface';
-import {getNotifications} from '../../server/notifications';
-import {getRelationships} from '../../server/account';
-
-import {RefreshList, RefreshState} from '../../components';
-import {useRequest} from '../../utils/hooks';
-
-import FollowItem from './followItem';
-import FavouriteItem from './favouriteItem';
-import MetionItem from './metionItem';
+import FavouriteItem from "./favouriteItem";
+import FollowItem from "./followItem";
+import MetionItem from "./metionItem";
+import { RefreshList, RefreshState } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Notification } from "../../config/interface";
+import { getRelationships } from "../../server/account";
+import { getNotifications } from "../../server/notifications";
+import { useRequest } from "../../utils/hooks";
 
 const fetchNotifications = () => {
   const fn = (param: string) => {
@@ -31,13 +29,13 @@ const fetchRelationships = () => {
 interface AllNotifyProps {}
 
 const AllNotify: React.FC<AllNotifyProps> = () => {
-  const {data: notifications, run: getNotifications} = useRequest(
+  const { data: notifications, run: getNotifications } = useRequest(
     fetchNotifications(),
-    {loading: false, manual: true},
+    { loading: false, manual: true },
   ); // 获取用户发表过的推文
-  const {data: relationships, run: getRelationship} = useRequest(
+  const { data: relationships, run: getRelationship } = useRequest(
     fetchRelationships(),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   ); // 获取用户的个人信息
 
   const [dataSource, setDataSource] = useState<Notification[]>([]);
@@ -51,7 +49,7 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
     // 每当请求了新数据，都将下拉刷新状态设置为false
     if (notifications) {
       // 获取所有关注你的人，与你的relationship
-      const followIds = notifications.map(item => item.account?.id);
+      const followIds = notifications.map((item) => item.account?.id);
       if (followIds.length > 0) {
         getRelationship(followIds);
       }
@@ -65,7 +63,7 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
       if (listStatus === RefreshState.FooterRefreshing) {
         const maxId = dataSource[0]?.id;
         if (dataSource[0].id < maxId) {
-          setDataSource(listData => listData.concat(notifications));
+          setDataSource((listData) => listData.concat(notifications));
         }
       }
       setListStatus(RefreshState.Idle);
@@ -92,14 +90,14 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
           showsVerticalScrollIndicator={false}
           style={styles.refreshList}
           data={dataSource}
-          renderItem={({item}) => {
-            if (item?.type === 'follow') {
+          renderItem={({ item }) => {
+            if (item?.type === "follow") {
               return <FollowItem item={item} relationships={relationships} />;
             }
-            if (item?.type === 'favourite') {
+            if (item?.type === "favourite") {
               return <FavouriteItem item={item} />;
             }
-            if (item?.type === 'mention') {
+            if (item?.type === "mention") {
               return <MetionItem item={item} />;
             }
             return <View />;
@@ -119,9 +117,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   line: {
-    width: '100%',
+    width: "100%",
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
   main: {
     backgroundColor: Colors.pageDefaultBackground,

@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, { useMemo } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   ViewStyle,
   TextStyle,
-} from 'react-native';
-import Screen from '../../config/screen';
+} from "react-native";
+
+import Screen from "../../config/screen";
 
 interface MyTabBarProps {
   goToPage?: (number: number) => void;
   activeTab?: number;
-  tabs?: Array<any>;
+  tabs?: any[];
   backgroundColor?: string;
   activeTextColor?: string;
   inactiveTextColor?: string;
@@ -33,7 +34,7 @@ interface MyTabBarItemProps extends MyTabBarProps {
   onPressHandler?: (number: number) => void;
 }
 
-const MyTabBarItem: React.FC<MyTabBarItemProps> = props => {
+const MyTabBarItem: React.FC<MyTabBarItemProps> = (props) => {
   const {
     activeTextColor,
     inactiveTextColor,
@@ -49,19 +50,21 @@ const MyTabBarItem: React.FC<MyTabBarItemProps> = props => {
   }, [isTabActive]);
 
   const fontWeight = useMemo(() => {
-    return isTabActive ? 'bold' : 'normal';
+    return isTabActive ? "bold" : "normal";
   }, [isTabActive]);
 
   return (
     <TouchableOpacity
       style={styles.tabItem}
       key={name}
-      accessible={true}
+      accessible
       accessibilityLabel={name}
-      onPress={() => onPressHandler && onPressHandler(activeTab)}>
+      onPress={() => onPressHandler && onPressHandler(activeTab)}
+    >
       <View style={[styles.tab, tabStyle]}>
         <Text
-          style={[styles.tabText, {color: textColor, fontWeight}, textStyle]}>
+          style={[styles.tabText, { color: textColor, fontWeight }, textStyle]}
+        >
           {name}
         </Text>
       </View>
@@ -69,7 +72,7 @@ const MyTabBarItem: React.FC<MyTabBarItemProps> = props => {
   );
 };
 
-const MyTabBar: React.FC<MyTabBarProps> = props => {
+const MyTabBar: React.FC<MyTabBarProps> = (props) => {
   const {
     containerWidth = Screen.width,
     tabs,
@@ -86,7 +89,7 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
 
   const tabsWidth =
     useMemo(() => {
-      return tabs?.map(item => item.length * 17);
+      return tabs?.map((item) => item.length * 17);
     }, [tabs]) || [];
 
   const marginLeft = useMemo(() => {
@@ -94,21 +97,21 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
   }, [tabsWidth, activeTab]);
 
   const tabUnderlineStyle = useMemo(() => {
-    if (style && style.justifyContent === 'flex-start') {
+    if (style && style.justifyContent === "flex-start") {
       return {
-        position: 'absolute',
+        position: "absolute",
         width: tabsWidth[activeTab] + 10,
         height: 4,
-        backgroundColor: '#2593FC',
+        backgroundColor: "#2593FC",
         bottom: 0,
         left: marginLeft + 5 * (activeTab + 1),
       };
     } else {
       return {
-        position: 'absolute',
+        position: "absolute",
         width: tabsWidth[activeTab] + 10,
         height: 4,
-        backgroundColor: '#2593FC',
+        backgroundColor: "#2593FC",
         bottom: 0,
         left: containerWidth / numberOfTabs - tabsWidth[activeTab] - 15,
       };
@@ -116,7 +119,7 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
   }, [containerWidth, numberOfTabs, activeTab]);
 
   let inAndOut = {};
-  if (style && style.justifyContent === 'flex-start') {
+  if (style && style.justifyContent === "flex-start") {
     inAndOut = {
       inputRange: [0, 1],
       outputRange: [0, 16],
@@ -131,7 +134,7 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
   const translateX = scrollValue.interpolate(inAndOut);
 
   return (
-    <View style={[styles.tabs, {backgroundColor: backgroundColor}, style]}>
+    <View style={[styles.tabs, { backgroundColor }, style]}>
       {tabs?.map((name, page) => {
         const isTabActive = activeTab === page;
         return (
@@ -149,7 +152,7 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
           //@ts-ignore
           tabUnderlineStyle,
           {
-            transform: [{translateX}],
+            transform: [{ translateX }],
           },
           tabBarUnderlineStyle,
         ]}
@@ -159,26 +162,26 @@ const MyTabBar: React.FC<MyTabBarProps> = props => {
 };
 
 MyTabBarItem.defaultProps = {
-  activeTextColor: '#2593FC',
-  inactiveTextColor: 'black',
+  activeTextColor: "#2593FC",
+  inactiveTextColor: "black",
 };
 
 const styles = StyleSheet.create({
   tab: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingBottom: 10,
   },
   tabs: {
     height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     borderWidth: 1,
     borderTopWidth: 0,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    borderColor: '#eee',
+    borderColor: "#eee",
   },
   tabItem: {
     paddingHorizontal: 10,

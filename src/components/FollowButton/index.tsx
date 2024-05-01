@@ -1,15 +1,21 @@
-import React, {useMemo, useState, useEffect, useCallback, useRef} from 'react';
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   ActivityIndicator,
-} from 'react-native';
+} from "react-native";
 
-import Colors from '../../config/colors';
-import {Relationship} from '../../config/interface';
-import {followById, unfollowById} from '../../server/account';
-import {useRequest} from '../../utils/hooks';
+import Colors from "../../config/colors";
+import { Relationship } from "../../config/interface";
+import { followById, unfollowById } from "../../server/account";
+import { useRequest } from "../../utils/hooks";
 
 export enum FollowButtonStatus {
   UnFollow, // 关注
@@ -18,14 +24,14 @@ export enum FollowButtonStatus {
   Requesting, // 正在请求
 }
 
-const fetchFollowById = (id: string = '') => {
+const fetchFollowById = (id: string = "") => {
   const fn = () => {
     return followById(id);
   };
   return fn;
 };
 
-const fetchUnfollowById = (id: string = '') => {
+const fetchUnfollowById = (id: string = "") => {
   const fn = () => {
     return unfollowById(id);
   };
@@ -37,8 +43,8 @@ interface FollowButtonProps {
   id: string;
 }
 
-const FollowButton: React.FC<FollowButtonProps> = props => {
-  const {relationships, id} = props;
+const FollowButton: React.FC<FollowButtonProps> = (props) => {
+  const { relationships, id } = props;
   // 获取上一次渲染的组件样式
   const prevContentRef: any = useRef();
 
@@ -47,13 +53,13 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
   );
   const [relationship, setRelationship] = useState<Relationship>();
 
-  const {data: followData, run: getFollowById} = useRequest(
+  const { data: followData, run: getFollowById } = useRequest(
     fetchFollowById(id),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   );
-  const {data: unFollowData, run: getUnfollowById} = useRequest(
+  const { data: unFollowData, run: getUnfollowById } = useRequest(
     fetchUnfollowById(id),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   );
 
   // 每次渲染都执行，由于useEffect在Render之后执行，所以当前的prevContentRef.current为上一次的状态
@@ -63,7 +69,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
 
   useEffect(() => {
     if (relationships && relationships.length > 0) {
-      const newRelationship = relationships.filter(item => item.id === id)[0];
+      const newRelationship = relationships.filter((item) => item.id === id)[0];
       setRelationship(newRelationship);
     }
   }, [relationships]);
@@ -111,7 +117,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
     if (buttonStatus === FollowButtonStatus.Requesting) {
       return (
         prevCount || {
-          buttonText: '请求中',
+          buttonText: "请求中",
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -127,7 +133,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
     switch (true) {
       case buttonStatus === FollowButtonStatus.UnFollow: {
         return {
-          buttonText: '关注',
+          buttonText: "关注",
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -141,7 +147,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
       }
       case buttonStatus === FollowButtonStatus.Following: {
         return {
-          buttonText: '正在关注',
+          buttonText: "正在关注",
           buttonStyle: {
             backgroundColor: Colors.theme,
             borderColor: Colors.theme,
@@ -155,7 +161,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
       }
       case buttonStatus === FollowButtonStatus.BothFollow: {
         return {
-          buttonText: '互相关注',
+          buttonText: "互相关注",
           buttonStyle: {
             backgroundColor: Colors.theme,
             borderColor: Colors.theme,
@@ -169,7 +175,7 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
       }
       default: {
         return {
-          buttonText: '关注',
+          buttonText: "关注",
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -200,7 +206,8 @@ const FollowButton: React.FC<FollowButtonProps> = props => {
   return (
     <TouchableOpacity
       onPress={handleOnPress}
-      style={[styles.outView, content.buttonStyle]}>
+      style={[styles.outView, content.buttonStyle]}
+    >
       {buttonStatus === FollowButtonStatus.Requesting ? (
         <ActivityIndicator
           animating={buttonStatus === FollowButtonStatus.Requesting}
@@ -217,8 +224,8 @@ const styles = StyleSheet.create({
   outView: {
     padding: 15,
     backgroundColor: Colors.buttonDefaultBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     height: 40,
     paddingVertical: 8,
     borderRadius: 20,

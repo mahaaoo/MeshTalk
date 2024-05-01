@@ -2,9 +2,10 @@
  * 根据ScrollView或者FlatList等组件，上滑动作，逐渐显示的Header标题头
  */
 
-import React from 'react';
-import {Animated, StyleSheet} from 'react-native';
-import Screen from '../../config/screen';
+import React from "react";
+import { Animated, StyleSheet } from "react-native";
+
+import Screen from "../../config/screen";
 
 interface SlideHeaderProps {
   width?: number;
@@ -14,7 +15,7 @@ interface SlideHeaderProps {
   children: React.ReactNode;
 }
 
-const SlideHeader: React.FC<SlideHeaderProps> = props => {
+const SlideHeader: React.FC<SlideHeaderProps> = (props) => {
   const {
     children,
     width = Screen.width,
@@ -27,15 +28,16 @@ const SlideHeader: React.FC<SlideHeaderProps> = props => {
       style={[
         styles.container,
         {
-          width: width,
-          height: height,
+          width,
+          height,
           opacity: scrollY.interpolate({
             inputRange: [0, offsetY / 2, offsetY],
             outputRange: [0, 0.3, 1],
-            extrapolate: 'clamp',
+            extrapolate: "clamp",
           }),
         },
-      ]}>
+      ]}
+    >
       {children}
     </Animated.View>
   );
@@ -43,12 +45,12 @@ const SlideHeader: React.FC<SlideHeaderProps> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
-    position: 'absolute',
+    backgroundColor: "#fff",
+    position: "absolute",
     top: 0,
     left: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

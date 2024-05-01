@@ -19,30 +19,31 @@
 //   }
 
 //   async initEmoji() {
-  //   const emojiStorage = get(constant.EMOJI);
-  //   if (!emojiStorage || emojiStorage === undefined) {
-  //     const data = await getInstanceEmojis();
-  //     if (data) {
-  //       set(constant.EMOJI, JSON.stringify(data));
-  //       this.emojis = data;
-  //     }
-  //   } else {
-  //     this.emojis = JSON.parse(emojiStorage);
-  //   }
-  // }
+//   const emojiStorage = get(constant.EMOJI);
+//   if (!emojiStorage || emojiStorage === undefined) {
+//     const data = await getInstanceEmojis();
+//     if (data) {
+//       set(constant.EMOJI, JSON.stringify(data));
+//       this.emojis = data;
+//     }
+//   } else {
+//     this.emojis = JSON.parse(emojiStorage);
+//   }
+// }
 // }
 
 // export default new EmojiStore();
 
-import {create} from 'zustand'
-import * as constant from '../config/constant';
-import {Emoji} from '../config/interface';
-import {getInstanceEmojis} from '../server/app';
-import {setItem, getItem} from '../utils/storage';
+import { create } from "zustand";
+
+import * as constant from "../config/constant";
+import { Emoji } from "../config/interface";
+import { getInstanceEmojis } from "../server/app";
+import { setItem, getItem } from "../utils/storage";
 
 interface EmojiStoreState {
-  emojis: Array<Emoji>,
-  emojisHash: () => Map<string, Emoji>,
+  emojis: Emoji[];
+  emojisHash: () => Map<string, Emoji>;
   initEmoji: () => void;
 }
 

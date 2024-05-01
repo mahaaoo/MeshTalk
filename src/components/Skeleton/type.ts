@@ -1,10 +1,11 @@
-import React, { useContext } from 'react';
-import { ViewStyle } from 'react-native';
-import Animated from 'react-native-reanimated';
-import { Breath, Shine, Normal, Load, ShineOver } from './Animation';
+import React, { useContext } from "react";
+import { ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
+
+import { Breath, Shine, Normal, Load, ShineOver } from "./Animation";
 
 export const SkeletonContext = React.createContext<SkeletonContextProps>(
-  {} as SkeletonContextProps
+  {} as SkeletonContextProps,
 );
 export const useSkeletonStyle = () => useContext(SkeletonContext);
 

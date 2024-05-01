@@ -1,28 +1,28 @@
-import {create, ApiResponse} from 'apisauce'
-import {useAppStore} from '../store';
+import { create, ApiResponse } from "apisauce";
+
+import { useAppStore } from "../store";
 
 const api = create({
   timeout: 3000,
-  baseURL: ''
+  baseURL: "",
 });
 
-api.addRequestTransform(request => {
+api.addRequestTransform((request) => {
   // console.log(Stores.appStore.token);
   const currentAppStore = useAppStore.getState();
 
-  const token =  'Bearer ' + currentAppStore.token;
+  const token = "Bearer " + currentAppStore.token;
   const hostURL = currentAppStore.hostURL;
 
-  api.setHeader('Authorization', token);
+  api.setHeader("Authorization", token);
   api.setBaseURL(hostURL);
 
-  console.log('\n===================请求拦截器=================');
+  console.log("\n===================请求拦截器=================");
   console.log(`请求地址：${request.url}`);
   console.log(`请求方式：${request.method}`);
-  console.log('请求参数：');
+  console.log("请求参数：");
   console.log(request.data);
-  console.log('============================================\n');
-
+  console.log("============================================\n");
 });
 
 // // 请求拦截器
@@ -50,12 +50,12 @@ api.addRequestTransform(request => {
 //   },
 // );
 
-api.addResponseTransform(response => {
-  console.log('\n===================响应拦截器=================');
+api.addResponseTransform((response) => {
+  console.log("\n===================响应拦截器=================");
   console.log(`返回状态：${response.status}`);
   // console.log('返回数据：', response.data);
-  console.log('============================================\n');
-})
+  console.log("============================================\n");
+});
 
 // // 接受拦截器
 // instance.interceptors.response.use(
@@ -122,30 +122,37 @@ api.addResponseTransform(response => {
 // };
 
 const get = async <T>(url, params?, axiosConfig?): Promise<T> => {
-  return api.get(url, params, axiosConfig)
-        .then((response: ApiResponse<T>) => { 
-          console.log({ ok: response.ok, status: response.status, problem: response.problem }); // 假设response有这些属性  
-          return response.data as T;
-        })  
-        .catch((error: any) => {
-          console.log('catch', error);
-          throw error;  
-        });
-}
+  return api
+    .get(url, params, axiosConfig)
+    .then((response: ApiResponse<T>) => {
+      console.log({
+        ok: response.ok,
+        status: response.status,
+        problem: response.problem,
+      }); // 假设response有这些属性
+      return response.data as T;
+    })
+    .catch((error: any) => {
+      console.log("catch", error);
+      throw error;
+    });
+};
 
 const post = async <T>(url, data?, axiosConfig?): Promise<T> => {
-  return api.post(url, data, axiosConfig)
-      .then((response: ApiResponse<T>) => { 
-        console.log({ ok: response.ok, status: response.status, problem: response.problem }); // 假设response有这些属性  
-        return response.data as T;
-      })  
-      .catch((error: any) => {
-          console.log('catch', error);
-          throw error;  
-        });
-}
-
-export {
-  get,
-  post
+  return api
+    .post(url, data, axiosConfig)
+    .then((response: ApiResponse<T>) => {
+      console.log({
+        ok: response.ok,
+        status: response.status,
+        problem: response.problem,
+      }); // 假设response有这些属性
+      return response.data as T;
+    })
+    .catch((error: any) => {
+      console.log("catch", error);
+      throw error;
+    });
 };
+
+export { get, post };

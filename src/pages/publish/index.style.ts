@@ -1,6 +1,7 @@
-import {StyleSheet} from 'react-native';
-import Screen from '../../config/screen';
-import Colors from '../../config/colors';
+import { StyleSheet } from "react-native";
+
+import Colors from "../../config/colors";
+import Screen from "../../config/screen";
 
 export const styles = StyleSheet.create({
   main: {
@@ -15,12 +16,12 @@ export const styles = StyleSheet.create({
   },
   header_text: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   tool: {
     width: Screen.width,
-    backgroundColor: '#fff',
-    position: 'absolute',
+    backgroundColor: "#fff",
+    position: "absolute",
   },
   input: {
     flex: 1,
@@ -30,18 +31,18 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   flatlist: {
-    position: 'absolute',
+    position: "absolute",
     width: Screen.width,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   power: {
     marginLeft: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     flex: 1,
   },
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   avatarContainer: {
     marginLeft: 10,
@@ -49,8 +50,8 @@ export const styles = StyleSheet.create({
   },
   contentContainer: {
     width: Screen.width,
-    backgroundColor: '#fff',
-    position: 'absolute',
+    backgroundColor: "#fff",
+    position: "absolute",
     bottom: 0,
   },
   toolBar: {
@@ -67,20 +68,20 @@ export const styles = StyleSheet.create({
     marginLeft: 5,
   },
   iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginVertical: 10,
   },
   iconView: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   iconTouch: {
     marginLeft: 20,
   },
   currentContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   currentContentText: {
     fontSize: 16,

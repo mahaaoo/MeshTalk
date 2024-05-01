@@ -1,12 +1,12 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TextInput, StyleSheet, SafeAreaView} from 'react-native';
-import {Toast} from 'react-native-ma-modal';
+import React, { useState, useEffect } from "react";
+import { View, Text, TextInput, StyleSheet, SafeAreaView } from "react-native";
+import { Toast } from "react-native-ma-modal";
 
-import {Button} from '../../components';
-import {Screen, Colors} from '../../config';
-import {goBack, navigate, reset, useRequest} from '../../utils';
-import {getAppConfig, getToken} from '../../server/app';
-import {useAppStore} from '../../store';
+import { Button } from "../../components";
+import { Screen, Colors } from "../../config";
+import { getAppConfig, getToken } from "../../server/app";
+import { useAppStore } from "../../store";
+import { goBack, navigate, reset, useRequest } from "../../utils";
 
 const fetchAppConfig = () => {
   const fn = (host: string) => {
@@ -16,18 +16,18 @@ const fetchAppConfig = () => {
 };
 
 const fetchAppToken = () => {
-  const fn = (url: string, param: Object) => {
+  const fn = (url: string, param: object) => {
     return getToken(url, param);
   };
   return fn;
 };
 
-const Login: React.FC<{}> = () => {
-  const [path, setPath] = useState('fairy.id');
-  const {data: loginData, run: getLoginData} = useRequest(fetchAppConfig(), {
+const Login: React.FC<object> = () => {
+  const [path, setPath] = useState("fairy.id");
+  const { data: loginData, run: getLoginData } = useRequest(fetchAppConfig(), {
     manual: true,
   });
-  const {data: tokenData, run: getTokenData} = useRequest(fetchAppToken(), {
+  const { data: tokenData, run: getTokenData } = useRequest(fetchAppToken(), {
     manual: true,
   });
   const appStore = useAppStore();
@@ -35,15 +35,15 @@ const Login: React.FC<{}> = () => {
   useEffect(() => {
     if (loginData) {
       const url = `https://${path}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${loginData?.redirect_uri}&client_id=${loginData?.client_id}`;
-      navigate('WebView', {
+      navigate("WebView", {
         initUrl: url,
         callBack: (code: string) => {
           const params = {
             client_id: loginData.client_id,
             client_secret: loginData.client_secret,
-            code: code,
+            code,
           };
-          getTokenData('https://' + path, params);
+          getTokenData("https://" + path, params);
         },
       });
     }
@@ -51,19 +51,19 @@ const Login: React.FC<{}> = () => {
 
   useEffect(() => {
     if (tokenData) {
-      console.log('获取到的token信息');
-      appStore.setHostURL('https://' + path);
+      console.log("获取到的token信息");
+      appStore.setHostURL("https://" + path);
       appStore.setToken(tokenData.access_token);
-      reset('App');
+      reset("App");
     }
   }, [tokenData]);
 
   const handleLogin = () => {
     if (path.length > 0) {
       // getLoginData('https://' + path);
-      getAppConfig('https://' + path);
+      getAppConfig("https://" + path);
     } else {
-      Toast.show('请输入应用实例地址');
+      Toast.show("请输入应用实例地址");
     }
   };
 
@@ -77,14 +77,14 @@ const Login: React.FC<{}> = () => {
       <Text style={styles.login_title}>登录Mastodon</Text>
       <TextInput
         style={styles.input_style}
-        placeholder={'应用实例地址，例如：acg.mn'}
-        autoFocus={true}
-        onChangeText={text => {
+        placeholder="应用实例地址，例如：acg.mn"
+        autoFocus
+        onChangeText={(text) => {
           setPath(text);
         }}
         value={path}
       />
-      <Button text={'登录'} onPress={handleLogin} style={styles.button_style} />
+      <Button text="登录" onPress={handleLogin} style={styles.button_style} />
     </SafeAreaView>
   );
 };
@@ -92,26 +92,26 @@ const Login: React.FC<{}> = () => {
 const styles = StyleSheet.create({
   main_view: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
   },
   login_title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 50,
   },
   input_style: {
     fontSize: 18,
-    textAlign: 'left',
+    textAlign: "left",
     marginHorizontal: 20,
     marginTop: 50,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   button_style: {
     width: Screen.width - 80,
     marginVertical: 50,
   },
   go_back_view: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginLeft: 20,
     marginTop: 20,
   },

@@ -1,14 +1,13 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {Timelines} from '../../config/interface';
-import {localLine} from '../../server/timeline';
-import {useRequest} from '../../utils';
-import {Colors} from '../../config';
-
-import {RefreshList, RefreshState} from '../../components';
-import HomeLineItem from '../home/homelineItem';
-import DefaultLineItem from '../home/defaultLineItem';
+import { RefreshList, RefreshState } from "../../components";
+import { Colors } from "../../config";
+import { Timelines } from "../../config/interface";
+import { localLine } from "../../server/timeline";
+import { useRequest } from "../../utils";
+import DefaultLineItem from "../home/defaultLineItem";
+import HomeLineItem from "../home/homelineItem";
 
 const fetchLocalLine = () => {
   const fn = (params: string) => {
@@ -21,13 +20,13 @@ interface LocalProps {
   tabLabel: string;
 }
 
-const Local: React.FC<LocalProps> = props => {
+const Local: React.FC<LocalProps> = (props) => {
   const [listData, setListData] = useState<Timelines[]>([]);
   const [status, setStatus] = useState<RefreshState>(RefreshState.Idle);
 
-  const {data: localLineData, run: getLocalLineData} = useRequest(
+  const { data: localLineData, run: getLocalLineData } = useRequest(
     fetchLocalLine(),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   );
 
   const handleRefresh = useCallback(() => {
@@ -64,7 +63,7 @@ const Local: React.FC<LocalProps> = props => {
     <View style={styles.main}>
       <RefreshList
         data={listData}
-        renderItem={({item}) => <HomeLineItem item={item} />}
+        renderItem={({ item }) => <HomeLineItem item={item} />}
         onHeaderRefresh={handleRefresh}
         onFooterRefresh={handleLoadMore}
         refreshState={status}

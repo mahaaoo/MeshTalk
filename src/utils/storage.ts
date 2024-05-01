@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-type AsyncStorageValue = string | null;  
-// 你可以扩展这个类型来支持更复杂的数据结构（例如，通过 JSON 序列化和反序列化）  
-type AsyncStorageJSONValue = Promise<string | null>;  
+type AsyncStorageValue = string | null;
+// 你可以扩展这个类型来支持更复杂的数据结构（例如，通过 JSON 序列化和反序列化）
+type AsyncStorageJSONValue = Promise<string | null>;
 
 export const setItem = async (key: string, value: string) => {
   try {

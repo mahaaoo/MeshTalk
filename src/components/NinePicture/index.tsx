@@ -1,30 +1,32 @@
-import React, {useRef, useCallback} from 'react';
-import {View, TouchableOpacity, StyleSheet} from 'react-native';
-import {Image} from 'expo-image';
-import SpacingBox from '../SpacingBox';
+import { Image } from "expo-image";
+import React, { useRef, useCallback } from "react";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
+
+import SpacingBox from "../SpacingBox";
 interface MediaImageProps {
   item: any;
   handleClick: (index: number) => void;
   index: number;
 }
 
-const MediaImage: React.FC<MediaImageProps> = props => {
-  const {item, handleClick, index} = props;
+const MediaImage: React.FC<MediaImageProps> = (props) => {
+  const { item, handleClick, index } = props;
 
   return (
     <TouchableOpacity
       style={styles.imageContainer}
       activeOpacity={1}
-      onPress={() => handleClick && handleClick(index)}>
+      onPress={() => handleClick && handleClick(index)}
+    >
       <Image
         key={item.id}
         style={styles.imageContainer}
         source={{
           uri: item.url,
         }}
-        resizeMode={'cover'}
+        resizeMode="cover"
         onError={() => {
-          console.log('图片加载失败');
+          console.log("图片加载失败");
         }}
       />
     </TouchableOpacity>
@@ -32,12 +34,12 @@ const MediaImage: React.FC<MediaImageProps> = props => {
 };
 
 interface NinePictureProps {
-  imageList: Array<any>;
+  imageList: any[];
   height?: number;
 }
 
-const NinePicture: React.FC<NinePictureProps> = props => {
-  const {imageList = [], height = 220} = props;
+const NinePicture: React.FC<NinePictureProps> = (props) => {
+  const { imageList = [], height = 220 } = props;
 
   const overlayRef: any = useRef(null);
 
@@ -75,9 +77,10 @@ const NinePicture: React.FC<NinePictureProps> = props => {
           style={[
             styles.singleImage,
             {
-              height: height,
+              height,
             },
-          ]}>
+          ]}
+        >
           <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
         </View>
         <SpacingBox height={15} />
@@ -92,9 +95,10 @@ const NinePicture: React.FC<NinePictureProps> = props => {
           style={[
             styles.singleImage,
             {
-              height: height,
+              height,
             },
-          ]}>
+          ]}
+        >
           <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
           <SpacingBox width={5} />
           <MediaImage item={imageList[1]} index={1} handleClick={handleClick} />
@@ -111,9 +115,10 @@ const NinePicture: React.FC<NinePictureProps> = props => {
           style={[
             styles.singleImage,
             {
-              height: height,
+              height,
             },
-          ]}>
+          ]}
+        >
           <View style={styles.imageContainer}>
             <MediaImage
               item={imageList[0]}
@@ -148,10 +153,11 @@ const NinePicture: React.FC<NinePictureProps> = props => {
           style={[
             styles.singleImage,
             {
-              height: height,
+              height,
             },
-          ]}>
-          <View style={[{height: height}, styles.imageContainer]}>
+          ]}
+        >
+          <View style={[{ height }, styles.imageContainer]}>
             <MediaImage
               item={imageList[0]}
               index={0}
@@ -165,7 +171,7 @@ const NinePicture: React.FC<NinePictureProps> = props => {
             />
           </View>
           <SpacingBox width={5} />
-          <View style={[{height: height}, styles.imageContainer]}>
+          <View style={[{ height }, styles.imageContainer]}>
             <MediaImage
               item={imageList[1]}
               index={1}
@@ -189,11 +195,11 @@ const NinePicture: React.FC<NinePictureProps> = props => {
 
 const styles = StyleSheet.create({
   singleImage: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRadius: 8,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
   },
   imageContainer: {
     flex: 1,

@@ -1,20 +1,20 @@
-import React, {useCallback} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {Image} from 'expo-image';
+import { Image } from "expo-image";
+import React, { useCallback } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import {Screen, Colors} from '../../config';
-import {Card} from '../../config/interface';
-import {navigate} from '../../utils';
+import { Screen, Colors } from "../../config";
+import { Card } from "../../config/interface";
+import { navigate } from "../../utils";
 
 interface WebCardProps {
   card: Card;
 }
 
-const WebCard: React.FC<WebCardProps> = props => {
-  const {card} = props;
+const WebCard: React.FC<WebCardProps> = (props) => {
+  const { card } = props;
 
   const handleNavigation = useCallback(() => {
-    navigate('Link', {
+    navigate("Link", {
       url: card.url,
     });
   }, []);
@@ -30,7 +30,7 @@ const WebCard: React.FC<WebCardProps> = props => {
         source={{
           uri: card?.image,
         }}
-        resizeMode={'cover'}
+        resizeMode="cover"
       />
       <View style={styles.content}>
         <View style={styles.cardContainer}>
@@ -39,12 +39,12 @@ const WebCard: React.FC<WebCardProps> = props => {
           </Text>
         </View>
         <View style={styles.desContainer}>
-          <Text ellipsizeMode={'tail'} numberOfLines={3} style={styles.desText}>
+          <Text ellipsizeMode="tail" numberOfLines={3} style={styles.desText}>
             {card?.description}
           </Text>
         </View>
         <View style={styles.urlContainer}>
-          <Text numberOfLines={1} style={{color: Colors.grayTextColor}}>
+          <Text numberOfLines={1} style={{ color: Colors.grayTextColor }}>
             {card?.url}
           </Text>
         </View>
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: Screen.onePixel,
     borderColor: Colors.defaultLineGreyColor,
-    flexDirection: 'row',
-    overflow: 'hidden',
+    flexDirection: "row",
+    overflow: "hidden",
     marginBottom: 15,
     height: 110,
   },
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   desContainer: {
     flex: 1,

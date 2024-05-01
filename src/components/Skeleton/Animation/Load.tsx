@@ -1,9 +1,9 @@
-import React from 'react';
-import {View, StyleSheet, ActivityIndicator} from 'react-native';
+import React from "react";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
 
 interface LoadProps {}
 
-const Load: React.FC<LoadProps> = props => {
+const Load: React.FC<LoadProps> = (props) => {
   const {} = props;
 
   return (
@@ -16,8 +16,8 @@ const Load: React.FC<LoadProps> = props => {
 const styles = StyleSheet.create({
   mask: {
     ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

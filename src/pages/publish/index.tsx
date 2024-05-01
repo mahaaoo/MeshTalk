@@ -1,4 +1,12 @@
-import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
+import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Text,
   TextInput,
@@ -8,21 +16,22 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {Image} from 'expo-image';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {Button, Avatar, SplitLine, ActionsSheet, Icon} from '../../components';
-
-import {Colors, Screen} from '../../config';
-
-import {useAccountStore, useEmojiStore} from '../../store';
-import {goBack, useRequest} from '../../utils';
-
-import {getInstanceEmojis} from '../../server/app';
-import {postNewStatuses} from '../../server/status';
-import {styles} from './index.style';
+import { styles } from "./index.style";
+import {
+  Button,
+  Avatar,
+  SplitLine,
+  ActionsSheet,
+  Icon,
+} from "../../components";
+import { Colors, Screen } from "../../config";
+import { getInstanceEmojis } from "../../server/app";
+import { postNewStatuses } from "../../server/status";
+import { useAccountStore, useEmojiStore } from "../../store";
+import { goBack, useRequest } from "../../utils";
 
 const fetchEmojis = () => {
   const fn = () => {
@@ -32,7 +41,7 @@ const fetchEmojis = () => {
 };
 
 const fetchNewStatuses = () => {
-  const fn = (params: Object) => {
+  const fn = (params: object) => {
     return postNewStatuses(params);
   };
   return fn;
@@ -45,14 +54,14 @@ const Publish: React.FC<PublishProps> = () => {
   const accountStore = useAccountStore();
   const emojiStore = useEmojiStore();
 
-  const [reply, setReply] = useState('任何人可以回复');
+  const [reply, setReply] = useState("任何人可以回复");
   const inset = useSafeAreaInsets();
 
   // const {data: emojis, run: getEmojis} = useRequest(fetchEmojis(), {
   //   manual: false,
   //   loading: false,
   // });
-  const {data, run: postNewStatuses} = useRequest(fetchNewStatuses(), {
+  const { data, run: postNewStatuses } = useRequest(fetchNewStatuses(), {
     manual: true,
     loading: true,
   });
@@ -61,12 +70,12 @@ const Publish: React.FC<PublishProps> = () => {
   const InputRef: any = useRef();
 
   const [scrollHeight, setScrollHeight] = useState(0);
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
-    Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+    Keyboard.addListener("keyboardWillShow", keyboardWillShow);
     return () => {
-      Keyboard.removeAllListeners('keyboardWillShow');
+      Keyboard.removeAllListeners("keyboardWillShow");
     };
   }, []);
 
@@ -77,8 +86,9 @@ const Publish: React.FC<PublishProps> = () => {
           onPress={() => {
             Keyboard.dismiss();
             goBack();
-          }}>
-          <Text style={{fontSize: 18, marginLeft: 15, color: Colors.theme}}>
+          }}
+        >
+          <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
             取消
           </Text>
         </TouchableOpacity>
@@ -87,7 +97,7 @@ const Publish: React.FC<PublishProps> = () => {
         <Button
           style={styles.header}
           textStyle={styles.header_text}
-          text={'发送'}
+          text="发送"
           onPress={() => {
             postNewStatuses({
               status: content,
@@ -130,21 +140,21 @@ const Publish: React.FC<PublishProps> = () => {
         </View>
         <TextInput
           ref={InputRef}
-          autoFocus={true}
+          autoFocus
           style={styles.input}
-          textAlignVertical={'top'}
-          multiline={true}
+          textAlignVertical="top"
+          multiline
           numberOfLines={4}
-          placeholder={'有什么新鲜事'}
-          underlineColorAndroid={'transparent'}
+          placeholder="有什么新鲜事"
+          underlineColorAndroid="transparent"
           value={content}
-          onChangeText={text => {
+          onChangeText={(text) => {
             setContent(text);
           }}
         />
       </View>
       <View style={styles.contentContainer}>
-        <Animated.View style={[styles.tool, {bottom: offsetY}]}>
+        <Animated.View style={[styles.tool, { bottom: offsetY }]}>
           <View style={styles.toolBar}>
             <TouchableOpacity
               style={styles.power}
@@ -160,9 +170,10 @@ const Publish: React.FC<PublishProps> = () => {
                   },
                   bottom: inset.bottom,
                 });
-              }}>
+              }}
+            >
               <Image
-                source={require('../../images/erath.png')}
+                source={require("../../images/erath.png")}
                 style={styles.iconErath}
               />
               <Text style={styles.replayText}>{reply}</Text>
@@ -173,17 +184,18 @@ const Publish: React.FC<PublishProps> = () => {
             <View style={styles.iconView}>
               <TouchableOpacity
                 style={styles.iconTouch}
-                onPress={handleClickPic}>
-                <Icon name={'photo'} size={33} color={Colors.theme} />
+                onPress={handleClickPic}
+              >
+                <Icon name="photo" size={33} color={Colors.theme} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconTouch}>
-                <Icon name={'chart'} size={33} color={Colors.theme} />
+                <Icon name="chart" size={33} color={Colors.theme} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconTouch}>
-                <Icon name={'warning'} size={33} color={Colors.theme} />
+                <Icon name="warning" size={33} color={Colors.theme} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconTouch}>
-                <Icon name={'time'} size={30} color={Colors.theme} />
+                <Icon name="time" size={30} color={Colors.theme} />
               </TouchableOpacity>
             </View>
             <View style={styles.currentContent}>
@@ -193,8 +205,9 @@ const Publish: React.FC<PublishProps> = () => {
               <View style={styles.emojiContainer} />
               <TouchableOpacity
                 style={styles.emojiTouch}
-                onPress={handleClickEmojis}>
-                <Icon name={'emoji'} size={33} color={Colors.theme} />
+                onPress={handleClickEmojis}
+              >
+                <Icon name="emoji" size={33} color={Colors.theme} />
               </TouchableOpacity>
             </View>
           </View>
@@ -202,13 +215,14 @@ const Publish: React.FC<PublishProps> = () => {
         <View
           style={[
             styles.flatlist,
-            {height: scrollHeight, bottom: inset.bottom},
-          ]}>
+            { height: scrollHeight, bottom: inset.bottom },
+          ]}
+        >
           <FlatList
             horizontal={false}
             numColumns={7}
             data={emojiStore.emojis}
-            renderItem={({item}) => {
+            renderItem={({ item }) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
@@ -216,7 +230,8 @@ const Publish: React.FC<PublishProps> = () => {
                       (preContent: string) =>
                         (preContent = preContent + `:${item.shortcode}:`),
                     );
-                  }}>
+                  }}
+                >
                   <Image
                     key={item.shortcode}
                     style={[
@@ -229,7 +244,7 @@ const Publish: React.FC<PublishProps> = () => {
                     source={{
                       uri: item.url,
                     }}
-                    resizeMode={'cover'}
+                    resizeMode="cover"
                   />
                 </TouchableOpacity>
               );

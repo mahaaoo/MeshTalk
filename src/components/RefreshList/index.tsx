@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import { FlashList, FlashListProps } from "@shopify/flash-list";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,14 +9,13 @@ import {
   StyleProp,
   TextStyle,
   ViewStyle,
-} from 'react-native';
-import {FlashList, FlashListProps} from '@shopify/flash-list';
+} from "react-native";
 import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 export enum RefreshState {
   Idle = 0,
@@ -29,7 +29,7 @@ interface RefreshListProps extends FlashListProps<any> {
   refreshState?: RefreshState;
   onHeaderRefresh?: () => void;
   onFooterRefresh?: () => void;
-  data: Array<any>;
+  data: any[];
 
   footerContainerStyle?: StyleProp<ViewStyle>;
   footerTextStyle?: StyleProp<TextStyle>;
@@ -42,7 +42,7 @@ interface RefreshListProps extends FlashListProps<any> {
   ref?: any;
 }
 
-const RefreshList: React.FC<RefreshListProps> = props => {
+const RefreshList: React.FC<RefreshListProps> = (props) => {
   const {
     refreshState,
     data = [0, 0, 0, 0, 0, 0],
@@ -63,7 +63,7 @@ const RefreshList: React.FC<RefreshListProps> = props => {
   const opcity = useSharedValue(1);
   useEffect(() => {
     if (data.length > 0 && opcity.value === 1) {
-      opcity.value = withTiming(0, {duration: 400}, () => {
+      opcity.value = withTiming(0, { duration: 400 }, () => {
         runOnJS(setLoad)(false);
       });
     }
@@ -116,7 +116,8 @@ const RefreshList: React.FC<RefreshListProps> = props => {
             style={footerStyle}
             onPress={() => {
               onFooterRefresh && onFooterRefresh();
-            }}>
+            }}
+          >
             <Text style={textStyle}>{footerFailureText}</Text>
           </TouchableOpacity>
         );
@@ -182,9 +183,9 @@ const RefreshList: React.FC<RefreshListProps> = props => {
 };
 
 RefreshList.defaultProps = {
-  footerRefreshingText: '数据加载中…',
-  footerFailureText: '点击重新加载',
-  footerNoMoreDataText: '已加载全部数据',
+  footerRefreshingText: "数据加载中…",
+  footerFailureText: "点击重新加载",
+  footerNoMoreDataText: "已加载全部数据",
   canRefresh: true,
   refreshState: RefreshState.Idle,
 };
@@ -192,27 +193,27 @@ RefreshList.defaultProps = {
 const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   footerContainer: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
     height: 44,
   },
   footerText: {
     fontSize: 14,
-    color: '#555555',
+    color: "#555555",
   },
   footer: {
     marginLeft: 7,
   },
   emptyComponentView: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 });
 

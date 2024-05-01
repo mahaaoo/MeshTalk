@@ -1,19 +1,20 @@
-import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import React from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-} from 'react-native-reanimated';
-import {useSkeletonStyle} from '../type';
+} from "react-native-reanimated";
 
-const {width: Wwidth} = Dimensions.get('window');
+import { useSkeletonStyle } from "../type";
+
+const { width: Wwidth } = Dimensions.get("window");
 
 interface ShineOverProps {}
 
-const ShineOver: React.FC<ShineOverProps> = props => {
+const ShineOver: React.FC<ShineOverProps> = (props) => {
   const {} = props;
-  const {animationProgress} = useSkeletonStyle();
+  const { animationProgress } = useSkeletonStyle();
   const width = useSharedValue(Wwidth);
 
   const animationStyle = useAnimatedStyle(() => {
@@ -35,9 +36,10 @@ const ShineOver: React.FC<ShineOverProps> = props => {
       style={[styles.mask]}
       onLayout={({
         nativeEvent: {
-          layout: {width: w},
+          layout: { width: w },
         },
-      }) => (width.value = w)}>
+      }) => (width.value = w)}
+    >
       <Animated.View style={[styles.shineSlider, animationStyle]} />
     </View>
   );
@@ -49,8 +51,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   shineSlider: {
-    height: '100%',
-    backgroundColor: 'white',
+    height: "100%",
+    backgroundColor: "white",
     width: 20,
     opacity: 0.7,
   },

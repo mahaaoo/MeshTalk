@@ -1,18 +1,19 @@
-import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
 
-import TabRoutes from './tabRoutes';
-import routes, {StackParams} from '../pages';
+import TabRoutes from "./tabRoutes";
+import routes, { StackParams } from "../pages";
 
 const Stack = createNativeStackNavigator<StackParams>();
-const PagesRouter: React.FC<{}> = () => {
+const PagesRouter: React.FC<object> = () => {
   return (
     <Stack.Navigator
       initialRouteName="App"
       screenOptions={{
         headerBackTitleVisible: false,
-        headerTitleAlign: 'center',
-      }}>
+        headerTitleAlign: "center",
+      }}
+    >
       <Stack.Screen
         name="App"
         component={TabRoutes}

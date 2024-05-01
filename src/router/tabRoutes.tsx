@@ -1,81 +1,82 @@
-import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {RouteProp} from '@react-navigation/native';
-import {View, StyleSheet} from 'react-native';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { RouteProp } from "@react-navigation/native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
-import Home from '../pages/home';
-import Found from '../pages/found';
-import Publish from '../pages/publish';
-import Setting from '../pages/setting';
-import AllNotify from '../pages/notify/allNotify';
-import {Icon} from '../components/Icon';
+import { Icon } from "../components/Icon";
+import Found from "../pages/found";
+import Home from "../pages/home";
+import AllNotify from "../pages/notify/allNotify";
+import Publish from "../pages/publish";
+import Setting from "../pages/setting";
 
 const TabStack = createBottomTabNavigator();
 
 const tabBarIconByType = (route: RouteProp<any>, color: string) => {
-  if (route.name === 'Home') {
-    return <Icon name={'home'} size={25} color={color} />;
+  if (route.name === "Home") {
+    return <Icon name="home" size={25} color={color} />;
   }
-  if (route.name === 'Found') {
-    return <Icon name={'find'} size={25} color={color} />;
+  if (route.name === "Found") {
+    return <Icon name="find" size={25} color={color} />;
   }
-  if (route.name === 'New') {
+  if (route.name === "New") {
     return (
       <View style={styles.new}>
-        <Icon name={'plus'} size={20} color={'#fff'} />
+        <Icon name="plus" size={20} color="#fff" />
       </View>
     );
   }
-  if (route.name === 'Notify') {
-    return <Icon name={'notify'} size={25} color={color} />;
+  if (route.name === "Notify") {
+    return <Icon name="notify" size={25} color={color} />;
   }
-  if (route.name === 'Setting') {
-    return <Icon name={'user'} size={25} color={color} />;
+  if (route.name === "Setting") {
+    return <Icon name="user" size={25} color={color} />;
   }
   return null;
 };
 
-const TabRouter: React.FC<{}> = () => {
+const TabRouter: React.FC<object> = () => {
   return (
     <TabStack.Navigator
-      screenOptions={({route}) => ({
+      screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: '#2593FC',
-        tabBarInactiveTintColor: '#999999',
-        tabBarIcon: ({color}) => tabBarIconByType(route, color),
-      })}>
+        tabBarActiveTintColor: "#2593FC",
+        tabBarInactiveTintColor: "#999999",
+        tabBarIcon: ({ color }) => tabBarIconByType(route, color),
+      })}
+    >
       <TabStack.Screen
-        name={'Home'}
+        name="Home"
         component={Home}
-        options={{tabBarLabel: '首页'}}
+        options={{ tabBarLabel: "首页" }}
       />
       <TabStack.Screen
-        name={'Found'}
+        name="Found"
         component={Found}
-        options={{tabBarLabel: '发现'}}
+        options={{ tabBarLabel: "发现" }}
       />
       <TabStack.Screen
-        name={'New'}
+        name="New"
         component={Publish}
         options={{
-          tabBarLabel: '新推文',
+          tabBarLabel: "新推文",
         }}
-        listeners={({navigation}) => ({
-          tabPress: e => {
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
             e.preventDefault();
-            navigation.navigate('Publish');
+            navigation.navigate("Publish");
           },
         })}
       />
       <TabStack.Screen
-        name={'Notify'}
+        name="Notify"
         component={AllNotify}
-        options={{tabBarLabel: '通知'}}
+        options={{ tabBarLabel: "通知" }}
       />
       <TabStack.Screen
-        name={'Setting'}
+        name="Setting"
         component={Setting}
-        options={{tabBarLabel: '设置'}}
+        options={{ tabBarLabel: "设置" }}
       />
     </TabStack.Navigator>
   );
@@ -83,7 +84,7 @@ const TabRouter: React.FC<{}> = () => {
 
 const styles = StyleSheet.create({
   new: {
-    backgroundColor: '#2593FC',
+    backgroundColor: "#2593FC",
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 5,

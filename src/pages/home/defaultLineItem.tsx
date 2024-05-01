@@ -1,18 +1,20 @@
-import React from 'react';
-import {View, StyleSheet, ScrollView} from 'react-native';
-import {Skeleton} from '../../components';
-import {Screen} from '../../config';
+import React from "react";
+import { View, StyleSheet, ScrollView } from "react-native";
 
-const DefaultLineItem: React.FC<{}> = () => {
+import { Skeleton } from "../../components";
+import { Screen } from "../../config";
+
+const DefaultLineItem: React.FC<object> = () => {
   return (
     <ScrollView>
       {new Array(6).fill(0).map((_, index) => {
         const marginTop = index > 0 ? 10 : 0;
         return (
-          <View key={index} style={[styles.container, {marginTop}]}>
+          <View key={index} style={[styles.container, { marginTop }]}>
             <Skeleton.SkeletonContainer
               childAnimation={Skeleton.Breath}
-              reverse={true}>
+              reverse
+            >
               <View style={styles.avatarContainer}>
                 <Skeleton.SkeletonRect style={styles.avatar} />
                 <View style={styles.nameContainer}>
@@ -35,15 +37,15 @@ const DefaultLineItem: React.FC<{}> = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     paddingHorizontal: 15,
     paddingVertical: 7,
   },
   head: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   avatarContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   content: {
     marginVertical: 5,
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     marginLeft: 15,
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
   },
   name: {
     height: 20,

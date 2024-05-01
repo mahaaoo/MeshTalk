@@ -1,6 +1,6 @@
-import SkeletonContainer from './SkeletonContainer';
-import SkeletonRect from './SkeletonRect';
-import {Breath, Shine, Normal, Load, ShineOver} from './Animation';
+import { Breath, Shine, Normal, Load, ShineOver } from "./Animation";
+import SkeletonContainer from "./SkeletonContainer";
+import SkeletonRect from "./SkeletonRect";
 
 export {
   SkeletonContainer,

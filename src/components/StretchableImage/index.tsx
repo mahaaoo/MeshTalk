@@ -2,10 +2,11 @@
  * 根据ScrollView或者FlatList等组件，下拉动作放大头部的图片效果
  */
 
-import React, {useState, useRef, useCallback, useMemo} from 'react';
-import {Animated, View, StyleSheet} from 'react-native';
-import Screen from '../../config/screen';
-import Colors from '../../config/colors';
+import React, { useState, useRef, useCallback, useMemo } from "react";
+import { Animated, View, StyleSheet } from "react-native";
+
+import Colors from "../../config/colors";
+import Screen from "../../config/screen";
 
 interface StretchableImageProps {
   imageHeight: number;
@@ -15,8 +16,8 @@ interface StretchableImageProps {
   blurRadius?: number;
 }
 
-const StretchableImage: React.FC<StretchableImageProps> = props => {
-  const {imageHeight, scrollY, url, isblur = false, blurRadius = 10} = props;
+const StretchableImage: React.FC<StretchableImageProps> = (props) => {
+  const { imageHeight, scrollY, url, isblur = false, blurRadius = 10 } = props;
 
   const [isShow, setShow] = useState(false);
   const imageAnimated: any = useRef(new Animated.Value(0)).current;
@@ -47,7 +48,8 @@ const StretchableImage: React.FC<StretchableImageProps> = props => {
             height: imageHeight,
             backgroundColor: isShow ? Colors.defaultWhite : Colors.theme,
           },
-        ]}>
+        ]}
+      >
         <Animated.Image
           onLoad={onImageLoad}
           blurRadius={radius}
@@ -61,14 +63,14 @@ const StretchableImage: React.FC<StretchableImageProps> = props => {
                   translateY: scrollY.interpolate({
                     inputRange: [-imageHeight, 0],
                     outputRange: [-imageHeight / 2, 0],
-                    extrapolate: 'clamp',
+                    extrapolate: "clamp",
                   }),
                 },
                 {
                   scale: scrollY.interpolate({
                     inputRange: [-imageHeight, 0, imageHeight],
                     outputRange: [2, 1, 1],
-                    extrapolate: 'clamp',
+                    extrapolate: "clamp",
                   }),
                 },
               ],
@@ -79,14 +81,14 @@ const StretchableImage: React.FC<StretchableImageProps> = props => {
           }}
         />
       </Animated.View>
-      <View style={{height: imageHeight}} />
+      <View style={{ height: imageHeight }} />
     </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     width: Screen.width,
   },

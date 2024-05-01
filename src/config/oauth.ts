@@ -1,5 +1,5 @@
-const ClientName: String = 'masty';
-const RedirectUris: String = 'https://github.com/mahaaoo';
-const Scopes: String = 'read write follow push';
+const ClientName: string = "masty";
+const RedirectUris: string = "https://github.com/mahaaoo";
+const Scopes: string = "read write follow push";
 
-export {ClientName, RedirectUris, Scopes};
+export { ClientName, RedirectUris, Scopes };

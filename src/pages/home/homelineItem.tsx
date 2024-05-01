@@ -1,36 +1,35 @@
-import React, {useCallback} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, { useCallback } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import {Screen, Colors} from '../../config';
-import {Timelines} from '../../config/interface';
-import {replaceContentEmoji, DateUtil, navigate} from '../../utils';
+import LineItemName from "./LineItemName";
+import ToolBar from "./toolBar";
+import WebCard from "./webCard";
 import {
   Avatar,
   SplitLine,
   NinePicture,
   HTMLContent,
   Icon,
-} from '../../components';
-
-import LineItemName from './LineItemName';
-import ToolBar from './toolBar';
-import WebCard from './webCard';
+} from "../../components";
+import { Screen, Colors } from "../../config";
+import { Timelines } from "../../config/interface";
+import { replaceContentEmoji, DateUtil, navigate } from "../../utils";
 
 interface HomeLineItemProps {
   item: Timelines;
   needToolbar?: boolean; // 是否显示转发工具条
 }
 
-const HomeLineItem: React.FC<HomeLineItemProps> = props => {
-  const {item, needToolbar = true} = props;
+const HomeLineItem: React.FC<HomeLineItemProps> = (props) => {
+  const { item, needToolbar = true } = props;
   const showItem = item?.reblog || item;
 
   const handleAvatar = useCallback(() => {
-    navigate('User', {id: item?.account.id});
+    navigate("User", { id: item?.account.id });
   }, [item]);
 
   const handleNavigation = useCallback(() => {
-    needToolbar && navigate('StatusDetail', {id: item?.id});
+    needToolbar && navigate("StatusDetail", { id: item?.id });
   }, [needToolbar, item]);
 
   return (
@@ -38,10 +37,11 @@ const HomeLineItem: React.FC<HomeLineItemProps> = props => {
       activeOpacity={1}
       style={styles.main}
       key={showItem?.id}
-      onPress={handleNavigation}>
+      onPress={handleNavigation}
+    >
       {item?.reblog ? (
         <View style={styles.status}>
-          <Icon name="turn" size={20} color={'#fff'} />
+          <Icon name="turn" size={20} color="#fff" />
           <Text style={styles.turnText}>
             {item.account?.display_name || item.account?.username} 转发了
           </Text>
@@ -49,7 +49,7 @@ const HomeLineItem: React.FC<HomeLineItemProps> = props => {
       ) : null}
       {item?.in_reply_to_id ? (
         <View style={styles.status}>
-          <Icon name={'comment'} size={20} color={'#fff'} />
+          <Icon name="comment" size={20} color="#fff" />
           <Text style={styles.commentText}>
             {item.account?.display_name || item.account?.username} 转评了
           </Text>
@@ -83,7 +83,7 @@ const HomeLineItem: React.FC<HomeLineItemProps> = props => {
                 {showItem?.application ? (
                   <Text style={styles.nameText}>
                     &nbsp;&nbsp;来自
-                    <Text style={{color: Colors.linkTagColor}}>
+                    <Text style={{ color: Colors.linkTagColor }}>
                       {showItem?.application?.name}
                     </Text>
                   </Text>
@@ -115,15 +115,15 @@ const HomeLineItem: React.FC<HomeLineItemProps> = props => {
 
 const styles = StyleSheet.create({
   status: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     paddingHorizontal: 10,
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.timelineStatusTag,
     marginTop: 15,
     height: 30,
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
-    alignItems: 'center',
+    alignItems: "center",
   },
   main: {
     backgroundColor: Colors.defaultWhite,
@@ -131,14 +131,14 @@ const styles = StyleSheet.create({
     width: Screen.width,
   },
   title: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingTop: 15,
   },
   avatar: {
     paddingRight: 10,
   },
   name: {
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
   },
   turnText: {
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   nameView: {
     flex: 1,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   sourceContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   sourceText: {
     fontSize: 13,

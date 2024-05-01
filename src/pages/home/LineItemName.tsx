@@ -1,15 +1,16 @@
-import React, {useMemo} from 'react';
-import {Text, StyleSheet} from 'react-native';
-import {Image} from 'expo-image';
-import {replaceNameEmoji} from '../../utils';
+import { Image } from "expo-image";
+import React, { useMemo } from "react";
+import { Text, StyleSheet } from "react-native";
+
+import { replaceNameEmoji } from "../../utils";
 
 interface LineItemNameProps {
   displayname: string;
   fontSize?: number;
 }
 
-const LineItemName: React.FC<LineItemNameProps> = props => {
-  const {displayname, fontSize = 16} = props;
+const LineItemName: React.FC<LineItemNameProps> = (props) => {
+  const { displayname, fontSize = 16 } = props;
 
   const name = useMemo(() => {
     return replaceNameEmoji(displayname);
@@ -20,8 +21,9 @@ const LineItemName: React.FC<LineItemNameProps> = props => {
       {name.map((item, index) => {
         return !item.image ? (
           <Text
-            style={[styles.text, {fontSize}]}
-            key={`HomeLineItemName${index}`}>
+            style={[styles.text, { fontSize }]}
+            key={`HomeLineItemName${index}`}
+          >
             {item.text}
           </Text>
         ) : (
@@ -29,9 +31,9 @@ const LineItemName: React.FC<LineItemNameProps> = props => {
             key={`HomeLineItemName${index}`}
             style={styles.image}
             source={{
-              uri: 'https://s3.acg.mn/custom_emojis/images/000/015/346/original/7341c51dd3b97a42.png',
+              uri: "https://s3.acg.mn/custom_emojis/images/000/015/346/original/7341c51dd3b97a42.png",
             }}
-            resizeMode={'cover'}
+            resizeMode="cover"
           />
         );
       })}
@@ -41,7 +43,7 @@ const LineItemName: React.FC<LineItemNameProps> = props => {
 
 const styles = StyleSheet.create({
   text: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   image: {
     width: 15,

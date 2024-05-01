@@ -1,8 +1,12 @@
-import React from 'react';
-import {View, ViewStyle} from 'react-native';
-import Animated, {useAnimatedStyle, withTiming} from 'react-native-reanimated';
-import {BaseChildAnimationProps, useSkeletonStyle} from './type';
-import {Normal} from './Animation';
+import React from "react";
+import { View, ViewStyle } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
+
+import { Normal } from "./Animation";
+import { BaseChildAnimationProps, useSkeletonStyle } from "./type";
 
 interface SkeletonRectProps {
   style?: ViewStyle;
@@ -10,13 +14,13 @@ interface SkeletonRectProps {
   children?: React.ReactNode;
 }
 
-const SkeletonRect: React.FC<SkeletonRectProps> = props => {
-  const {children, style, delay = 1000} = props;
-  const {finished, childAnimation} = useSkeletonStyle();
+const SkeletonRect: React.FC<SkeletonRectProps> = (props) => {
+  const { children, style, delay = 1000 } = props;
+  const { finished, childAnimation } = useSkeletonStyle();
 
   const fadeStyle = useAnimatedStyle(() => {
     return {
-      opacity: finished ? withTiming(1, {duration: delay}) : 0,
+      opacity: finished ? withTiming(1, { duration: delay }) : 0,
     };
   });
 

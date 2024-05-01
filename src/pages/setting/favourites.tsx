@@ -1,15 +1,13 @@
-import React, {useRef, useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {RefreshList, RefreshState} from '../../components';
-import {Colors, Screen} from '../../config';
-import {Timelines} from '../../config/interface';
-import {useRequest} from '../../utils';
-
-import {getFavouritesById} from '../../server/account';
-
-import HomeLineItem from '../home/homelineItem';
-import DefaultLineItem from '../home/defaultLineItem';
+import { RefreshList, RefreshState } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Timelines } from "../../config/interface";
+import { getFavouritesById } from "../../server/account";
+import { useRequest } from "../../utils";
+import DefaultLineItem from "../home/defaultLineItem";
+import HomeLineItem from "../home/homelineItem";
 
 const fetchStatusById = () => {
   const fn = (param: string) => {
@@ -20,12 +18,12 @@ const fetchStatusById = () => {
 
 interface FavouritiesProps {}
 
-const Favourities: React.FC<FavouritiesProps> = props => {
+const Favourities: React.FC<FavouritiesProps> = (props) => {
   const {} = props;
 
-  const {data: favourities, run: getFavourities} = useRequest(
+  const { data: favourities, run: getFavourities } = useRequest(
     fetchStatusById(),
-    {loading: false, manual: true},
+    { loading: false, manual: true },
   ); // 获取用户发表过的推文
   const [dataSource, setDataSource] = useState<Timelines[]>(new Array(6));
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle); // 内嵌的FlatList的当前状态
@@ -44,7 +42,7 @@ const Favourities: React.FC<FavouritiesProps> = props => {
       if (listStatus === RefreshState.FooterRefreshing) {
         const maxId = dataSource[0]?.id;
         if (dataSource[0].id < maxId) {
-          setDataSource(listData => listData.concat(favourities));
+          setDataSource((listData) => listData.concat(favourities));
         }
 
         setListStatus(RefreshState.Idle);
@@ -64,9 +62,9 @@ const Favourities: React.FC<FavouritiesProps> = props => {
         bounces={false}
         ref={table}
         showsVerticalScrollIndicator={false}
-        style={{width: Screen.width}}
+        style={{ width: Screen.width }}
         data={dataSource}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           if (dataSource.length === 6) {
             return <DefaultLineItem />;
           }
@@ -82,8 +80,8 @@ const Favourities: React.FC<FavouritiesProps> = props => {
 
 const styles = StyleSheet.create({
   main: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.pageDefaultBackground,
     flex: 1,
   },

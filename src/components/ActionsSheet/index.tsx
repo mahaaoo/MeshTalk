@@ -1,7 +1,8 @@
-import React from 'react';
-import {View, TouchableOpacity, StyleSheet, Text, Image} from 'react-native';
-import {Colors, Screen} from '../../config';
-import {TranslateContainer, ModalUtil} from 'react-native-ma-modal';
+import React from "react";
+import { View, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
+import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
+
+import { Colors, Screen } from "../../config";
 
 type ActionsSheetTyps = {
   onSelect: (reply: string) => void;
@@ -10,21 +11,22 @@ type ActionsSheetTyps = {
 };
 
 const ActionsSheet = {
-  key: 'global-action-sheet',
-  template: ({onSelect, onClose, bottom}: ActionsSheetTyps) => (
+  key: "global-action-sheet",
+  template: ({ onSelect, onClose, bottom }: ActionsSheetTyps) => (
     <TranslateContainer onDisappear={onClose} gesture>
-      <View style={[styles.scrollViewContainer, {paddingBottom: bottom}]}>
+      <View style={[styles.scrollViewContainer, { paddingBottom: bottom }]}>
         <View style={styles.titleContainer} />
-        <Text style={styles.title}>{'谁可以回复？'}</Text>
+        <Text style={styles.title}>谁可以回复？</Text>
         <Text style={styles.decContainer}>
-          {'选择谁可以回复这条嘟文，任何提及的人始终都能回复。'}
+          选择谁可以回复这条嘟文，任何提及的人始终都能回复。
         </Text>
         <TouchableOpacity
           style={styles.actionitem}
-          onPress={() => onSelect('任何人可以回复')}>
+          onPress={() => onSelect("任何人可以回复")}
+        >
           <View style={styles.imageContainer}>
             <Image
-              source={require('../../images/earth_white.png')}
+              source={require("../../images/earth_white.png")}
               style={styles.iconEarthWhite}
             />
           </View>
@@ -32,10 +34,11 @@ const ActionsSheet = {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionitem}
-          onPress={() => onSelect('关注的人可以回复')}>
+          onPress={() => onSelect("关注的人可以回复")}
+        >
           <View style={styles.imageContainer}>
             <Image
-              source={require('../../images/on_white.png')}
+              source={require("../../images/on_white.png")}
               style={styles.iconOnWhite}
             />
           </View>
@@ -43,10 +46,11 @@ const ActionsSheet = {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.actionitem}
-          onPress={() => onSelect('提及的人才可以回复')}>
+          onPress={() => onSelect("提及的人才可以回复")}
+        >
           <View style={styles.imageContainer}>
             <Image
-              source={require('../../images/mention_white.png')}
+              source={require("../../images/mention_white.png")}
               style={styles.iconMentionWhite}
             />
           </View>
@@ -58,8 +62,8 @@ const ActionsSheet = {
   show: (params: ActionsSheetTyps) => {
     ModalUtil.add(ActionsSheet.template(params), ActionsSheet.key);
   },
-  hide: () => ModalUtil.remove(ActionsSheet.key || ''),
-  isExist: () => ModalUtil.isExist(ActionsSheet.key || ''),
+  hide: () => ModalUtil.remove(ActionsSheet.key || ""),
+  isExist: () => ModalUtil.isExist(ActionsSheet.key || ""),
 };
 
 const styles = StyleSheet.create({
@@ -67,8 +71,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContainer: {
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   titleContainer: {
     width: 80,
@@ -79,28 +83,28 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   decContainer: {
     fontSize: 14,
     color: Colors.grayTextColor,
-    textAlign: 'center',
+    textAlign: "center",
     marginVertical: 10,
   },
   actionitem: {
     width: Screen.width,
     height: 70,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   imageContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
     backgroundColor: Colors.theme,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginHorizontal: 15,
   },
   iconEarthWhite: {

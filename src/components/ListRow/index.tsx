@@ -1,10 +1,10 @@
-import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import React from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
-import SplitLine from '../SplitLine';
-import Screen from '../../config/screen';
-import Colors from '../../config/colors';
-import {Icon} from '../Icon';
+import Colors from "../../config/colors";
+import Screen from "../../config/screen";
+import { Icon } from "../Icon";
+import SplitLine from "../SplitLine";
 
 interface ListRowProps {
   title: string;
@@ -19,7 +19,7 @@ interface ListRowProps {
 }
 
 const renderLeft = (props: ListRowProps) => {
-  const {leftIcon} = props;
+  const { leftIcon } = props;
   if (!leftIcon || leftIcon === null) {
     return <View />;
   }
@@ -27,7 +27,7 @@ const renderLeft = (props: ListRowProps) => {
 };
 
 const renderRight = (props: ListRowProps) => {
-  const {rightView} = props;
+  const { rightView } = props;
   if (!rightView || rightView === null) {
     return <View />;
   }
@@ -35,7 +35,7 @@ const renderRight = (props: ListRowProps) => {
 };
 
 const renderRightIcon = (props: ListRowProps) => {
-  const {rightIcon = <Icon name={'arrowRight'} size={18} color={'#333'} />} =
+  const { rightIcon = <Icon name="arrowRight" size={18} color="#333" /> } =
     props;
   if (!rightIcon || rightIcon === null) {
     return <View />;
@@ -43,21 +43,22 @@ const renderRightIcon = (props: ListRowProps) => {
   return rightIcon;
 };
 
-const ListRow: React.FC<ListRowProps> = props => {
-  const {title, height = 55, onPress, canClick = true} = props;
+const ListRow: React.FC<ListRowProps> = (props) => {
+  const { title, height = 55, onPress, canClick = true } = props;
   return (
     <>
       <TouchableOpacity
         style={[
           styles.container,
           {
-            height: height,
+            height,
           },
         ]}
         onPress={() => {
           canClick ? onPress && onPress() : null;
         }}
-        activeOpacity={canClick ? 0.2 : 1}>
+        activeOpacity={canClick ? 0.2 : 1}
+      >
         <View style={styles.extendContainer}>
           {renderLeft(props)}
           <Text style={styles.title}>{title}</Text>
@@ -74,23 +75,23 @@ const ListRow: React.FC<ListRowProps> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.defaultWhite,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 15,
   },
   extendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   title: {
     fontSize: 16,
   },
   leftIcon: {
     width: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 10,
   },
   rightContainer: {

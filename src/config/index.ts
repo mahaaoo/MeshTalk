@@ -1,4 +1,4 @@
-import Colors from './colors';
-import Screen from './screen';
+import Colors from "./colors";
+import Screen from "./screen";
 
-export {Colors, Screen};
+export { Colors, Screen };

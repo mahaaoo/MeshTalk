@@ -1,15 +1,12 @@
-import React, {useRef, useEffect, useState, useCallback} from 'react';
-import {View, Text, StyleSheet, Animated, TouchableOpacity} from 'react-native';
-
-import {Colors, Screen} from '../../config';
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import {
-  StringUtil,
-  useRequest,
-  navigate,
-  StorageUtil,
-  replaceContentEmoji,
-} from '../../utils';
-import {useAccountStore} from '../../store';
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
+
 import {
   Avatar,
   StretchableImage,
@@ -18,12 +15,20 @@ import {
   ListRow,
   SpacingBox,
   Icon,
-} from '../../components';
+} from "../../components";
+import { Colors, Screen } from "../../config";
+import { getAccountsById } from "../../server/account";
+import { useAccountStore } from "../../store";
+import {
+  StringUtil,
+  useRequest,
+  navigate,
+  StorageUtil,
+  replaceContentEmoji,
+} from "../../utils";
+import LineItemName from "../home/LineItemName";
 
-import {getAccountsById} from '../../server/account';
-import LineItemName from '../home/LineItemName';
-
-const fetchUserById = (id: string = '') => {
+const fetchUserById = (id: string = "") => {
   const fn = () => {
     return getAccountsById(id);
   };
@@ -33,14 +38,14 @@ const fetchUserById = (id: string = '') => {
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
-const Setting: React.FC<{}> = () => {
+const Setting: React.FC<object> = () => {
   const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
   const accountStore = useAccountStore();
 
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
-  const {data: userData, run: getUserData} = useRequest(
+  const { data: userData, run: getUserData } = useRequest(
     fetchUserById(accountStore.currentAccount?.id),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   ); // 获取用户的个人信息
 
   useEffect(() => {
@@ -68,26 +73,30 @@ const Setting: React.FC<{}> = () => {
   }, [userData]);
 
   const handleNavigateToFans = useCallback(() => {
-    navigate('UserFans', {id: accountStore.currentAccount?.id});
+    navigate("UserFans", { id: accountStore.currentAccount?.id });
   }, []);
 
   const handleNavigateToFollowing = useCallback(() => {
-    navigate('UserFollow', {id: accountStore.currentAccount?.id});
+    navigate("UserFollow", { id: accountStore.currentAccount?.id });
   }, []);
 
   const handleToTest = useCallback(() => {
-    navigate('User', {id: accountStore.currentAccount?.id});
+    navigate("User", { id: accountStore.currentAccount?.id });
   }, []);
 
   return (
     <Animated.ScrollView
       style={styles.container}
-      bounces={true}
-      onScroll={Animated.event([{nativeEvent: {contentOffset: {y: scrollY}}}], {
-        useNativeDriver: true,
-        listener: handleListener,
-      })}
-      scrollEventThrottle={1}>
+      bounces
+      onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        {
+          useNativeDriver: true,
+          listener: handleListener,
+        },
+      )}
+      scrollEventThrottle={1}
+    >
       <StretchableImage
         isblur={refreshing}
         scrollY={scrollY}
@@ -101,7 +110,7 @@ const Setting: React.FC<{}> = () => {
               <Avatar
                 url={userData?.avatar}
                 size={65}
-                borderColor={'#fff'}
+                borderColor="#fff"
                 borderWidth={4}
               />
             </TouchableOpacity>
@@ -129,7 +138,8 @@ const Setting: React.FC<{}> = () => {
             </View>
             <TouchableOpacity
               style={styles.actItem}
-              onPress={handleNavigateToFollowing}>
+              onPress={handleNavigateToFollowing}
+            >
               <Text style={styles.msg_number}>
                 {StringUtil.stringAddComma(userData?.following_count)}
               </Text>
@@ -137,7 +147,8 @@ const Setting: React.FC<{}> = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.actItem}
-              onPress={handleNavigateToFans}>
+              onPress={handleNavigateToFans}
+            >
               <Text style={styles.msg_number}>
                 {StringUtil.stringAddComma(userData?.followers_count)}
               </Text>
@@ -157,7 +168,7 @@ const Setting: React.FC<{}> = () => {
         }
         title="喜欢"
         onPress={() => {
-          navigate('Favourites');
+          navigate("Favourites");
         }}
       />
       <ListRow
@@ -196,18 +207,18 @@ const styles = StyleSheet.create({
     marginTop: -20,
   },
   title: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
   },
   act: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 10,
-    justifyContent: 'space-around',
+    justifyContent: "space-around",
   },
   actItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   acct: {
     fontSize: 14,
@@ -215,11 +226,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   msg_number: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   msg: {
-    fontWeight: 'normal',
+    fontWeight: "normal",
     color: Colors.grayTextColor,
     marginTop: 5,
   },

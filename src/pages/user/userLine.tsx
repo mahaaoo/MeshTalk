@@ -1,16 +1,15 @@
-import React, {useRef, useEffect, useState, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {RefreshList, RefreshState} from '../../components';
-import {Colors, Screen} from '../../config';
-import {Timelines} from '../../config/interface';
-import {useRequest} from '../../utils';
-
-import HomeLineItem from '../home/homelineItem';
-import DefaultLineItem from '../home/defaultLineItem';
+import { RefreshList, RefreshState } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Timelines } from "../../config/interface";
+import { useRequest } from "../../utils";
+import DefaultLineItem from "../home/defaultLineItem";
+import HomeLineItem from "../home/homelineItem";
 
 const fetchStatusById = (
-  id: string = '',
+  id: string = "",
   request: (id: string, param: string) => Promise<Timelines[]>,
 ) => {
   const fn = (param: string) => {
@@ -29,12 +28,12 @@ interface UserLineProps {
   request: (id: string, param: string) => Promise<Timelines[]>;
 }
 
-const UserLine: React.FC<UserLineProps> = props => {
-  const {scrollEnabled, onTop, id, refreshing, onFinish, request} = props;
+const UserLine: React.FC<UserLineProps> = (props) => {
+  const { scrollEnabled, onTop, id, refreshing, onFinish, request } = props;
 
-  const {data: userStatus, run: getUserStatus} = useRequest(
+  const { data: userStatus, run: getUserStatus } = useRequest(
     fetchStatusById(id, request),
-    {loading: false, manual: true},
+    { loading: false, manual: true },
   ); // 获取用户发表过的推文
   const [dataSource, setDataSource] = useState<Timelines[]>([]);
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle); // 内嵌的FlatList的当前状态
@@ -59,7 +58,7 @@ const UserLine: React.FC<UserLineProps> = props => {
       if (listStatus === RefreshState.FooterRefreshing) {
         const maxId = dataSource[0]?.id;
         if (userStatus[0]?.id < maxId) {
-          setDataSource(listData => listData.concat(userStatus));
+          setDataSource((listData) => listData.concat(userStatus));
         }
 
         setListStatus(RefreshState.Idle);
@@ -74,7 +73,7 @@ const UserLine: React.FC<UserLineProps> = props => {
     if (offsetY < 1) {
       onTop && onTop();
       // 保证table滚到最上面
-      table?.current?.scrollToOffset({x: 0, y: 0, animated: true});
+      table?.current?.scrollToOffset({ x: 0, y: 0, animated: true });
     }
     return null;
   };
@@ -93,7 +92,7 @@ const UserLine: React.FC<UserLineProps> = props => {
         showsVerticalScrollIndicator={false}
         style={styles.freshList}
         data={dataSource}
-        renderItem={({item}) => <HomeLineItem item={item} />}
+        renderItem={({ item }) => <HomeLineItem item={item} />}
         scrollEnabled={scrollEnabled}
         onScroll={handleListener}
         scrollEventThrottle={1}

@@ -1,10 +1,10 @@
-import {get} from '../utils/request';
-import {Notification} from '../config/interface';
+import { Notification } from "../config/interface";
+import { get } from "../utils/request";
 
 export const getNotifications = (
-  params: string = '',
-): Promise<Array<Notification>> => {
-  const url = '/api/v1/notifications' + params;
+  params: string = "",
+): Promise<Notification[]> => {
+  const url = "/api/v1/notifications" + params;
 
-  return get<Array<Notification>>(url);
+  return get<Notification[]>(url);
 };

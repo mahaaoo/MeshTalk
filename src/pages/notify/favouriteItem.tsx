@@ -1,12 +1,11 @@
-import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import React from "react";
+import { View, StyleSheet, Text } from "react-native";
 
-import {Notification} from '../../config/interface';
-import {Colors, Screen} from '../../config';
-import {Avatar, SplitLine, HTMLContent, Icon} from '../../components';
-import {replaceContentEmoji} from '../../utils';
-
-import LineItemName from '../home/LineItemName';
+import { Avatar, SplitLine, HTMLContent, Icon } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Notification } from "../../config/interface";
+import { replaceContentEmoji } from "../../utils";
+import LineItemName from "../home/LineItemName";
 
 const tagsStyles = {
   p: {
@@ -17,7 +16,7 @@ const tagsStyles = {
   a: {
     fontSize: 16,
     lineHeight: 20,
-    textDecorationLine: 'none',
+    textDecorationLine: "none",
     color: Colors.grayTextColor,
   },
 };
@@ -26,13 +25,13 @@ interface FavouriteItemProps {
   item: Notification;
 }
 
-const FavouriteItem: React.FC<FavouriteItemProps> = props => {
-  const {item} = props;
+const FavouriteItem: React.FC<FavouriteItemProps> = (props) => {
+  const { item } = props;
   return (
     <View style={styles.main}>
       <View style={styles.content}>
         <View style={styles.typeLogo}>
-          <Icon name="likeFill" size={23} color={'red'} />
+          <Icon name="likeFill" size={23} color="red" />
         </View>
         <View style={styles.right}>
           <Avatar url={item.account?.avatar} />
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
     width: Screen.width,
   },
   content: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 10,
     marginHorizontal: 20,
   },
@@ -72,12 +71,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   explan: {
-    fontWeight: 'normal',
+    fontWeight: "normal",
     fontSize: 15,
   },
   typeLogo: {
     width: 50,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginRight: 10,
   },
   right: {

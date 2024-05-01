@@ -1,22 +1,23 @@
-import React, {useEffect} from 'react';
-import {View} from 'react-native';
+import React, { useEffect } from "react";
+import { View } from "react-native";
 import {
   Easing,
   useSharedValue,
   withRepeat,
   withTiming,
-} from 'react-native-reanimated';
-import {Normal} from './Animation';
-import {SkeletonContext, SkeletonContainerProps} from './type';
+} from "react-native-reanimated";
 
-const SkeletonContainer: React.FC<SkeletonContainerProps> = props => {
+import { Normal } from "./Animation";
+import { SkeletonContext, SkeletonContainerProps } from "./type";
+
+const SkeletonContainer: React.FC<SkeletonContainerProps> = (props) => {
   const {
     children,
     finished = false,
     reverse = true,
     childAnimation = Normal,
     containerAnimation,
-    color = '#D8D8D8',
+    color = "#D8D8D8",
   } = props;
   const initialValue = 0;
   const toValue = 1;
@@ -42,7 +43,8 @@ const SkeletonContainer: React.FC<SkeletonContainerProps> = props => {
         animationProgress,
         childAnimation,
         color,
-      }}>
+      }}
+    >
       <>
         {children}
         {!finished && <Animation />}

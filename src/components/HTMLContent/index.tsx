@@ -1,13 +1,14 @@
-import React from 'react';
-import {useWindowDimensions} from 'react-native';
-import {Image} from 'expo-image';
+import { Image } from "expo-image";
+import React from "react";
+import { useWindowDimensions } from "react-native";
 import HTML, {
   CustomBlockRenderer,
   defaultHTMLElementModels,
   HTMLContentModel,
   useInternalRenderer,
-} from 'react-native-render-html';
-import Colors from '../../config/colors';
+} from "react-native-render-html";
+
+import Colors from "../../config/colors";
 
 const defaultTagsStyles = {
   p: {
@@ -17,7 +18,7 @@ const defaultTagsStyles = {
   a: {
     fontSize: 16,
     lineHeight: 20,
-    textDecorationLine: 'none',
+    textDecorationLine: "none",
     color: Colors.linkTagColor,
   },
 };
@@ -29,30 +30,30 @@ const customHTMLElementModels = {
 };
 
 const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
-  const {rendererProps} = useInternalRenderer('img', props);
-  const {source, style: imgStyle, width, height} = rendererProps;
+  const { rendererProps } = useInternalRenderer("img", props);
+  const { source, style: imgStyle, width, height } = rendererProps;
   return (
     <Image
       source={source}
-      style={[imgStyle, {width: Number(width), height: Number(height)}]}
+      style={[imgStyle, { width: Number(width), height: Number(height) }]}
     />
   );
 };
 
-const renderers = {img: ImageRenderer};
+const renderers = { img: ImageRenderer };
 
 interface HTMLContentProps {
   html: string;
   tagsStyles?: any;
 }
 
-const HTMLContent: React.FC<HTMLContentProps> = props => {
-  const {html, tagsStyles} = props;
-  const {width} = useWindowDimensions();
+const HTMLContent: React.FC<HTMLContentProps> = (props) => {
+  const { html, tagsStyles } = props;
+  const { width } = useWindowDimensions();
 
   return (
     <HTML
-      source={{html: html}}
+      source={{ html }}
       tagsStyles={tagsStyles || defaultTagsStyles}
       contentWidth={width}
       renderers={renderers}

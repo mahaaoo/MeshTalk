@@ -1,8 +1,8 @@
 /**
  * 根据ScrollView或者FlatList等组件，下拉动作显示的Loading
  */
-import React, {useMemo, useEffect, memo} from 'react';
-import {ActivityIndicator, Animated, StyleSheet} from 'react-native';
+import React, { useMemo, useEffect, memo } from "react";
+import { ActivityIndicator, Animated, StyleSheet } from "react-native";
 
 interface PullLoadingProps {
   refreshing: boolean;
@@ -14,15 +14,23 @@ interface PullLoadingProps {
   onRefresh?: () => void;
 }
 
-const PullLoading: React.FC<PullLoadingProps> = memo(props => {
-  const {refreshing, scrollY, top, left, size = 30, offsetY, onRefresh} = props;
+const PullLoading: React.FC<PullLoadingProps> = memo((props) => {
+  const {
+    refreshing,
+    scrollY,
+    top,
+    left,
+    size = 30,
+    offsetY,
+    onRefresh,
+  } = props;
 
   const optatus = useMemo(() => {
     if (!refreshing) {
       return scrollY.interpolate({
         inputRange: [-offsetY, 0],
         outputRange: [1, 0],
-        extrapolate: 'clamp',
+        extrapolate: "clamp",
       });
     } else {
       return 1;
@@ -46,17 +54,18 @@ const PullLoading: React.FC<PullLoadingProps> = memo(props => {
           top: top - size / 2,
           left: left - size / 2,
         },
-      ]}>
-      <ActivityIndicator color={'#fff'} />
+      ]}
+    >
+      <ActivityIndicator color="#fff" />
     </Animated.View>
   );
 });
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: "absolute",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

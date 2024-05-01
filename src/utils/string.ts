@@ -2,7 +2,7 @@
 // 1930492 => 1,930,492
 export const stringAddComma = (string: string): string => {
   if (!string) {
-    return '0';
+    return "0";
   }
   return Number(string).toLocaleString();
 };

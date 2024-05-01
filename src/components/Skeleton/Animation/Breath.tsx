@@ -1,16 +1,20 @@
 /**
  * Animation effect child component
  */
-import React from 'react';
-import {StyleSheet} from 'react-native';
-import Animated, {interpolate, useAnimatedStyle} from 'react-native-reanimated';
-import {useSkeletonStyle, BaseChildAnimationProps} from '../type';
+import React from "react";
+import { StyleSheet } from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+
+import { useSkeletonStyle, BaseChildAnimationProps } from "../type";
 
 interface BreathProps extends BaseChildAnimationProps {}
 
-const Breath: React.FC<BreathProps> = props => {
-  const {style} = props;
-  const {animationProgress, color} = useSkeletonStyle();
+const Breath: React.FC<BreathProps> = (props) => {
+  const { style } = props;
+  const { animationProgress, color } = useSkeletonStyle();
 
   const animationStyle = useAnimatedStyle(() => {
     return {
@@ -20,7 +24,7 @@ const Breath: React.FC<BreathProps> = props => {
 
   return (
     <Animated.View
-      style={[style, styles.mask, {backgroundColor: color}, animationStyle]}
+      style={[style, styles.mask, { backgroundColor: color }, animationStyle]}
     />
   );
 };

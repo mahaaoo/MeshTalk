@@ -1,13 +1,13 @@
-import {useRef, useEffect, useCallback, useState} from 'react';
-import {Loading, Toast} from 'react-native-ma-modal';
+import { useRef, useEffect, useCallback, useState } from "react";
+import { Loading, Toast } from "react-native-ma-modal";
 
 // 防抖hooks
 const useDebounce = <T extends () => void>(
   fn: T,
   delay: number = 1000,
-  dep: Array<any> = [],
+  dep: any[] = [],
 ) => {
-  const {current}: any = useRef({fn, timer: null});
+  const { current }: any = useRef({ fn, timer: null });
   useEffect(() => {
     current.fn = fn;
   }, [fn]);
@@ -24,17 +24,17 @@ const useDebounce = <T extends () => void>(
 
 interface UseRequestOptions {
   manual?: boolean; // 是否需要手动触发
-  loading?: Boolean;
+  loading?: boolean;
 }
 
 // 请求
 const useRequest = <T>(
   fn: (...args: any) => Promise<T>,
-  options: UseRequestOptions = {loading: true, manual: false},
+  options: UseRequestOptions = { loading: true, manual: false },
 ) => {
   const [data, setData] = useState<T>();
   const [error, setError] = useState();
-  const {current}: any = useRef({fn});
+  const { current }: any = useRef({ fn });
 
   const run: (...args: any) => void = useCallback(
     (...args: any) => {
@@ -46,8 +46,8 @@ const useRequest = <T>(
       }
 
       getData()
-        .catch(error => {
-          console.error('useRequest', error.message);
+        .catch((error) => {
+          console.error("useRequest", error.message);
           Toast.show(error.message);
           setError(error);
         })
@@ -94,4 +94,4 @@ const useSetTimeout = (
   }, []);
 };
 
-export {useDebounce, useRequest, useSetTimeout};
+export { useDebounce, useRequest, useSetTimeout };

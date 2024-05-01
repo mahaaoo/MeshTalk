@@ -1,22 +1,23 @@
 /**
  * Animation effect child component
  */
-import React from 'react';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import React from "react";
+import { View, StyleSheet, Dimensions } from "react-native";
 import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-} from 'react-native-reanimated';
-import {useSkeletonStyle, BaseChildAnimationProps} from '../type';
+} from "react-native-reanimated";
 
-const {width: Wwidth} = Dimensions.get('window');
+import { useSkeletonStyle, BaseChildAnimationProps } from "../type";
+
+const { width: Wwidth } = Dimensions.get("window");
 
 interface ShineProps extends BaseChildAnimationProps {}
 
-const Shine: React.FC<ShineProps> = props => {
-  const {style} = props;
-  const {animationProgress, color} = useSkeletonStyle();
+const Shine: React.FC<ShineProps> = (props) => {
+  const { style } = props;
+  const { animationProgress, color } = useSkeletonStyle();
   const width = useSharedValue(Wwidth);
 
   const animationStyle = useAnimatedStyle(() => {
@@ -35,12 +36,13 @@ const Shine: React.FC<ShineProps> = props => {
 
   return (
     <View
-      style={[style, styles.mask, {backgroundColor: color}]}
+      style={[style, styles.mask, { backgroundColor: color }]}
       onLayout={({
         nativeEvent: {
-          layout: {width: w},
+          layout: { width: w },
         },
-      }) => (width.value = w)}>
+      }) => (width.value = w)}
+    >
       <Animated.View style={[styles.shineSlider, animationStyle]} />
     </View>
   );
@@ -50,11 +52,11 @@ const styles = StyleSheet.create({
   mask: {
     ...StyleSheet.absoluteFillObject,
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   shineSlider: {
-    height: '100%',
-    backgroundColor: 'white',
+    height: "100%",
+    backgroundColor: "white",
     width: 50,
     opacity: 0.7,
   },

@@ -1,6 +1,7 @@
-import React from 'react';
-import {View} from 'react-native';
-import Colors from '../../config/colors';
+import React from "react";
+import { View } from "react-native";
+
+import Colors from "../../config/colors";
 
 interface SpacingBoxProps {
   height?: number;
@@ -8,11 +9,9 @@ interface SpacingBoxProps {
   width?: number;
 }
 
-const SpacingBox: React.FC<SpacingBoxProps> = props => {
-  const {height, color = Colors.defaultWhite, width} = props;
-  return (
-    <View style={{width: width, height: height, backgroundColor: color}} />
-  );
+const SpacingBox: React.FC<SpacingBoxProps> = (props) => {
+  const { height, color = Colors.defaultWhite, width } = props;
+  return <View style={{ width, height, backgroundColor: color }} />;
 };
 
 export default SpacingBox;

@@ -1,22 +1,21 @@
-import React, {useCallback} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import React, { useCallback } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-import {Account} from '../../config/interface';
-import {Avatar, SplitLine} from '../../components';
-import {Screen, Colors} from '../../config';
-import {navigate} from '../../utils';
-
-import LineItemName from '../home/LineItemName';
+import { Avatar, SplitLine } from "../../components";
+import { Screen, Colors } from "../../config";
+import { Account } from "../../config/interface";
+import { navigate } from "../../utils";
+import LineItemName from "../home/LineItemName";
 
 interface UserItemProps {
   item: Account;
 }
 
-const UserItem: React.FC<UserItemProps> = props => {
-  const {item} = props;
+const UserItem: React.FC<UserItemProps> = (props) => {
+  const { item } = props;
 
   const handleNavigation = useCallback(() => {
-    navigate('User', {id: item.id});
+    navigate("User", { id: item.id });
   }, []);
 
   return (
@@ -46,7 +45,7 @@ const UserItem: React.FC<UserItemProps> = props => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
+    flexDirection: "row",
     backgroundColor: Colors.defaultWhite,
     padding: 15,
   },
@@ -60,8 +59,8 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 

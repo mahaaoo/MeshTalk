@@ -1,14 +1,13 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {Timelines} from '../../config/interface';
-import {publicLine} from '../../server/timeline';
-import {useRequest} from '../../utils/hooks';
-import {RefreshList, RefreshState} from '../../components';
-import {Colors} from '../../config';
-
-import DefaultLineItem from '../home/defaultLineItem';
-import HomeLineItem from '../home/homelineItem';
+import { RefreshList, RefreshState } from "../../components";
+import { Colors } from "../../config";
+import { Timelines } from "../../config/interface";
+import { publicLine } from "../../server/timeline";
+import { useRequest } from "../../utils/hooks";
+import DefaultLineItem from "../home/defaultLineItem";
+import HomeLineItem from "../home/homelineItem";
 
 const fetchPublicLine = () => {
   const fn = (params: string) => {
@@ -25,9 +24,9 @@ const Public: React.FC<PublicProps> = () => {
   const [listData, setListData] = useState<Timelines[]>([]);
   const [status, setStatus] = useState<RefreshState>(RefreshState.Idle);
 
-  const {data: publicLineData, run: getPublicLineData} = useRequest(
+  const { data: publicLineData, run: getPublicLineData } = useRequest(
     fetchPublicLine(),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   );
 
   const handleRefresh = useCallback(() => {
@@ -64,7 +63,7 @@ const Public: React.FC<PublicProps> = () => {
     <View style={styles.main}>
       <RefreshList
         data={listData}
-        renderItem={({item}) => <HomeLineItem item={item} />}
+        renderItem={({ item }) => <HomeLineItem item={item} />}
         onHeaderRefresh={handleRefresh}
         onFooterRefresh={handleLoadMore}
         refreshState={status}

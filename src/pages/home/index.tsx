@@ -1,18 +1,16 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Header} from '@react-navigation/elements';
+import { Header } from "@react-navigation/elements";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, StyleSheet } from "react-native";
 
-import {homeLine} from '../../server/timeline';
-import {verifyToken} from '../../server/app';
-import {useAppStore, useAccountStore} from '../../store';
-import {Timelines} from '../../config/interface';
-
-import {navigate, useRequest} from '../../utils';
-import {RefreshList, RefreshState} from '../../components';
-import {Colors, Screen} from '../../config';
-
-import HomeLineItem from './homelineItem';
-import DefaultLineItem from './defaultLineItem';
+import DefaultLineItem from "./defaultLineItem";
+import HomeLineItem from "./homelineItem";
+import { RefreshList, RefreshState } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Timelines } from "../../config/interface";
+import { verifyToken } from "../../server/app";
+import { homeLine } from "../../server/timeline";
+import { useAppStore, useAccountStore } from "../../store";
+import { navigate, useRequest } from "../../utils";
 
 const fetchHomeLine = () => {
   const fn = (params: string) => {
@@ -21,18 +19,18 @@ const fetchHomeLine = () => {
   return fn;
 };
 
-const Home: React.FC<{}> = () => {
+const Home: React.FC<object> = () => {
   const appStore = useAppStore();
   const accountStore = useAccountStore();
 
   const [listData, setListData] = useState<Timelines[]>([]);
   const [status, setStatus] = useState<RefreshState>(RefreshState.Idle);
 
-  const {data: homeLineData, run: getHomeLineData} = useRequest(
+  const { data: homeLineData, run: getHomeLineData } = useRequest(
     fetchHomeLine(),
-    {manual: true, loading: false},
+    { manual: true, loading: false },
   );
-  const {data: account, run: fetchVerifyToken} = useRequest(verifyToken, {
+  const { data: account, run: fetchVerifyToken } = useRequest(verifyToken, {
     manual: true,
     loading: false,
   });
@@ -57,7 +55,7 @@ const Home: React.FC<{}> = () => {
     ) {
       fetchVerifyToken();
     } else {
-      navigate('Guide');
+      navigate("Guide");
     }
   }, [appStore.hostURL, appStore.token]);
 
@@ -90,7 +88,7 @@ const Home: React.FC<{}> = () => {
       <View style={styles.main}>
         <RefreshList
           data={listData}
-          renderItem={({item}) => <HomeLineItem item={item} />}
+          renderItem={({ item }) => <HomeLineItem item={item} />}
           onHeaderRefresh={handleRefresh}
           onFooterRefresh={handleLoadMore}
           refreshState={status}
@@ -112,15 +110,15 @@ const styles = StyleSheet.create({
     width: Screen.width,
   },
   line: {
-    width: '100%',
+    width: "100%",
     height: 1,
-    backgroundColor: '#eee',
+    backgroundColor: "#eee",
   },
   loading: {
     flex: 1,
     backgroundColor: Colors.pageDefaultBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

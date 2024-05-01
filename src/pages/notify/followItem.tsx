@@ -1,28 +1,28 @@
-import React, {useCallback} from 'react';
-import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import React, { useCallback } from "react";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import {Notification, Relationship} from '../../config/interface';
-import {Colors, Screen} from '../../config';
-import {navigate} from '../../utils/rootNavigation';
-import {Avatar, FollowButton, SplitLine, Icon} from '../../components';
+import { Avatar, FollowButton, SplitLine, Icon } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Notification, Relationship } from "../../config/interface";
+import { navigate } from "../../utils/rootNavigation";
 
 interface FollowItemProps {
   item: Notification;
   relationships: Relationship[] | undefined;
 }
 
-const FollowItem: React.FC<FollowItemProps> = props => {
-  const {item, relationships} = props;
+const FollowItem: React.FC<FollowItemProps> = (props) => {
+  const { item, relationships } = props;
 
   const handleNavigation = useCallback(() => {
-    navigate('User', {id: item.account?.id});
+    navigate("User", { id: item.account?.id });
   }, [item]);
 
   return (
     <TouchableOpacity style={styles.main} onPress={handleNavigation}>
       <View style={styles.content}>
         <View style={styles.typeLogo}>
-          <Icon name={'userFill'} size={20} color={Colors.theme} />
+          <Icon name="userFill" size={20} color={Colors.theme} />
         </View>
         <View style={styles.right}>
           <Text style={styles.username}>
@@ -55,21 +55,21 @@ const styles = StyleSheet.create({
     width: Screen.width,
   },
   content: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 10,
     marginHorizontal: 20,
   },
   username: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 15,
   },
   explan: {
-    fontWeight: 'normal',
+    fontWeight: "normal",
     fontSize: 15,
   },
   typeLogo: {
     width: 50,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginRight: 10,
   },
   right: {
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   avatarContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 15,
   },
   displayName: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   acct: {

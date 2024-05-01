@@ -1,5 +1,5 @@
-import {Emoji} from '../config/interface';
-import {Stores} from '../store';
+import { Emoji } from "../config/interface";
+import { Stores } from "../store";
 
 interface Children {
   [key: string]: Node;
@@ -26,12 +26,12 @@ class Node {
   public depth: number = 0;
 
   constructor(key: string, options: NodeOptionsType = {}) {
-    const {parent, word, depth} = options;
+    const { parent, word, depth } = options;
 
     this.key = key;
     this.parent = parent;
     this.word = word || false;
-    this.depth = typeof depth === 'number' ? depth : 1;
+    this.depth = typeof depth === "number" ? depth : 1;
   }
 }
 
@@ -39,7 +39,7 @@ class Tree {
   public root: Node;
 
   constructor() {
-    this.root = new Node('root', {
+    this.root = new Node("root", {
       depth: 0,
     });
   }
@@ -50,7 +50,7 @@ class Tree {
    */
   insert(key: string): boolean {
     if (!key) return false;
-    const keyArr = key.split('').reverse();
+    const keyArr = key.split("").reverse();
     const firstKey: any = keyArr.pop();
     const children = this.root.children;
     const len = keyArr.length;
@@ -111,9 +111,9 @@ class Tree {
    */
   createFailureTable() {
     // 获取树第一层
-    let currQueue: Array<Node> = Object.values(this.root.children);
+    let currQueue: Node[] = Object.values(this.root.children);
     while (currQueue.length > 0) {
-      const nextQueue: Array<Node> = [];
+      const nextQueue: Node[] = [];
       for (let i = 0; i < currQueue.length; i++) {
         const node: Node = currQueue[i];
         const key = node.key;
@@ -164,9 +164,9 @@ interface EmojiType {
 }
 
 class Mint extends Tree {
-  public keyTable: Array<EmojiType>;
+  public keyTable: EmojiType[];
 
-  constructor(keywords: Array<EmojiType> = []) {
+  constructor(keywords: EmojiType[] = []) {
     super();
     this.keyTable = keywords;
     // 创建Trie树
@@ -188,13 +188,13 @@ class Mint extends Tree {
     const wordLen = text.length;
     if (wordLen <= 0) {
       return {
-        text: text || '',
+        text: text || "",
         pass: true,
       };
     }
 
     // 过滤后的文字
-    let filterText = '';
+    let filterText = "";
 
     // 当前树位置
     let currNode: Node | undefined = this.root;
@@ -227,7 +227,7 @@ class Mint extends Tree {
             const len = failure.depth;
 
             const keyword = filterText.slice(-len);
-            let replaceWord = '';
+            let replaceWord = "";
 
             for (const item of this.keyTable) {
               if (item.word === keyword) {
@@ -239,7 +239,7 @@ class Mint extends Tree {
             filterText = filterText.slice(0, -len) + replaceWord;
           }
           failure = failure?.failure;
-        } while (failure?.key !== 'root');
+        } while (failure?.key !== "root");
 
         currNode = nextNode;
         continue;
@@ -270,20 +270,20 @@ class Mint extends Tree {
  */
 export const replaceContentEmoji = (text: string): string => {
   if (!text || text.length === 0) {
-    return '';
+    return "";
   }
 
-  if (text.indexOf(':') === -1) {
+  if (text.indexOf(":") === -1) {
     return text;
   }
 
   const hash = Stores.emojiStore.emojisHash;
 
   let isEmoji = false;
-  let handledText = '';
-  let emojiKey = '';
+  let handledText = "";
+  let emojiKey = "";
   for (let index = 0; index < text.length; index++) {
-    if (text[index] === ':') {
+    if (text[index] === ":") {
       if (!isEmoji) {
         // emoji开始
         isEmoji = true;
@@ -292,11 +292,11 @@ export const replaceContentEmoji = (text: string): string => {
         isEmoji = false;
         const getEmoji = hash.get(emojiKey);
         if (!getEmoji || getEmoji === undefined) {
-          handledText += ':' + emojiKey + ':';
+          handledText += ":" + emojiKey + ":";
         } else {
           handledText += `<img src="${getEmoji.url}" width="20" height="20" style="margin:2px;vertical-align:middle;display: inline;" />`;
         }
-        emojiKey = '';
+        emojiKey = "";
       }
     } else {
       if (isEmoji) {
@@ -321,10 +321,10 @@ export const replaceNameEmoji = (text: string): any[] => {
     return [];
   }
 
-  if (text.indexOf(':') === -1) {
+  if (text.indexOf(":") === -1) {
     return [
       {
-        text: text,
+        text,
         image: false,
       },
     ];
@@ -332,7 +332,7 @@ export const replaceNameEmoji = (text: string): any[] => {
 
   const hash = Stores.emojiStore.emojisHash;
 
-  const nameList = text.split(':');
+  const nameList = text.split(":");
   return nameList.map((name: string) => {
     const getEmoji = hash.get(name);
     if (!getEmoji || getEmoji === undefined) {

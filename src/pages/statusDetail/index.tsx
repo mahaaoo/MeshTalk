@@ -1,15 +1,13 @@
-import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import {Colors, Screen} from '../../config';
-import {useRequest} from '../../utils';
-
-import {getStatusesById} from '../../server/status';
-import {RouterProps} from '../index';
-
-import ToolBar from '../home/toolBar';
-import HomeLineItem from '../home/homelineItem';
+import { Colors, Screen } from "../../config";
+import { getStatusesById } from "../../server/status";
+import { useRequest } from "../../utils";
+import HomeLineItem from "../home/homelineItem";
+import ToolBar from "../home/toolBar";
+import { RouterProps } from "../index";
 
 const fetchStatusesById = (id: string) => {
   const fn = () => {
@@ -18,13 +16,13 @@ const fetchStatusesById = (id: string) => {
   return fn;
 };
 
-interface StatusDetailProps extends RouterProps<'StatusDetail'> {}
+interface StatusDetailProps extends RouterProps<"StatusDetail"> {}
 
-const StatusDetail: React.FC<StatusDetailProps> = props => {
-  const {id} = props?.route?.params;
+const StatusDetail: React.FC<StatusDetailProps> = (props) => {
+  const { id } = props?.route?.params;
   const inset = useSafeAreaInsets();
 
-  const {data: statusDetail} = useRequest(fetchStatusesById(id), {
+  const { data: statusDetail } = useRequest(fetchStatusesById(id), {
     manual: false,
     loading: true,
   });
@@ -36,7 +34,7 @@ const StatusDetail: React.FC<StatusDetailProps> = props => {
   return (
     <>
       <HomeLineItem item={statusDetail} needToolbar={false} />
-      <View style={[styles.toolBar, {height: 40 + inset.bottom}]}>
+      <View style={[styles.toolBar, { height: 40 + inset.bottom }]}>
         <ToolBar />
       </View>
     </>
@@ -45,7 +43,7 @@ const StatusDetail: React.FC<StatusDetailProps> = props => {
 
 const styles = StyleSheet.create({
   toolBar: {
-    position: 'absolute',
+    position: "absolute",
     width: Screen.width,
     bottom: 0,
     left: 0,

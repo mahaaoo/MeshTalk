@@ -1,14 +1,12 @@
-import React from 'react';
-import {View, StyleSheet, Image, Text} from 'react-native';
-import HTML from 'react-native-render-html';
+import React from "react";
+import { View, StyleSheet, Image, Text } from "react-native";
+import HTML from "react-native-render-html";
 
-import {Notification} from '../../config/interface';
-import {Colors, Screen} from '../../config';
-
-import {Avatar, SplitLine} from '../../components';
-import {replaceContentEmoji} from '../../utils';
-
-import LineItemName from '../home/LineItemName';
+import { Avatar, SplitLine } from "../../components";
+import { Colors, Screen } from "../../config";
+import { Notification } from "../../config/interface";
+import { replaceContentEmoji } from "../../utils";
+import LineItemName from "../home/LineItemName";
 
 const tagsStyles = {
   p: {
@@ -19,7 +17,7 @@ const tagsStyles = {
   a: {
     fontSize: 16,
     lineHeight: 20,
-    textDecorationLine: 'none',
+    textDecorationLine: "none",
     color: Colors.grayTextColor,
   },
 };
@@ -31,7 +29,7 @@ const renderer = {
         key={htmlAttribs.src}
         style={styles.htmlImage}
         resizeMode="contain"
-        source={{uri: htmlAttribs.src}}
+        source={{ uri: htmlAttribs.src }}
       />
     );
   },
@@ -41,14 +39,14 @@ interface MetionItemProps {
   item: Notification;
 }
 
-const MetionItem: React.FC<MetionItemProps> = props => {
-  const {item} = props;
+const MetionItem: React.FC<MetionItemProps> = (props) => {
+  const { item } = props;
   return (
     <View style={styles.main}>
       <View style={styles.content}>
         <View style={styles.typeLogo}>
           <Image
-            source={require('../../images/notify_turn.png')}
+            source={require("../../images/notify_turn.png")}
             style={styles.iconNotify}
           />
         </View>
@@ -86,22 +84,22 @@ const styles = StyleSheet.create({
     width: Screen.width,
   },
   content: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginVertical: 10,
     marginHorizontal: 20,
   },
   username: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 15,
     marginTop: 10,
   },
   explan: {
-    fontWeight: 'normal',
+    fontWeight: "normal",
     fontSize: 15,
   },
   typeLogo: {
     width: 50,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginRight: 10,
   },
   right: {
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
   htmlImage: {
     height: 16,
     width: 16,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
   },
   htmlContainer: {
     paddingVertical: 15,
