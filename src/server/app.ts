@@ -1,4 +1,4 @@
-import request, {MethodType} from '../utils/request';
+import {get, post} from '../utils/request';
 import {ClientName, Scopes, RedirectUris} from '../config/oauth';
 import {AppInterface, AppToken, Account, Emoji} from '../config/interface';
 
@@ -12,7 +12,7 @@ export const getAppConfig = (host: string): Promise<AppInterface> => {
     scopes: Scopes,
   };
 
-  return request(url, MethodType.POST, params);
+  return post<AppInterface>(url, params);
 };
 
 // 获取token信息
@@ -24,19 +24,19 @@ export const getToken = (host: string, param: Object): Promise<AppToken> => {
     ...param,
   };
 
-  return request(url, MethodType.POST, params);
+  return post<AppToken>(url, params);
 };
 
 // 校验token是否有效
 export const verifyToken = (): Promise<Account> => {
   const url = '/api/v1/accounts/verify_credentials';
 
-  return request(url, MethodType.GET);
+  return get<Account>(url);
 };
 
 // 获取实例的emojis
 export const getInstanceEmojis = (): Promise<Emoji[]> => {
   const url = '/api/v1/custom_emojis';
 
-  return request(url, MethodType.GET);
+  return get(url);
 };

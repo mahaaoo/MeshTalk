@@ -1,4 +1,4 @@
-import {create} from 'apisauce'
+import {create, ApiResponse} from 'apisauce'
 import {useAppStore} from '../store';
 
 const api = create({
@@ -18,6 +18,7 @@ api.addRequestTransform(request => {
 
   console.log('\n===================请求拦截器=================');
   console.log(`请求地址：${request.url}`);
+  console.log(`请求方式：${request.method}`);
   console.log('请求参数：');
   console.log(request.data);
   console.log('============================================\n');
@@ -120,14 +121,29 @@ api.addResponseTransform(response => {
 //     });
 // };
 
-const get = (url, params?, axiosConfig?) => {
-  return api.get(url, params, axiosConfig);
+const get = async <T>(url, params?, axiosConfig?): Promise<T> => {
+  return api.get(url, params, axiosConfig)
+        .then((response: ApiResponse<T>) => { 
+          console.log({ ok: response.ok, status: response.status, problem: response.problem }); // 假设response有这些属性  
+          return response.data as T;
+        })  
+        .catch((error: any) => {
+          console.log('catch', error);
+          throw error;  
+        });
 }
 
-const post = (url, data?, axiosConfig?) => {
-  return api.post(url, data, axiosConfig);
+const post = async <T>(url, data?, axiosConfig?): Promise<T> => {
+  return api.post(url, data, axiosConfig)
+      .then((response: ApiResponse<T>) => { 
+        console.log({ ok: response.ok, status: response.status, problem: response.problem }); // 假设response有这些属性  
+        return response.data as T;
+      })  
+      .catch((error: any) => {
+          console.log('catch', error);
+          throw error;  
+        });
 }
-
 
 export {
   get,

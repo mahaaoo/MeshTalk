@@ -1,4 +1,4 @@
-import request, {MethodType} from '../utils/request';
+import {get} from '../utils/request';
 import {Notification} from '../config/interface';
 
 export const getNotifications = (
@@ -6,5 +6,5 @@ export const getNotifications = (
 ): Promise<Array<Notification>> => {
   const url = '/api/v1/notifications' + params;
 
-  return request(url, MethodType.GET);
+  return get<Array<Notification>>(url);
 };

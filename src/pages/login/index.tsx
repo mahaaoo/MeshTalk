@@ -60,7 +60,8 @@ const Login: React.FC<{}> = () => {
 
   const handleLogin = () => {
     if (path.length > 0) {
-      getLoginData('https://' + path);
+      // getLoginData('https://' + path);
+      getAppConfig('https://' + path);
     } else {
       Toast.show('请输入应用实例地址');
     }

@@ -1,4 +1,4 @@
-import request, {MethodType} from '../utils/request';
+import {get, post} from '../utils/request';
 import {Timelines} from '../config/interface';
 
 // https://mastodon.example/api/v1/statuses/:id
@@ -6,7 +6,7 @@ import {Timelines} from '../config/interface';
 export const getStatusesById = (id: string = ''): Promise<Timelines> => {
   const url = '/api/v1/statuses/' + id;
 
-  return request(url, MethodType.GET);
+  return get<Timelines>(url);
 };
 
 // https://mastodon.example/api/v1/statuses
@@ -14,5 +14,5 @@ export const getStatusesById = (id: string = ''): Promise<Timelines> => {
 export const postNewStatuses = (params: Object): Promise<Timelines> => {
   const url = '/api/v1/statuses';
 
-  return request(url, MethodType.POST, params);
+  return post<Timelines>(url, params);
 };
