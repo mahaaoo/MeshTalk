@@ -6,7 +6,7 @@ import {Button} from '../../components';
 import {Screen, Colors} from '../../config';
 import {goBack, navigate, reset, useRequest} from '../../utils';
 import {getAppConfig, getToken} from '../../server/app';
-import {useStores} from '../../store';
+import {useAppStore} from '../../store';
 
 const fetchAppConfig = () => {
   const fn = (host: string) => {
@@ -30,7 +30,7 @@ const Login: React.FC<{}> = () => {
   const {data: tokenData, run: getTokenData} = useRequest(fetchAppToken(), {
     manual: true,
   });
-  const {appStore} = useStores();
+  const appStore = useAppStore();
 
   useEffect(() => {
     if (loginData) {
@@ -52,7 +52,7 @@ const Login: React.FC<{}> = () => {
   useEffect(() => {
     if (tokenData) {
       console.log('获取到的token信息');
-      appStore.setHostUrl('https://' + path);
+      appStore.setHostURL('https://' + path);
       appStore.setToken(tokenData.access_token);
       reset('App');
     }

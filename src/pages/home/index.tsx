@@ -4,7 +4,7 @@ import {Header} from '@react-navigation/elements';
 
 import {homeLine} from '../../server/timeline';
 import {verifyToken} from '../../server/app';
-import {useStores} from '../../store';
+import {useAppStore, useAccountStore} from '../../store';
 import {Timelines} from '../../config/interface';
 
 import {navigate, useRequest} from '../../utils';
@@ -22,7 +22,8 @@ const fetchHomeLine = () => {
 };
 
 const Home: React.FC<{}> = () => {
-  const {appStore, accountStore} = useStores();
+  const appStore = useAppStore();
+  const accountStore = useAccountStore();
 
   const [listData, setListData] = useState<Timelines[]>([]);
   const [status, setStatus] = useState<RefreshState>(RefreshState.Idle);
@@ -49,16 +50,16 @@ const Home: React.FC<{}> = () => {
 
   useEffect(() => {
     if (
-      appStore?.hostUrl &&
+      appStore?.hostURL &&
       appStore?.token &&
-      appStore?.hostUrl?.length > 0 &&
+      appStore?.hostURL?.length > 0 &&
       appStore?.token?.length > 0
     ) {
       fetchVerifyToken();
     } else {
       navigate('Guide');
     }
-  }, [appStore.hostUrl, appStore.token]);
+  }, [appStore.hostURL, appStore.token]);
 
   useEffect(() => {
     if (account) {

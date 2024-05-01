@@ -59,7 +59,7 @@ const useAppStore = create<AppStoreState>((set) => ({
   initApp() {
     const localHostUrl = getItem(constant.HOSTURL) || '';
     const localToekn = getItem(constant.ACCESSTOKEN) || '';
-    set({ token: localToekn, hostURL: localHostUrl });
+    set({ token: localToekn as string, hostURL: localHostUrl as string });
   }
 }));
 

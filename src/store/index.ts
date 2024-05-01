@@ -1,12 +1,9 @@
 import useAppStore from './useAppStore';
-import accountStore from './accountStore';
-import emojiStore from './emojiStore';
+import useAccountStore from './useAccountStore';
+import useEmojiStore from './useEmojiStore';
 
 export {
   useAppStore,
-  accountStore,
-  emojiStore,
+  useAccountStore,
+  useEmojiStore,
 };
-
-// export const StoresContext = React.createContext(Stores);
-// export const useStores = () => React.useContext(StoresContext);

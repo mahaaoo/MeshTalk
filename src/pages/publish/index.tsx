@@ -17,7 +17,7 @@ import {Button, Avatar, SplitLine, ActionsSheet, Icon} from '../../components';
 
 import {Colors, Screen} from '../../config';
 
-import {useStores} from '../../store';
+import {useAccountStore, useEmojiStore} from '../../store';
 import {goBack, useRequest} from '../../utils';
 
 import {getInstanceEmojis} from '../../server/app';
@@ -42,7 +42,9 @@ interface PublishProps {}
 
 const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
-  const {accountStore, emojiStore} = useStores();
+  const accountStore = useAccountStore();
+  const emojiStore = useEmojiStore();
+
   const [reply, setReply] = useState('任何人可以回复');
   const inset = useSafeAreaInsets();
 

@@ -9,7 +9,7 @@ import {
   StorageUtil,
   replaceContentEmoji,
 } from '../../utils';
-import {useStores} from '../../store';
+import {useAccountStore} from '../../store';
 import {
   Avatar,
   StretchableImage,
@@ -35,7 +35,7 @@ const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
 const Setting: React.FC<{}> = () => {
   const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
-  const {accountStore} = useStores();
+  const accountStore = useAccountStore();
 
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
   const {data: userData, run: getUserData} = useRequest(
@@ -167,7 +167,7 @@ const Setting: React.FC<{}> = () => {
         title="退出"
         onPress={() => {
           // navigate('Favourites');
-          StorageUtil.removeAll();
+          StorageUtil.clear();
         }}
       />
       <PullLoading

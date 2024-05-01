@@ -120,11 +120,11 @@ api.addResponseTransform(response => {
 //     });
 // };
 
-const get = (url, params, axiosConfig) => {
+const get = (url, params?, axiosConfig?) => {
   return api.get(url, params, axiosConfig);
 }
 
-const post = (url, data, axiosConfig) => {
+const post = (url, data?, axiosConfig?) => {
   return api.post(url, data, axiosConfig);
 }
 
