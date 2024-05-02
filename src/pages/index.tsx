@@ -6,6 +6,7 @@ import Guide from "./guide";
 import Link from "./link";
 import Login from "./login";
 import Publish from "./publish";
+import Recommand from "./recommand";
 import Favourites from "./setting/favourites";
 import StatusDetail from "./statusDetail";
 import User from "./user";
@@ -41,6 +42,7 @@ export type StackParams = {
   Link: {
     url: string;
   };
+  Recommand: undefined;
 };
 
 export interface RouteParams {
@@ -116,6 +118,13 @@ const routes: RouteParams[] = [
     component: Link,
     options: {
       title: "详情",
+    },
+  },
+  {
+    name: "Recommand",
+    component: Recommand,
+    options: {
+      title: "推荐社区",
     },
   },
 ];

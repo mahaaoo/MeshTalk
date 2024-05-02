@@ -6,7 +6,8 @@ import { Colors } from "../../config";
 import { reset, navigate } from "../../utils/rootNavigation";
 
 const showLoading = () => {
-  reset("App");
+  // reset("App");
+  navigate("Recommand");
 };
 
 const Guide: React.FC<object> = () => {

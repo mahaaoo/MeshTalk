@@ -1,5 +1,5 @@
 import { Emoji } from "../config/interface";
-import { Stores } from "../store";
+import { useEmojiStore } from "../store";
 
 interface Children {
   [key: string]: Node;
@@ -277,7 +277,7 @@ export const replaceContentEmoji = (text: string): string => {
     return text;
   }
 
-  const hash = Stores.emojiStore.emojisHash;
+  const hash = useEmojiStore.getState().emojisHash();
 
   let isEmoji = false;
   let handledText = "";
@@ -330,7 +330,7 @@ export const replaceNameEmoji = (text: string): any[] => {
     ];
   }
 
-  const hash = Stores.emojiStore.emojisHash;
+  const hash = useEmojiStore.getState().emojisHash();
 
   const nameList = text.split(":");
   return nameList.map((name: string) => {

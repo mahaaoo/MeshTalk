@@ -121,3 +121,42 @@ export interface Relationship {
   domain_blocking: boolean;
   endorsed: boolean;
 }
+export interface ServersCategory {
+  category: string;
+  servers_count: number;
+}
+
+export interface ServersLanguage {
+  locale: string;
+  language: string;
+  servers_count: number;
+}
+
+export interface MastodonServers {
+  domain: string;
+  version: string;
+  description: string;
+  languages: string[];
+  region: string;
+  categories: string[];
+  proxied_thumbnail: string;
+  blurhash: string;
+  total_users: number;
+  last_week_users: number;
+  approval_required: boolean;
+}
+
+export interface MastodonServersPrams {
+  language: string; // 从 https://api.joinmastodon.org/languages 获取
+  category: string; // 从 https://api.joinmastodon.org/categories 接口获取
+  region:
+    | "All regions"
+    | "Europe"
+    | "North America"
+    | "South America"
+    | "Africa"
+    | "Asia"
+    | "Oceania";
+  ownership: "All" | "Public oranization" | "Private individual";
+  registrations: "All" | "Instand" | "Manual review";
+}

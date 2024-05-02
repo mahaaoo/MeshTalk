@@ -1,4 +1,13 @@
-import { AppInterface, AppToken, Account, Emoji } from "../config/interface";
+import {
+  AppInterface,
+  AppToken,
+  Account,
+  Emoji,
+  ServersCategory,
+  ServersLanguage,
+  MastodonServers,
+  MastodonServersPrams,
+} from "../config/interface";
 import { ClientName, Scopes, RedirectUris } from "../config/oauth";
 import { get, post } from "../utils/request";
 
@@ -38,5 +47,26 @@ export const verifyToken = (): Promise<Account> => {
 export const getInstanceEmojis = (): Promise<Emoji[]> => {
   const url = "/api/v1/custom_emojis";
 
+  return get<Emoji[]>(url);
+};
+
+// 服务器支持语言
+export const getServersLanguage = (): Promise<ServersLanguage[]> => {
+  const url = "https://api.joinmastodon.org/languages";
   return get(url);
+};
+
+// 服务器支持地区
+export const getServersCategory = (): Promise<ServersCategory[]> => {
+  const url = "https://api.joinmastodon.org/categories";
+  return get(url);
+};
+
+// 实例服务器列表
+export const getMastodonServers = (
+  params?: MastodonServersPrams,
+): Promise<MastodonServers[]> => {
+  const url = "https://api.joinmastodon.org/servers";
+
+  return get(url, params);
 };

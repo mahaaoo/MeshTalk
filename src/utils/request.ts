@@ -121,7 +121,7 @@ api.addResponseTransform((response) => {
 //     });
 // };
 
-const get = async <T>(url, params?, axiosConfig?): Promise<T> => {
+const get = <T>(url, params?, axiosConfig?): Promise<T> => {
   return api
     .get(url, params, axiosConfig)
     .then((response: ApiResponse<T>) => {
@@ -138,7 +138,7 @@ const get = async <T>(url, params?, axiosConfig?): Promise<T> => {
     });
 };
 
-const post = async <T>(url, data?, axiosConfig?): Promise<T> => {
+const post = <T>(url, data?, axiosConfig?): Promise<T> => {
   return api
     .post(url, data, axiosConfig)
     .then((response: ApiResponse<T>) => {
