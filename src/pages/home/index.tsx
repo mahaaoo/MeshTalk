@@ -9,7 +9,8 @@ import { Colors, Screen } from "../../config";
 import { Timelines } from "../../config/interface";
 import { verifyToken } from "../../server/app";
 import { homeLine } from "../../server/timeline";
-import { useAppStore, useAccountStore } from "../../store";
+import useAccountStore from "../../store/useAccountStore";
+import useAppStore from "../../store/useAppStore";
 import { navigate, useRequest } from "../../utils";
 
 const fetchHomeLine = () => {
@@ -47,6 +48,7 @@ const Home: React.FC<object> = () => {
   }, [status, listData]);
 
   useEffect(() => {
+    console.log(appStore.hostURL, appStore.token);
     if (
       appStore?.hostURL &&
       appStore?.token &&

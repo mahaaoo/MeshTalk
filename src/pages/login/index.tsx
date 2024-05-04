@@ -1,71 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, Text, TextInput, StyleSheet, SafeAreaView } from "react-native";
-import { Toast } from "react-native-ma-modal";
 
 import { Button } from "../../components";
 import { Screen, Colors } from "../../config";
-import { getAppConfig, getToken } from "../../server/app";
-import { useAppStore } from "../../store";
-import { goBack, navigate, reset, useRequest } from "../../utils";
-
-const fetchAppConfig = () => {
-  const fn = (host: string) => {
-    return getAppConfig(host);
-  };
-  return fn;
-};
-
-const fetchAppToken = () => {
-  const fn = (url: string, param: object) => {
-    return getToken(url, param);
-  };
-  return fn;
-};
+import useLoginStore from "../../store/useLoginStore";
+import { goBack } from "../../utils";
 
 const Login: React.FC<object> = () => {
-  const [path, setPath] = useState("fairy.id");
-  const { data: loginData, run: getLoginData } = useRequest(fetchAppConfig(), {
-    manual: true,
-  });
-  const { data: tokenData, run: getTokenData } = useRequest(fetchAppToken(), {
-    manual: true,
-  });
-  const appStore = useAppStore();
-
-  useEffect(() => {
-    if (loginData) {
-      const url = `https://${path}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${loginData?.redirect_uri}&client_id=${loginData?.client_id}`;
-      navigate("WebView", {
-        initUrl: url,
-        callBack: (code: string) => {
-          const params = {
-            client_id: loginData.client_id,
-            client_secret: loginData.client_secret,
-            code,
-          };
-          getTokenData("https://" + path, params);
-        },
-      });
-    }
-  }, [loginData]);
-
-  useEffect(() => {
-    if (tokenData) {
-      console.log("获取到的token信息");
-      appStore.setHostURL("https://" + path);
-      appStore.setToken(tokenData.access_token);
-      reset("App");
-    }
-  }, [tokenData]);
-
-  const handleLogin = () => {
-    if (path.length > 0) {
-      // getLoginData('https://' + path);
-      getAppConfig("https://" + path);
-    } else {
-      Toast.show("请输入应用实例地址");
-    }
-  };
+  const { path, onPressLogin, onChangePath } = useLoginStore();
 
   return (
     <SafeAreaView style={styles.main_view}>
@@ -79,12 +21,10 @@ const Login: React.FC<object> = () => {
         style={styles.input_style}
         placeholder="应用实例地址，例如：acg.mn"
         autoFocus
-        onChangeText={(text) => {
-          setPath(text);
-        }}
+        onChangeText={onChangePath}
         value={path}
       />
-      <Button text="登录" onPress={handleLogin} style={styles.button_style} />
+      <Button text="登录" onPress={onPressLogin} style={styles.button_style} />
     </SafeAreaView>
   );
 };

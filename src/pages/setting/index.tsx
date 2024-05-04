@@ -18,7 +18,7 @@ import {
 } from "../../components";
 import { Colors, Screen } from "../../config";
 import { getAccountsById } from "../../server/account";
-import { useAccountStore } from "../../store";
+import useAccountStore from "../../store/useAccountStore";
 import {
   StringUtil,
   useRequest,

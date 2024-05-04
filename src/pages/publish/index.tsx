@@ -30,7 +30,8 @@ import {
 import { Colors, Screen } from "../../config";
 import { getInstanceEmojis } from "../../server/app";
 import { postNewStatuses } from "../../server/status";
-import { useAccountStore, useEmojiStore } from "../../store";
+import useAccountStore from "../../store/useAccountStore";
+import useEmojiStore from "../../store/useEmojiStore";
 import { goBack, useRequest } from "../../utils";
 
 const fetchEmojis = () => {

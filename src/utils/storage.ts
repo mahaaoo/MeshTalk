@@ -6,6 +6,10 @@ type AsyncStorageJSONValue = Promise<string | null>;
 
 export const setItem = async (key: string, value: string) => {
   try {
+    console.log("setItem", {
+      key,
+      value,
+    });
     await AsyncStorage.setItem(key, value);
   } catch (e) {
     // saving error
@@ -15,6 +19,10 @@ export const setItem = async (key: string, value: string) => {
 export const getItem = async (key: string): AsyncStorageJSONValue => {
   try {
     const value = await AsyncStorage.getItem(key);
+    console.log('getItem', {
+      key, value
+    });
+
     if (value !== null) {
       // value previously stored
       return value;

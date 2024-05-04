@@ -1,5 +1,5 @@
 import { Emoji } from "../config/interface";
-import { useEmojiStore } from "../store";
+import useEmojiStore from "../store/useEmojiStore";
 
 interface Children {
   [key: string]: Node;
