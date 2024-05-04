@@ -12,6 +12,7 @@ const Found: React.FC<object> = () => {
 
   return (
     <View style={[styles.main, { paddingTop: insets.top }]}>
+      <Public tabLabel="跨站" />
       {/* <ScrollableTabView
         style={styles.tabView}
         renderTabBar={() => <MyTabBar />}>
@@ -24,10 +25,7 @@ const Found: React.FC<object> = () => {
 
 const styles = StyleSheet.create({
   main: {
-    justifyContent: "center",
-    alignItems: "center",
     flex: 1,
-    width: Screen.width,
     backgroundColor: "#fff",
   },
   tabView: {

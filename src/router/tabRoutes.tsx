@@ -53,7 +53,7 @@ const TabRouter: React.FC<object> = () => {
       <TabStack.Screen
         name="Found"
         component={Found}
-        options={{ tabBarLabel: "发现" }}
+        options={{ tabBarLabel: "跨站" }}
       />
       <TabStack.Screen
         name="New"

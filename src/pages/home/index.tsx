@@ -1,51 +1,22 @@
 import { Header } from "@react-navigation/elements";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import DefaultLineItem from "./defaultLineItem";
 import HomeLineItem from "./homelineItem";
-import { RefreshList, RefreshState } from "../../components";
+import { RefreshList } from "../../components";
 import { Colors, Screen } from "../../config";
-import { Timelines } from "../../config/interface";
-import { verifyToken } from "../../server/app";
-import { homeLine } from "../../server/timeline";
-import useAccountStore from "../../store/useAccountStore";
 import useAppStore from "../../store/useAppStore";
-import { navigate, useRequest } from "../../utils";
-
-const fetchHomeLine = () => {
-  const fn = (params: string) => {
-    return homeLine(params);
-  };
-  return fn;
-};
+import useHomeStore from "../../store/useHomeStore";
+import { navigate } from "../../utils";
 
 const Home: React.FC<object> = () => {
   const appStore = useAppStore();
-  const accountStore = useAccountStore();
+  const { verifyToken, dataSource, onLoadMore, onRefresh, listStatus } =
+    useHomeStore();
 
-  const [listData, setListData] = useState<Timelines[]>([]);
-  const [status, setStatus] = useState<RefreshState>(RefreshState.Idle);
-
-  const { data: homeLineData, run: getHomeLineData } = useRequest(
-    fetchHomeLine(),
-    { manual: true, loading: false },
-  );
-  const { data: account, run: fetchVerifyToken } = useRequest(verifyToken, {
-    manual: true,
-    loading: false,
-  });
-
-  const handleRefresh = useCallback(() => {
-    setStatus(RefreshState.HeaderRefreshing);
-    getHomeLineData();
-  }, [status]);
-
-  const handleLoadMore = useCallback(() => {
-    setStatus(RefreshState.FooterRefreshing);
-    const maxId = listData[listData.length - 1].id;
-    getHomeLineData(`?max_id=${maxId}`);
-  }, [status, listData]);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     console.log(appStore.hostURL, appStore.token);
@@ -55,45 +26,24 @@ const Home: React.FC<object> = () => {
       appStore?.hostURL?.length > 0 &&
       appStore?.token?.length > 0
     ) {
-      fetchVerifyToken();
+      verifyToken();
     } else {
       navigate("Guide");
     }
   }, [appStore.hostURL, appStore.token]);
 
-  useEffect(() => {
-    if (account) {
-      getHomeLineData();
-      accountStore.setCurrentAccount(account);
-    }
-  }, [account]);
-
-  useEffect(() => {
-    if (homeLineData) {
-      if (
-        status === RefreshState.HeaderRefreshing ||
-        status === RefreshState.Idle
-      ) {
-        setListData(homeLineData);
-      }
-      if (status === RefreshState.FooterRefreshing) {
-        setListData(listData.concat(homeLineData));
-      }
-      setStatus(RefreshState.Idle);
-    }
-  }, [homeLineData]);
-
   return (
     <View style={styles.container}>
+      {/* <View style={{ backgroundColor: 'cyan', width: Screen.width, height: insets.top + 40 }} /> */}
       <Header title="首页" />
       <View style={styles.line} />
       <View style={styles.main}>
         <RefreshList
-          data={listData}
+          data={dataSource}
           renderItem={({ item }) => <HomeLineItem item={item} />}
-          onHeaderRefresh={handleRefresh}
-          onFooterRefresh={handleLoadMore}
-          refreshState={status}
+          onHeaderRefresh={onRefresh}
+          onFooterRefresh={onLoadMore}
+          refreshState={listStatus}
           emptyComponent={<DefaultLineItem />}
           keyExtractor={(item, index) => item?.id || index.toString()}
         />
