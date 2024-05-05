@@ -1,15 +1,15 @@
-import { Header } from "@react-navigation/elements";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import DefaultLineItem from "./defaultLineItem";
 import HomeLineItem from "./homelineItem";
-import { RefreshList } from "../../components";
+import { DefaultTabBar, RefreshList, TabView } from "../../components";
 import { Colors, Screen } from "../../config";
 import useAppStore from "../../store/useAppStore";
 import useHomeStore from "../../store/useHomeStore";
 import { navigate } from "../../utils";
+import Local from "../found/local";
 
 const Home: React.FC<object> = () => {
   const appStore = useAppStore();
@@ -19,7 +19,6 @@ const Home: React.FC<object> = () => {
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    console.log(appStore.hostURL, appStore.token);
     if (
       appStore?.hostURL &&
       appStore?.token &&
@@ -34,20 +33,44 @@ const Home: React.FC<object> = () => {
 
   return (
     <View style={styles.container}>
-      {/* <View style={{ backgroundColor: 'cyan', width: Screen.width, height: insets.top + 40 }} /> */}
-      <Header title="首页" />
-      <View style={styles.line} />
-      <View style={styles.main}>
-        <RefreshList
-          data={dataSource}
-          renderItem={({ item }) => <HomeLineItem item={item} />}
-          onHeaderRefresh={onRefresh}
-          onFooterRefresh={onLoadMore}
-          refreshState={listStatus}
-          emptyComponent={<DefaultLineItem />}
-          keyExtractor={(item, index) => item?.id || index.toString()}
-        />
-      </View>
+      <View style={{ height: insets.top, backgroundColor: "#fff" }} />
+      <TabView
+        tabBar={["推荐", "关注"]}
+        initialPage={0}
+        style={{ flex: 1 }}
+        renderTabBar={() => (
+          <DefaultTabBar
+            tabBarWidth={Screen.width / 2}
+            tabBarInactiveTextColor="#333"
+            tabBarActiveTextColor={Colors.theme}
+            tabBarTextStyle={{
+              fontSize: 16,
+              fontWeight: "bold",
+            }}
+            tabBarUnderlineStyle={{
+              height: 4,
+              backgroundColor: Colors.theme,
+              width: 50,
+              marginLeft: (Screen.width / 2 - 50) / 2,
+            }}
+          />
+        )}
+      >
+        <View style={styles.main}>
+          <Local tabLabel="推荐" />
+        </View>
+        <View style={styles.main}>
+          <RefreshList
+            data={dataSource}
+            renderItem={({ item }) => <HomeLineItem item={item} />}
+            onHeaderRefresh={onRefresh}
+            onFooterRefresh={onLoadMore}
+            refreshState={listStatus}
+            emptyComponent={<DefaultLineItem />}
+            keyExtractor={(item, index) => item?.id || index.toString()}
+          />
+        </View>
+      </TabView>
     </View>
   );
 };
@@ -58,19 +81,7 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    backgroundColor: Colors.pageDefaultBackground,
     width: Screen.width,
-  },
-  line: {
-    width: "100%",
-    height: 1,
-    backgroundColor: "#eee",
-  },
-  loading: {
-    flex: 1,
-    backgroundColor: Colors.pageDefaultBackground,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 

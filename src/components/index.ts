@@ -15,6 +15,7 @@ import SpacingBox from "./SpacingBox";
 import SplitLine from "./SplitLine";
 import StickyHeader from "./StickyHeader";
 import StretchableImage from "./StretchableImage";
+import { TabView, DefaultTabBar } from "./TabView";
 
 export {
   ActionsSheet,
@@ -35,4 +36,6 @@ export {
   SplitLine,
   StickyHeader,
   StretchableImage,
+  TabView,
+  DefaultTabBar,
 };

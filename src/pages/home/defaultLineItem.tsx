@@ -1,12 +1,22 @@
 import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 
-import { Skeleton } from "../../components";
+import { RefreshState, Skeleton } from "../../components";
 import { Screen } from "../../config";
+import useHomeStore from "../../store/useHomeStore";
 
 const DefaultLineItem: React.FC<object> = () => {
+  const { onRefresh, listStatus } = useHomeStore();
+
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={listStatus === RefreshState.HeaderRefreshing}
+          onRefresh={onRefresh}
+        />
+      }
+    >
       {new Array(6).fill(0).map((_, index) => {
         const marginTop = index > 0 ? 10 : 0;
         return (

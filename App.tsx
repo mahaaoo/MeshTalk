@@ -1,5 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ModalProvider, modalRef } from "react-native-ma-modal";
 
 import Router from "./src/router";
@@ -14,11 +15,13 @@ const App: React.FC<object> = () => {
   }, []);
 
   return (
-    <ModalProvider ref={modalRef}>
-      <NavigationContainer ref={navigationRef}>
-        <Router />
-      </NavigationContainer>
-    </ModalProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ModalProvider ref={modalRef}>
+        <NavigationContainer ref={navigationRef}>
+          <Router />
+        </NavigationContainer>
+      </ModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
