@@ -8,7 +8,7 @@ export const setItem = async (key: string, value: string) => {
   try {
     console.log("setItem", {
       key,
-      value,
+      // value,
     });
     await AsyncStorage.setItem(key, value);
   } catch (e) {
@@ -21,7 +21,6 @@ export const getItem = async (key: string): AsyncStorageJSONValue => {
     const value = await AsyncStorage.getItem(key);
     console.log("getItem", {
       key,
-      value,
     });
 
     if (value !== null) {

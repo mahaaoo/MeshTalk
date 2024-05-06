@@ -17,6 +17,7 @@ const Home: React.FC<object> = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    console.log(appStore.hostURL, appStore.token);
     if (
       appStore?.hostURL &&
       appStore?.token &&

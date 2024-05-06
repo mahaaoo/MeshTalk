@@ -1,18 +1,26 @@
 import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect } from "react";
+import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ModalProvider, modalRef } from "react-native-ma-modal";
 
 import Router from "./src/router";
 import useAppStore from "./src/store/useAppStore";
+import useEmojiStore from "./src/store/useEmojiStore";
 import { navigationRef } from "./src/utils/rootNavigation";
 
 const App: React.FC<object> = () => {
-  const initApp = useAppStore((state) => state.initApp);
+  const { initApp, isReady } = useAppStore();
+  const { initEmoji } = useEmojiStore();
 
   useEffect(() => {
     initApp();
+    initEmoji();
   }, []);
+
+  if (!isReady) {
+    return <View style={{ flex: 1 }} />;
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

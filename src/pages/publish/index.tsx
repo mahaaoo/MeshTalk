@@ -58,10 +58,6 @@ const Publish: React.FC<PublishProps> = () => {
   const [reply, setReply] = useState("任何人可以回复");
   const inset = useSafeAreaInsets();
 
-  // const {data: emojis, run: getEmojis} = useRequest(fetchEmojis(), {
-  //   manual: false,
-  //   loading: false,
-  // });
   const { data, run: postNewStatuses } = useRequest(fetchNewStatuses(), {
     manual: true,
     loading: true,
@@ -130,9 +126,7 @@ const Publish: React.FC<PublishProps> = () => {
     InputRef && InputRef?.current?.focus();
   }, []);
 
-  const currentContentSize = useMemo(() => {
-    return content.length;
-  }, [content]);
+  const currentContentSize = content.length;
 
   return (
     <View style={styles.main}>

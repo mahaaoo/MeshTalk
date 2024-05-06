@@ -7,33 +7,33 @@ import { setItem, getItem } from "../utils/storage";
 
 interface EmojiStoreState {
   emojis: Emoji[];
-  emojisHash: () => Map<string, Emoji>;
+  emojisHash: Map<string, Emoji>;
   initEmoji: () => void;
 }
 
 const useEmojiStore = create<EmojiStoreState>((set, get) => ({
   emojis: [],
-  emojisHash: () => {
-    const hash = new Map();
-    const emojis = get().emojis;
-    for (const emoji of emojis) {
-      hash.set(emoji.shortcode, emoji);
-    }
-    return hash;
-  },
+  emojisHash: new Map(),
   initEmoji: async () => {
     const emojiStorage = await getItem(constant.EMOJI);
-    console.log('ooo', emojiStorage);
     if (!emojiStorage || emojiStorage === undefined) {
-      console.log('请求getInstanceEmojis');
       const data = await getInstanceEmojis();
       if (data) {
         setItem(constant.EMOJI, JSON.stringify(data));
-        set({ emojis: data });
+        const hash = new Map();
+        const emojis = data;
+        for (const emoji of emojis) {
+          hash.set(emoji.shortcode, emoji);
+        }
+        set({ emojis: data, emojisHash: hash });
       }
     } else {
-      console.log('aaa?');
-      set({ emojis: JSON.parse(emojiStorage) });
+      const emojis = JSON.parse(emojiStorage);
+      const hash = new Map();
+      for (const emoji of emojis) {
+        hash.set(emoji.shortcode, emoji);
+      }
+      set({ emojis, emojisHash: hash });
     }
   },
 }));
