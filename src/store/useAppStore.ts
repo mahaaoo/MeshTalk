@@ -23,7 +23,7 @@ const useAppStore = create<AppStoreState>((set) => ({
     setItem(constant.ACCESSTOKEN, token);
   },
   initApp: async () => {
-    console.log('initApp');
+    console.log("initApp");
     const localHostUrl = await getItem(constant.HOSTURL);
     const localToekn = await getItem(constant.ACCESSTOKEN);
 

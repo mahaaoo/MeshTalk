@@ -13,7 +13,8 @@ interface LocalProps {
 }
 
 const Local: React.FC<LocalProps> = (props) => {
-  const { dataSource, onLoadMore, onRefresh, listStatus, fetchLocalData } = useLocalStore();
+  const { dataSource, onLoadMore, onRefresh, listStatus, fetchLocalData } =
+    useLocalStore();
   const { index, currentIndex } = props;
 
   useEffect(() => {

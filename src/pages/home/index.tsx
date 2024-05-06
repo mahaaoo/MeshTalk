@@ -25,6 +25,7 @@ const Home: React.FC<object> = () => {
     ) {
       verifyToken();
     } else {
+      console.log('123123???');
       navigate("Guide");
     }
   }, [appStore.hostURL, appStore.token]);

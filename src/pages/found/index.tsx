@@ -13,7 +13,8 @@ interface PublicProps {
 
 const Public: React.FC<PublicProps> = () => {
   const insets = useSafeAreaInsets();
-  const { dataSource, fetchPublicData, onLoadMore, onRefresh, listStatus } = usePublicStore();
+  const { dataSource, fetchPublicData, onLoadMore, onRefresh, listStatus } =
+    usePublicStore();
 
   useEffect(() => {
     fetchPublicData();

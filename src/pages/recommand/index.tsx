@@ -10,7 +10,7 @@ const Recommand: React.FC<RecommandProps> = (props) => {
 
   useEffect(async () => {
     const data = await getMastodonServers();
-    console.log('12312313');
+    console.log("12312313");
     console.log(data);
   }, []);
 

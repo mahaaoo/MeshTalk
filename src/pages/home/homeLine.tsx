@@ -11,7 +11,8 @@ interface HomeLineProps {
 }
 
 const HomeLine: React.FC<HomeLineProps> = (props) => {
-  const { dataSource, onLoadMore, onRefresh, listStatus, fetchHomeData } = useHomeStore();
+  const { dataSource, onLoadMore, onRefresh, listStatus, fetchHomeData } =
+    useHomeStore();
   const { index, currentIndex } = props;
 
   useEffect(() => {

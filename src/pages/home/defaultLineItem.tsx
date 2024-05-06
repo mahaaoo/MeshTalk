@@ -1,5 +1,11 @@
 import React from "react";
-import { View, StyleSheet, ScrollView, RefreshControl, ViewStyle } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  ViewStyle,
+} from "react-native";
 
 import { RefreshState, Skeleton } from "../../components";
 import { Screen } from "../../config";
