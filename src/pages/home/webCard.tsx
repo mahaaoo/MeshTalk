@@ -30,7 +30,7 @@ const WebCard: React.FC<WebCardProps> = (props) => {
         source={{
           uri: card?.image,
         }}
-        resizeMode="cover"
+        contentFit="cover"
       />
       <View style={styles.content}>
         <View style={styles.cardContainer}>

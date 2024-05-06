@@ -53,7 +53,7 @@ interface PublishProps {}
 const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
-  const emojiStore = useEmojiStore();
+  const { emojis, initEmoji } = useEmojiStore();
 
   const [reply, setReply] = useState("任何人可以回复");
   const inset = useSafeAreaInsets();
@@ -122,6 +122,7 @@ const Publish: React.FC<PublishProps> = () => {
   }, []);
 
   const handleClickEmojis = useCallback(() => {
+    initEmoji();
     Keyboard.dismiss();
   }, []);
 
@@ -222,7 +223,7 @@ const Publish: React.FC<PublishProps> = () => {
           <FlatList
             horizontal={false}
             numColumns={7}
-            data={emojiStore.emojis}
+            data={emojis}
             renderItem={({ item }) => {
               return (
                 <TouchableOpacity
@@ -245,7 +246,7 @@ const Publish: React.FC<PublishProps> = () => {
                     source={{
                       uri: item.url,
                     }}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                 </TouchableOpacity>
               );

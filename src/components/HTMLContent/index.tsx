@@ -36,6 +36,7 @@ const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
     <Image
       source={source}
       style={[imgStyle, { width: Number(width), height: Number(height) }]}
+      contentFit="cover"
     />
   );
 };

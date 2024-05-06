@@ -24,7 +24,7 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
         source={{
           uri: item.url,
         }}
-        resizeMode="cover"
+        contentFit="cover"
         onError={() => {
           console.log("图片加载失败");
         }}

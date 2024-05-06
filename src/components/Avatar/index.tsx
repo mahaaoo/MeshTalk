@@ -17,7 +17,7 @@ const Avatar: React.FC<AvatarProps> = (props) => {
   const { url, size = 45, borderColor, borderWidth } = props;
 
   // 为请求失败的头像，添加一个默认的头像图标
-  if (!isLoad || !url || url.length == 0) {
+  if (!isLoad || !url || url.length === 0) {
     return (
       <View
         style={[
@@ -53,7 +53,7 @@ const Avatar: React.FC<AvatarProps> = (props) => {
         console.log("头像加载失败");
         setIsLoad(false);
       }}
-      resizeMode="contain"
+      contentFit="contain"
     />
   );
 };

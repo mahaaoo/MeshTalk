@@ -33,7 +33,7 @@ const LineItemName: React.FC<LineItemNameProps> = (props) => {
             source={{
               uri: "https://s3.acg.mn/custom_emojis/images/000/015/346/original/7341c51dd3b97a42.png",
             }}
-            resizeMode="cover"
+            contentFit="cover"
           />
         );
       })}

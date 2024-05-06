@@ -22,14 +22,17 @@ const useEmojiStore = create<EmojiStoreState>((set, get) => ({
     return hash;
   },
   initEmoji: async () => {
-    const emojiStorage = getItem(constant.EMOJI);
+    const emojiStorage = await getItem(constant.EMOJI);
+    console.log('ooo', emojiStorage);
     if (!emojiStorage || emojiStorage === undefined) {
+      console.log('请求getInstanceEmojis');
       const data = await getInstanceEmojis();
       if (data) {
         setItem(constant.EMOJI, JSON.stringify(data));
         set({ emojis: data });
       }
     } else {
+      console.log('aaa?');
       set({ emojis: JSON.parse(emojiStorage) });
     }
   },
