@@ -169,6 +169,12 @@ const DefaultTabBar: React.FC<DefaultTabBarProps> = (props) => {
     };
   });
 
+  const underLineStyle = useAnimatedStyle(() => {
+    return {
+      width: contentWidth.value,
+    };
+  });
+
   return (
     <View style={{ backgroundColor: "#fff" }}>
       <Animated.View
@@ -206,11 +212,13 @@ const DefaultTabBar: React.FC<DefaultTabBarProps> = (props) => {
         style={[styles.slider, tabBarUnderlineStyle, animatedTarbarStyle]}
       />
       <Animated.View
-        style={{
-          width: contentWidth.value,
-          height: 1,
-          backgroundColor: "#eee",
-        }}
+        style={[
+          {
+            height: 1,
+            backgroundColor: "#eee",
+          },
+          underLineStyle,
+        ]}
       />
     </View>
   );

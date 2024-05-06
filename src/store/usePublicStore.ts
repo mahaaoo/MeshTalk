@@ -3,39 +3,38 @@ import { create } from "zustand";
 
 import { RefreshState } from "../components/RefreshList";
 import { Timelines } from "../config/interface";
-import { homeLine } from "../server/timeline";
+import { publicLine } from "../server/timeline";
 
-interface HomeStoreState {
+interface PublicStoreState {
   dataSource: Timelines[];
   listStatus: RefreshState;
-  fetchHomeData: () => void;
+  fetchPublicData: () => void;
   onRefresh: () => void;
   onLoadMore: () => void;
 }
 
-const useHomeStore = create<HomeStoreState>((set, get) => ({
+const usePublicStore = create<PublicStoreState>((set, get) => ({
   dataSource: [],
   listStatus: RefreshState.Idle,
-  fetchHomeData: async () => {
-    const data = await homeLine();
+  fetchPublicData: async () => {
+    const data = await publicLine();
     if (data) {
       if (data.length > 0) {
         set({ dataSource: data });
       } else {
-        // 主页没有数据
-        Toast.show("主页没有数据");
+        Toast.show("没有数据");
       }
     }
     set({ listStatus: RefreshState.Idle });
   },
   onRefresh: () => {
     set({ listStatus: RefreshState.HeaderRefreshing });
-    get().fetchHomeData();
+    get().fetchPublicData();
   },
   onLoadMore: async () => {
     set({ listStatus: RefreshState.FooterRefreshing });
     const maxId = get().dataSource[get().dataSource.length - 1].id;
-    const data = await homeLine(`?max_id=${maxId}`);
+    const data = await publicLine(`?max_id=${maxId}`);
     if (data) {
       set({ dataSource: get().dataSource.concat(data) });
     }
@@ -43,4 +42,4 @@ const useHomeStore = create<HomeStoreState>((set, get) => ({
   },
 }));
 
-export default useHomeStore;
+export default usePublicStore;

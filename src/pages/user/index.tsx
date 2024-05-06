@@ -37,7 +37,7 @@ import {
   replaceContentEmoji,
   navigate,
 } from "../../utils";
-import LineItemName from "../home/LineItemName";
+import LineItemName from "../home/lineItemName";
 import { RouterProps } from "../index";
 
 const fetchUserById = (id: string = "") => {

@@ -5,7 +5,7 @@ import { Avatar, SplitLine } from "../../components";
 import { Screen, Colors } from "../../config";
 import { Account } from "../../config/interface";
 import { navigate } from "../../utils";
-import LineItemName from "../home/LineItemName";
+import LineItemName from "../home/lineItemName";
 
 interface UserItemProps {
   item: Account;

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import LineItemName from "./LineItemName";
+import LineItemName from "./lineItemName";
 import ToolBar from "./toolBar";
 import WebCard from "./webCard";
 import {

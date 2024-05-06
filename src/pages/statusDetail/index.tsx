@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Screen } from "../../config";
 import { getStatusesById } from "../../server/status";
 import { useRequest } from "../../utils";
-import HomeLineItem from "../home/homelineItem";
+import HomeLineItem from "../home/timeLineItem";
 import ToolBar from "../home/toolBar";
 import { RouterProps } from "../index";
 

@@ -26,7 +26,7 @@ import {
   StorageUtil,
   replaceContentEmoji,
 } from "../../utils";
-import LineItemName from "../home/LineItemName";
+import LineItemName from "../home/lineItemName";
 
 const fetchUserById = (id: string = "") => {
   const fn = () => {

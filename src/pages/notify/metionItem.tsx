@@ -6,7 +6,7 @@ import { Avatar, SplitLine } from "../../components";
 import { Colors, Screen } from "../../config";
 import { Notification } from "../../config/interface";
 import { replaceContentEmoji } from "../../utils";
-import LineItemName from "../home/LineItemName";
+import LineItemName from "../home/lineItemName";
 
 const tagsStyles = {
   p: {

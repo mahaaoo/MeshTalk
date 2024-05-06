@@ -1,22 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import DefaultLineItem from "./defaultLineItem";
-import HomeLineItem from "./homelineItem";
-import { DefaultTabBar, RefreshList, TabView } from "../../components";
+import HomeLine from "./homeLine";
+import Local from "./localLine";
+import { DefaultTabBar, TabView } from "../../components";
 import { Colors, Screen } from "../../config";
+import useAccountStore from "../../store/useAccountStore";
 import useAppStore from "../../store/useAppStore";
-import useHomeStore from "../../store/useHomeStore";
 import { navigate } from "../../utils";
-import Local from "../found/local";
 
 const Home: React.FC<object> = () => {
   const appStore = useAppStore();
-  const { verifyToken, dataSource, onLoadMore, onRefresh, listStatus } =
-    useHomeStore();
-
+  const { verifyToken } = useAccountStore();
   const insets = useSafeAreaInsets();
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (
@@ -38,6 +36,7 @@ const Home: React.FC<object> = () => {
         tabBar={["推荐", "关注"]}
         initialPage={0}
         style={{ flex: 1 }}
+        onChangeTab={(index) => setIndex(index)}
         renderTabBar={() => (
           <DefaultTabBar
             tabBarWidth={Screen.width / 2}
@@ -57,18 +56,10 @@ const Home: React.FC<object> = () => {
         )}
       >
         <View style={styles.main}>
-          <Local tabLabel="推荐" />
+          <Local index={0} currentIndex={index} />
         </View>
         <View style={styles.main}>
-          <RefreshList
-            data={dataSource}
-            renderItem={({ item }) => <HomeLineItem item={item} />}
-            onHeaderRefresh={onRefresh}
-            onFooterRefresh={onLoadMore}
-            refreshState={listStatus}
-            emptyComponent={<DefaultLineItem />}
-            keyExtractor={(item, index) => item?.id || index.toString()}
-          />
+          <HomeLine index={1} currentIndex={index} />
         </View>
       </TabView>
     </View>

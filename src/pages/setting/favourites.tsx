@@ -7,7 +7,7 @@ import { Timelines } from "../../config/interface";
 import { getFavouritesById } from "../../server/account";
 import { useRequest } from "../../utils";
 import DefaultLineItem from "../home/defaultLineItem";
-import HomeLineItem from "../home/homelineItem";
+import HomeLineItem from "../home/timeLineItem";
 
 const fetchStatusById = () => {
   const fn = (param: string) => {

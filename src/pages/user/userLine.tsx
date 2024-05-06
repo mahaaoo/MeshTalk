@@ -6,7 +6,7 @@ import { Colors, Screen } from "../../config";
 import { Timelines } from "../../config/interface";
 import { useRequest } from "../../utils";
 import DefaultLineItem from "../home/defaultLineItem";
-import HomeLineItem from "../home/homelineItem";
+import HomeLineItem from "../home/timeLineItem";
 
 const fetchStatusById = (
   id: string = "",
