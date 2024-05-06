@@ -1,12 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Text,
   TextInput,
@@ -28,25 +22,10 @@ import {
   Icon,
 } from "../../components";
 import { Colors, Screen } from "../../config";
-import { getInstanceEmojis } from "../../server/app";
-import { postNewStatuses } from "../../server/status";
 import useAccountStore from "../../store/useAccountStore";
 import useEmojiStore from "../../store/useEmojiStore";
-import { goBack, useRequest } from "../../utils";
-
-const fetchEmojis = () => {
-  const fn = () => {
-    return getInstanceEmojis();
-  };
-  return fn;
-};
-
-const fetchNewStatuses = () => {
-  const fn = (params: object) => {
-    return postNewStatuses(params);
-  };
-  return fn;
-};
+import usePublishStore from "../../store/usePublishStore";
+import { goBack } from "../../utils";
 
 interface PublishProps {}
 
@@ -54,20 +33,15 @@ const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
   const { emojis, initEmoji } = useEmojiStore();
+  const { postNewStatuses, statusContent, inputContent } = usePublishStore();
 
   const [reply, setReply] = useState("任何人可以回复");
   const inset = useSafeAreaInsets();
-
-  const { data, run: postNewStatuses } = useRequest(fetchNewStatuses(), {
-    manual: true,
-    loading: true,
-  });
 
   const offsetY: any = useRef(new Animated.Value(inset.bottom)).current;
   const InputRef: any = useRef();
 
   const [scrollHeight, setScrollHeight] = useState(0);
-  const [content, setContent] = useState<string>("");
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillShow", keyboardWillShow);
@@ -97,14 +71,13 @@ const Publish: React.FC<PublishProps> = () => {
           text="发送"
           onPress={() => {
             postNewStatuses({
-              status: content,
+              status: statusContent,
             });
-            Keyboard.dismiss();
           }}
         />
       ),
     });
-  }, [content]);
+  }, []);
 
   const keyboardWillShow = useCallback((e: any) => {
     Animated.timing(offsetY, {
@@ -126,8 +99,6 @@ const Publish: React.FC<PublishProps> = () => {
     InputRef && InputRef?.current?.focus();
   }, []);
 
-  const currentContentSize = content.length;
-
   return (
     <View style={styles.main}>
       <View style={styles.container}>
@@ -143,10 +114,8 @@ const Publish: React.FC<PublishProps> = () => {
           numberOfLines={4}
           placeholder="有什么新鲜事"
           underlineColorAndroid="transparent"
-          value={content}
-          onChangeText={(text) => {
-            setContent(text);
-          }}
+          value={statusContent}
+          onChangeText={inputContent}
         />
       </View>
       <View style={styles.contentContainer}>
@@ -195,9 +164,7 @@ const Publish: React.FC<PublishProps> = () => {
               </TouchableOpacity>
             </View>
             <View style={styles.currentContent}>
-              <Text style={styles.currentContentText}>
-                {currentContentSize}
-              </Text>
+              <CounterContent />
               <View style={styles.emojiContainer} />
               <TouchableOpacity
                 style={styles.emojiTouch}
@@ -222,10 +189,7 @@ const Publish: React.FC<PublishProps> = () => {
               return (
                 <TouchableOpacity
                   onPress={() => {
-                    setContent(
-                      (preContent: string) =>
-                        (preContent = preContent + `:${item.shortcode}:`),
-                    );
+                    inputContent(statusContent + `:${item.shortcode}:`);
                   }}
                 >
                   <Image
@@ -250,6 +214,12 @@ const Publish: React.FC<PublishProps> = () => {
       </View>
     </View>
   );
+};
+
+// 输入内容长度计数，需要额外拿出来
+const CounterContent = () => {
+  const { statusContent } = usePublishStore();
+  return <Text style={styles.currentContentText}>{statusContent.length}</Text>;
 };
 
 export default Publish;

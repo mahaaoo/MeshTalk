@@ -1,10 +1,10 @@
 import { Timelines, Account, Relationship } from "../config/interface";
 import { get, post } from "../utils/request";
 
-export const getAccountsById = (id: string): Promise<any> => {
+export const getAccountsById = (id: string): Promise<Account> => {
   const url = "/api/v1/accounts/" + id;
 
-  return get<any>(url);
+  return get<Account>(url);
 };
 
 // 获取当前账号的所有推文
@@ -17,7 +17,7 @@ export const getStatusesById = (
   return get<Timelines[]>(url);
 };
 
-// 获取当前账号的用户信息
+// 获取当前账号的用户信息  返回当前用户账号信息
 export const getSelfInformation = (): Promise<Account> => {
   const url = "/api/v1/accounts/verify_credentials";
 

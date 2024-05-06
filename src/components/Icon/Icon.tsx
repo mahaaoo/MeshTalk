@@ -11,6 +11,17 @@ interface IconProps {
 
 const Icon: React.FC<IconProps> = (props) => {
   const { name, size = 20, color = "black" } = props;
+  const paths = Library[name];
+
+  if (Array.isArray(paths)) {
+    return (
+      <Svg width={size} height={size} viewBox="0 0 1024 1024">
+        {paths.map((path) => (
+          <Path d={path} fill={color} />
+        ))}
+      </Svg>
+    );
+  }
 
   return (
     <Svg width={size} height={size} viewBox="0 0 1024 1024">

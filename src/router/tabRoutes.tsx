@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RouteProp } from "@react-navigation/native";
 import React from "react";
-import { View, StyleSheet } from "react-native";
 
 import { Icon } from "../components/Icon";
 import Found from "../pages/found";
@@ -14,23 +13,19 @@ const TabStack = createBottomTabNavigator();
 
 const tabBarIconByType = (route: RouteProp<any>, color: string) => {
   if (route.name === "Home") {
-    return <Icon name="home" size={25} color={color} />;
+    return <Icon name="elephant" size={33} color={color} />;
   }
   if (route.name === "Found") {
-    return <Icon name="find" size={25} color={color} />;
+    return <Icon name="areas" size={22} color={color} />;
   }
   if (route.name === "New") {
-    return (
-      <View style={styles.new}>
-        <Icon name="plus" size={20} color="#fff" />
-      </View>
-    );
+    return <Icon name="plane" size={26} color={color} />;
   }
   if (route.name === "Notify") {
     return <Icon name="notify" size={25} color={color} />;
   }
   if (route.name === "Setting") {
-    return <Icon name="user" size={25} color={color} />;
+    return <Icon name="user" size={22} color={color} />;
   }
   return null;
 };
@@ -48,7 +43,7 @@ const TabRouter: React.FC<object> = () => {
       <TabStack.Screen
         name="Home"
         component={Home}
-        options={{ tabBarLabel: "首页" }}
+        options={{ tabBarLabel: "本站" }}
       />
       <TabStack.Screen
         name="Found"
@@ -81,14 +76,5 @@ const TabRouter: React.FC<object> = () => {
     </TabStack.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  new: {
-    backgroundColor: "#2593FC",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-  },
-});
 
 export default TabRouter;

@@ -48,9 +48,9 @@ const Setting: React.FC<object> = () => {
     { manual: true, loading: false },
   ); // 获取用户的个人信息
 
-  useEffect(() => {
-    getUserData();
-  }, []);
+  // useEffect(() => {
+  //   getUserData();
+  // }, []);
 
   const handleListener = (e: any) => {
     const offsetY = e.nativeEvent.contentOffset.y;
@@ -132,7 +132,7 @@ const Setting: React.FC<object> = () => {
           <View style={styles.act}>
             <View style={styles.actItem}>
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(userData?.statuses_count)}
+                {StringUtil.stringAddComma(String(userData?.statuses_count))}
               </Text>
               <Text style={styles.msg}>嘟文</Text>
             </View>
@@ -141,7 +141,7 @@ const Setting: React.FC<object> = () => {
               onPress={handleNavigateToFollowing}
             >
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(userData?.following_count)}
+                {StringUtil.stringAddComma(String(userData?.following_count))}
               </Text>
               <Text style={styles.msg}>关注</Text>
             </TouchableOpacity>
@@ -150,7 +150,7 @@ const Setting: React.FC<object> = () => {
               onPress={handleNavigateToFans}
             >
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(userData?.followers_count)}
+                {StringUtil.stringAddComma(String(userData?.followers_count))}
               </Text>
               <Text style={styles.msg}>粉丝</Text>
             </TouchableOpacity>
