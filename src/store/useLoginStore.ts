@@ -1,7 +1,7 @@
 import { Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
-import { AppInterface, AppToken } from "../config/interface";
+import { AppInterface } from "../config/interface";
 import { getAppConfig, getToken } from "../server/app";
 import useAppStore from "../store/useAppStore";
 import { navigate, reset } from "../utils";
@@ -9,7 +9,6 @@ import { navigate, reset } from "../utils";
 interface LoginStoreState {
   path: string;
   loginData: AppInterface;
-  tokenData: AppToken;
   onChangePath: (text: string) => void;
   onPressLogin: () => void;
   webGetToken: (code: string) => void;
@@ -18,7 +17,6 @@ interface LoginStoreState {
 const useLoginStore = create<LoginStoreState>((set, get) => ({
   path: "mastodon.social",
   loginData: undefined,
-  tokenData: undefined,
   onChangePath: (text: string) => {
     set({ path: text });
   },
@@ -46,9 +44,12 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
     };
     const data = await getToken("https://" + get().path, params);
     if (data) {
-      set({ tokenData: data });
       useAppStore.getState().setHostURL("https://" + get().path);
-      useAppStore.getState().setToken(get().tokenData.access_token);
+      useAppStore.getState().setToken(data.access_token);
+      useAppStore
+        .getState()
+        .afterToken(data.access_token, "https://" + get().path);
+      // await useAccountStore.getState().verifyToken();
       reset("App");
     }
   },

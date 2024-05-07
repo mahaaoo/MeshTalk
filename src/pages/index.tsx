@@ -53,6 +53,20 @@ export interface RouteParams {
 
 const routes: RouteParams[] = [
   {
+    name: "Guide",
+    component: Guide,
+    options: {
+      header: () => null,
+    },
+  },
+  {
+    name: "Recommand",
+    component: Recommand,
+    options: {
+      title: "推荐社区",
+    },
+  },
+  {
     name: "Login",
     component: Login,
     options: {

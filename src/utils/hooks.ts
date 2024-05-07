@@ -98,8 +98,8 @@ const useSetTimeout = (
 };
 
 const useRefreshList = <T extends { id: string }>(
-  fetchApi: (...args) => Promise<T[]>,
-  limit?: number,
+  fetchApi: (...args) => Promise<T[]>, // 请求接口
+  limit?: number, // 列表每次请求的数量
 ) => {
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
@@ -118,8 +118,7 @@ const useRefreshList = <T extends { id: string }>(
           setListStatus(RefreshState.Idle);
         }
       } else {
-        // 主页没有数据
-        Toast.show("主页没有数据");
+        Toast.show("暂时没有数据");
         setListStatus(RefreshState.Idle);
       }
     }

@@ -9,14 +9,49 @@ const Stack = createNativeStackNavigator<StackParams>();
 const PagesRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
 
+  // console.log("重新执行", currentAccount);
+
   return (
     <Stack.Navigator
+      initialRouteName={currentAccount ? "App" : "Guide"}
       screenOptions={{
         headerBackTitleVisible: false,
         headerTitleAlign: "center",
       }}
     >
-      {currentAccount ? (
+      <Stack.Screen
+        name="App"
+        component={TabRoutes}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Group>
+        {routes.map((item, i) => {
+          return (
+            <Stack.Screen
+              name={item.name}
+              component={item.component}
+              options={item.options}
+              key={`${i}`}
+            />
+          );
+        })}
+      </Stack.Group>
+      {/* <Stack.Group>
+        {unLoginRoute.map((item, i) => {
+          return (
+            <Stack.Screen
+              name={item.name}
+              component={item.component}
+              options={item.options}
+              key={`${i}`}
+            />
+          );
+        })}
+      </Stack.Group> */}
+
+      {/* {currentAccount ? (
         <>
           <Stack.Screen
             name="App"
@@ -51,7 +86,7 @@ const PagesRouter: React.FC<object> = () => {
             );
           })}
         </Stack.Group>
-      )}
+      )} */}
     </Stack.Navigator>
   );
 };

@@ -8,7 +8,6 @@ import { getFollowersById } from "../../server/account";
 import { useRefreshList } from "../../utils/hooks";
 import { RouterProps } from "../index";
 
-
 interface UserFansProps extends RouterProps<"UserFans"> {}
 
 const UserFans: React.FC<UserFansProps> = (props) => {

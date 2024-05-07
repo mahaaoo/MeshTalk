@@ -12,10 +12,11 @@ interface AppStoreState {
   isReady: boolean;
   setHostURL: (url: string) => void;
   setToken: (token: string) => void;
+  afterToken: (localToken: string, localHostUrl: string) => void;
   initApp: () => void;
 }
 
-const useAppStore = create<AppStoreState>((set) => ({
+const useAppStore = create<AppStoreState>((set, get) => ({
   hostURL: undefined,
   token: undefined,
   isReady: false,
@@ -26,6 +27,21 @@ const useAppStore = create<AppStoreState>((set) => ({
   setToken: (token: string) => {
     set({ token });
     setItem(constant.ACCESSTOKEN, token);
+  },
+  afterToken: async (localToken: string, localHostUrl: string) => {
+    const token = "Bearer " + localToken;
+    const hostURL = localHostUrl;
+
+    api.setHeader("Authorization", token);
+    api.setBaseURL(hostURL);
+
+    console.log("存在合法的token以及实例，验证token有效性", {
+      baseURL: api.getBaseURL(),
+      header: api.headers,
+    });
+    await useAccountStore.getState().verifyToken();
+    useEmojiStore.getState().initEmoji();
+    console.log("验证token完毕");
   },
   initApp: async () => {
     console.log("initApp");
@@ -43,16 +59,7 @@ const useAppStore = create<AppStoreState>((set) => ({
       localHostUrl.length > 0 &&
       localToken.length > 0
     ) {
-      const token = "Bearer " + localToken;
-      const hostURL = localHostUrl;
-
-      api.setHeader("Authorization", token);
-      api.setBaseURL(hostURL);
-
-      console.log("存在合法的token以及实例，验证token有效性");
-      await useAccountStore.getState().verifyToken();
-      useEmojiStore.getState().initEmoji();
-      console.log("验证token完毕");
+      await get().afterToken(localToken, localHostUrl);
     }
 
     set({
