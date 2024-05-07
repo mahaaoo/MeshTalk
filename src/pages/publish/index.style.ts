@@ -7,6 +7,8 @@ export const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Colors.defaultWhite,
+    width: Screen.width,
+    height: Screen.height - 100,
   },
   header: {
     paddingVertical: 0,
@@ -29,6 +31,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     marginHorizontal: 10,
     marginTop: 10,
+    backgroundColor: "#fff",
   },
   flatlist: {
     position: "absolute",

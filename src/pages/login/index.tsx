@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   input_style: {
     fontSize: 18,
-    textAlign: "left",
+    textAlign: "center",
     marginHorizontal: 20,
     marginTop: 50,
     alignItems: "flex-start",

@@ -6,7 +6,7 @@ import FavouriteItem from "./favouriteItem";
 import FollowItem from "./followItem";
 import MetionItem from "./metionItem";
 import { RefreshList, RefreshState } from "../../components";
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Notification } from "../../config/interface";
 import { getRelationships } from "../../server/account";
 import { getNotifications } from "../../server/notifications";
@@ -88,7 +88,6 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
       <View style={styles.main}>
         <RefreshList
           showsVerticalScrollIndicator={false}
-          style={styles.refreshList}
           data={dataSource}
           renderItem={({ item }) => {
             if (item?.type === "follow") {
@@ -124,10 +123,6 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.pageDefaultBackground,
     flex: 1,
-  },
-  refreshList: {
-    flex: 1,
-    width: Screen.width,
   },
 });
 

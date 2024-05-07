@@ -16,8 +16,8 @@ const Icon: React.FC<IconProps> = (props) => {
   if (Array.isArray(paths)) {
     return (
       <Svg width={size} height={size} viewBox="0 0 1024 1024">
-        {paths.map((path) => (
-          <Path d={path} fill={color} />
+        {paths.map((path, index) => (
+          <Path key={index} d={path} fill={color} />
         ))}
       </Svg>
     );

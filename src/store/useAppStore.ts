@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
+import useAccountStore from "./useAccountStore";
+import useEmojiStore from "./useEmojiStore";
 import * as constant from "../config/constant";
+import { api } from "../utils/request";
 import { setItem, getItem } from "../utils/storage";
 
 interface AppStoreState {
@@ -27,14 +30,33 @@ const useAppStore = create<AppStoreState>((set) => ({
   initApp: async () => {
     console.log("initApp");
     const localHostUrl = await getItem(constant.HOSTURL);
-    const localToekn = await getItem(constant.ACCESSTOKEN);
+    const localToken = await getItem(constant.ACCESSTOKEN);
 
     console.log("initApp", {
       localHostUrl,
-      localToekn,
+      localToken,
     });
+
+    if (
+      localHostUrl &&
+      localToken &&
+      localHostUrl.length > 0 &&
+      localToken.length > 0
+    ) {
+      const token = "Bearer " + localToken;
+      const hostURL = localHostUrl;
+
+      api.setHeader("Authorization", token);
+      api.setBaseURL(hostURL);
+
+      console.log("存在合法的token以及实例，验证token有效性");
+      await useAccountStore.getState().verifyToken();
+      useEmojiStore.getState().initEmoji();
+      console.log("验证token完毕");
+    }
+
     set({
-      token: localToekn as string,
+      token: localToken as string,
       hostURL: localHostUrl as string,
       isReady: true,
     });

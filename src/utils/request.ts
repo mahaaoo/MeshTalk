@@ -1,7 +1,5 @@
 import { create, ApiResponse } from "apisauce";
 
-import useAppStore from "../store/useAppStore";
-
 const api = create({
   timeout: 3000,
   baseURL: "",
@@ -9,13 +7,6 @@ const api = create({
 
 api.addRequestTransform((request) => {
   // console.log(Stores.appStore.token);
-  const currentAppStore = useAppStore.getState();
-
-  const token = "Bearer " + currentAppStore.token;
-  const hostURL = currentAppStore.hostURL;
-
-  api.setHeader("Authorization", token);
-  api.setBaseURL(hostURL);
 
   console.log("\n===================请求拦截器=================");
   console.log(`请求地址：${request.url}`);
@@ -68,4 +59,4 @@ const post = <T>(url, data?, axiosConfig?): Promise<T> => {
     });
 };
 
-export { get, post };
+export { get, post, api };

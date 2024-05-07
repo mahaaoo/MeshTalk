@@ -38,6 +38,8 @@ const Publish: React.FC<PublishProps> = () => {
   const [reply, setReply] = useState("任何人可以回复");
   const inset = useSafeAreaInsets();
 
+  // const inset = { bottom: 0 };
+
   const offsetY: any = useRef(new Animated.Value(inset.bottom)).current;
   const InputRef: any = useRef();
 

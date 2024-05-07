@@ -53,13 +53,6 @@ export interface RouteParams {
 
 const routes: RouteParams[] = [
   {
-    name: "Guide",
-    component: Guide,
-    options: {
-      header: () => null,
-    },
-  },
-  {
     name: "Login",
     component: Login,
     options: {
@@ -99,14 +92,6 @@ const routes: RouteParams[] = [
     },
   },
   {
-    name: "Publish",
-    component: Publish,
-    options: {
-      title: "发送嘟文",
-      // presentation: 'transparentModal',
-    },
-  },
-  {
     name: "Favourites",
     component: Favourites,
     options: {
@@ -127,6 +112,14 @@ const routes: RouteParams[] = [
       title: "推荐社区",
     },
   },
+  {
+    name: "Publish",
+    component: Publish,
+    options: {
+      title: "发送嘟文",
+      // presentation: 'transparentModal',
+    },
+  },
 ];
 
-export default routes;
+export { routes };

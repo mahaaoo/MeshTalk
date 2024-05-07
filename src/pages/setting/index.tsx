@@ -17,40 +17,23 @@ import {
   Icon,
 } from "../../components";
 import { Colors, Screen } from "../../config";
-import { getAccountsById } from "../../server/account";
 import useAccountStore from "../../store/useAccountStore";
 import {
   StringUtil,
-  useRequest,
   navigate,
   StorageUtil,
   replaceContentEmoji,
 } from "../../utils";
 import LineItemName from "../home/lineItemName";
 
-const fetchUserById = (id: string = "") => {
-  const fn = () => {
-    return getAccountsById(id);
-  };
-  return fn;
-};
-
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
 const Setting: React.FC<object> = () => {
   const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
-  const accountStore = useAccountStore();
+  const { currentAccount, verifyToken } = useAccountStore();
 
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
-  const { data: userData, run: getUserData } = useRequest(
-    fetchUserById(accountStore.currentAccount?.id),
-    { manual: true, loading: false },
-  ); // 获取用户的个人信息
-
-  // useEffect(() => {
-  //   getUserData();
-  // }, []);
 
   const handleListener = (e: any) => {
     const offsetY = e.nativeEvent.contentOffset.y;
@@ -62,26 +45,26 @@ const Setting: React.FC<object> = () => {
 
   useEffect(() => {
     if (refreshing) {
-      getUserData();
+      verifyToken();
     }
   }, [refreshing]);
 
   useEffect(() => {
-    if (userData) {
+    if (currentAccount) {
       setRefreshing(false);
     }
-  }, [userData]);
+  }, [currentAccount]);
 
   const handleNavigateToFans = useCallback(() => {
-    navigate("UserFans", { id: accountStore.currentAccount?.id });
+    navigate("UserFans", { id: currentAccount?.id });
   }, []);
 
   const handleNavigateToFollowing = useCallback(() => {
-    navigate("UserFollow", { id: accountStore.currentAccount?.id });
+    navigate("UserFollow", { id: currentAccount?.id });
   }, []);
 
   const handleToTest = useCallback(() => {
-    navigate("User", { id: accountStore.currentAccount?.id });
+    navigate("User", { id: currentAccount?.id });
   }, []);
 
   return (
@@ -100,7 +83,7 @@ const Setting: React.FC<object> = () => {
       <StretchableImage
         isblur={refreshing}
         scrollY={scrollY}
-        url={userData?.header}
+        url={currentAccount?.header}
         imageHeight={IMAGEHEIGHT}
       />
       <View style={styles.header}>
@@ -108,7 +91,7 @@ const Setting: React.FC<object> = () => {
           <View style={styles.title}>
             <TouchableOpacity onPress={handleToTest} style={styles.avatar}>
               <Avatar
-                url={userData?.avatar}
+                url={currentAccount?.avatar}
                 size={65}
                 borderColor="#fff"
                 borderWidth={4}
@@ -117,22 +100,21 @@ const Setting: React.FC<object> = () => {
           </View>
           <View>
             <LineItemName
-              displayname={userData?.display_name || userData?.username}
-              emojis={userData?.emojis}
+              displayname={
+                currentAccount?.display_name || currentAccount?.username
+              }
               fontSize={18}
             />
             <Text style={styles.acct}>
               <Text>@</Text>
-              {userData?.acct}
+              {currentAccount?.acct}
             </Text>
           </View>
-          <HTMLContent
-            html={replaceContentEmoji(userData?.note, userData?.emojis)}
-          />
+          <HTMLContent html={replaceContentEmoji(currentAccount?.note)} />
           <View style={styles.act}>
             <View style={styles.actItem}>
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(String(userData?.statuses_count))}
+                {StringUtil.stringAddComma(currentAccount?.statuses_count)}
               </Text>
               <Text style={styles.msg}>嘟文</Text>
             </View>
@@ -141,7 +123,7 @@ const Setting: React.FC<object> = () => {
               onPress={handleNavigateToFollowing}
             >
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(String(userData?.following_count))}
+                {StringUtil.stringAddComma(currentAccount?.following_count)}
               </Text>
               <Text style={styles.msg}>关注</Text>
             </TouchableOpacity>
@@ -150,7 +132,7 @@ const Setting: React.FC<object> = () => {
               onPress={handleNavigateToFans}
             >
               <Text style={styles.msg_number}>
-                {StringUtil.stringAddComma(String(userData?.followers_count))}
+                {StringUtil.stringAddComma(currentAccount?.followers_count)}
               </Text>
               <Text style={styles.msg}>粉丝</Text>
             </TouchableOpacity>

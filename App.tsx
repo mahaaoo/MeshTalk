@@ -6,16 +6,13 @@ import { ModalProvider, modalRef } from "react-native-ma-modal";
 
 import Router from "./src/router";
 import useAppStore from "./src/store/useAppStore";
-import useEmojiStore from "./src/store/useEmojiStore";
 import { navigationRef } from "./src/utils/rootNavigation";
 
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
-  const { initEmoji } = useEmojiStore();
 
   useEffect(() => {
     initApp();
-    initEmoji();
   }, []);
 
   if (!isReady) {

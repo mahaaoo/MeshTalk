@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -6,33 +6,20 @@ import HomeLine from "./homeLine";
 import Local from "./localLine";
 import { DefaultTabBar, TabView } from "../../components";
 import { Colors, Screen } from "../../config";
-import useAccountStore from "../../store/useAccountStore";
-import useAppStore from "../../store/useAppStore";
-import { navigate } from "../../utils";
 
 const Home: React.FC<object> = () => {
-  const appStore = useAppStore();
-  const { verifyToken } = useAccountStore();
   const insets = useSafeAreaInsets();
   const [index, setIndex] = useState(0);
 
-  useEffect(() => {
-    console.log('12', appStore.hostURL, appStore.token);
-    if (
-      appStore?.hostURL &&
-      appStore?.token &&
-      appStore?.hostURL?.length > 0 &&
-      appStore?.token?.length > 0
-    ) {
-      verifyToken();
-    } else {
-      navigate("Guide");
-    }
-  }, [appStore.hostURL, appStore.token]);
-
   return (
     <View style={styles.container}>
-      <View style={{ height: insets.top, backgroundColor: "#fff" }} />
+      <View
+        style={{
+          width: Screen.width,
+          height: insets.top,
+          backgroundColor: "#fff",
+        }}
+      />
       <TabView
         tabBar={["推荐", "关注"]}
         initialPage={0}
