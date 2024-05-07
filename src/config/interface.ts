@@ -160,3 +160,11 @@ export interface MastodonServersPrams {
   ownership: "All" | "Public oranization" | "Private individual";
   registrations: "All" | "Instand" | "Manual review";
 }
+
+// 定义一些可选的请求属性
+export interface FollowAndFansQueryParameters {
+  max_id: number;
+  since_id: number;
+  min_id: number;
+  limit: number;
+}

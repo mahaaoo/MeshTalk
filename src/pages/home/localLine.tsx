@@ -6,7 +6,7 @@ import HomeLineItem from "./timeLineItem";
 import { RefreshList } from "../../components";
 import { Colors } from "../../config";
 import { localLine } from "../../server/timeline";
-import { useLineList } from "../../utils/hooks";
+import { useRefreshList } from "../../utils/hooks";
 
 interface LocalProps {
   index: number;
@@ -15,7 +15,7 @@ interface LocalProps {
 
 const Local: React.FC<LocalProps> = (props) => {
   const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
-    useLineList(localLine);
+    useRefreshList(localLine, 20);
 
   const { index, currentIndex } = props;
 

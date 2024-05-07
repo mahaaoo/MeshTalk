@@ -16,7 +16,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
 
   const handleNavigation = useCallback(() => {
     navigate("User", { id: item.id });
-  }, []);
+  }, [item]);
 
   return (
     <TouchableOpacity onPress={handleNavigation}>
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: Colors.defaultWhite,
     padding: 15,
+    width: Screen.width,
   },
   acct: {
     fontSize: 14,

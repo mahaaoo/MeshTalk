@@ -13,6 +13,7 @@ api.addRequestTransform((request) => {
   console.log(`请求方式：${request.method}`);
   console.log("请求参数：");
   console.log(request.data);
+  console.log(request.params);
   console.log("============================================\n");
 });
 

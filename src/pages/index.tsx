@@ -106,20 +106,41 @@ const routes: RouteParams[] = [
     },
   },
   {
+    name: "Publish",
+    component: Publish,
+    options: {
+      title: "发送嘟文",
+      animation: "slide_from_bottom",
+    },
+  },
+];
+
+const unLoginRoute: RouteParams[] = [
+  {
+    name: "Guide",
+    component: Guide,
+    options: {
+      header: () => null,
+    },
+  },
+  {
+    name: "Login",
+    component: Login,
+    options: {
+      header: () => null,
+    },
+  },
+  {
+    name: "WebView",
+    component: WebView,
+  },
+  {
     name: "Recommand",
     component: Recommand,
     options: {
       title: "推荐社区",
     },
   },
-  {
-    name: "Publish",
-    component: Publish,
-    options: {
-      title: "发送嘟文",
-      // presentation: 'transparentModal',
-    },
-  },
-];
+]
 
-export { routes };
+export { routes, unLoginRoute };

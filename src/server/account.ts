@@ -1,4 +1,4 @@
-import { Timelines, Account, Relationship } from "../config/interface";
+import { Timelines, Account, Relationship, FollowAndFansQueryParameters } from "../config/interface";
 import { get, post } from "../utils/request";
 
 export const getAccountsById = (id: string): Promise<Account> => {
@@ -96,20 +96,20 @@ export const unfollowById = (id: string = ""): Promise<Relationship> => {
 // 获取用户所有的粉丝
 export const getFollowersById = (
   id: string = "",
-  params: string = "",
+  params?: Partial<FollowAndFansQueryParameters>,
 ): Promise<Account[]> => {
-  const url = "/api/v1/accounts/" + id + "/followers" + params;
+  const url = "/api/v1/accounts/" + id + "/followers";
 
-  return get<Account[]>(url);
+  return get<Account[]>(url, params);
 };
 
 // https://mastodon.example/api/v1/accounts/:id/following
 // 获取用户的所有关注人
 export const getFollowingById = (
   id: string = "",
-  params: string = "",
+  params?: Partial<FollowAndFansQueryParameters>,
 ): Promise<Account[]> => {
-  const url = "/api/v1/accounts/" + id + "/following" + params;
+  const url = "/api/v1/accounts/" + id + "/following";
 
-  return get<Account[]>(url);
+  return get<Account[]>(url, params);
 };

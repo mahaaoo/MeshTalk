@@ -4,7 +4,7 @@ import DefaultLineItem from "./defaultLineItem";
 import HomeLineItem from "./timeLineItem";
 import { RefreshList } from "../../components";
 import { homeLine } from "../../server/timeline";
-import { useLineList } from "../../utils/hooks";
+import { useRefreshList } from "../../utils/hooks";
 
 interface HomeLineProps {
   index: number;
@@ -13,7 +13,7 @@ interface HomeLineProps {
 
 const HomeLine: React.FC<HomeLineProps> = (props) => {
   const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
-    useLineList(homeLine);
+    useRefreshList(homeLine, 20);
   const { index, currentIndex } = props;
 
   useEffect(() => {

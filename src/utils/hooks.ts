@@ -97,23 +97,32 @@ const useSetTimeout = (
   }, []);
 };
 
-type FetchData = (params?: string) => Promise<Timelines[]>;
-
-const useLineList = (fetchApi: FetchData) => {
-  const [dataSource, setDataSource] = useState<Timelines[]>([]);
+const useRefreshList = <T extends { id: string }>(
+  fetchApi: (...args) => Promise<T[]>,
+  limit?: number,
+) => {
+  const [dataSource, setDataSource] = useState<T[]>([]);
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
+  const [end, setEnd] = useState(false);
 
   const fetchData = async () => {
     const data = await fetchApi();
     if (data) {
       if (data.length > 0) {
         setDataSource(data);
+        if (limit > 0 && data.length < limit) {
+          setEnd(true);
+          setListStatus(RefreshState.NoMoreData);
+        } else {
+          setEnd(false);
+          setListStatus(RefreshState.Idle);
+        }
       } else {
         // 主页没有数据
         Toast.show("主页没有数据");
+        setListStatus(RefreshState.Idle);
       }
     }
-    setListStatus(RefreshState.Idle);
   };
 
   const onRefresh = () => {
@@ -122,14 +131,23 @@ const useLineList = (fetchApi: FetchData) => {
   };
 
   const onLoadMore = useCallback(async () => {
-    setListStatus(RefreshState.FooterRefreshing);
-    const maxId = dataSource[dataSource.length - 1].id;
-    const data = await fetchApi(`?max_id=${maxId}`);
-    if (data) {
-      setDataSource(dataSource.concat(data));
+    if (!end) {
+      setListStatus(RefreshState.FooterRefreshing);
+      const maxId = dataSource[dataSource.length - 1].id;
+      const data = await fetchApi({ max_id: maxId, limit });
+      if (data) {
+        setDataSource(dataSource.concat(data));
+        if (limit > 0 && data.length < limit) {
+          setEnd(true);
+          setListStatus(RefreshState.NoMoreData);
+        } else {
+          setListStatus(RefreshState.Idle);
+        }
+      } else {
+        // 请求报错
+      }
     }
-    setListStatus(RefreshState.Idle);
-  }, [dataSource]);
+  }, [dataSource, end]);
 
   return {
     dataSource,
@@ -140,4 +158,4 @@ const useLineList = (fetchApi: FetchData) => {
   };
 };
 
-export { useDebounce, useRequest, useSetTimeout, useLineList };
+export { useDebounce, useRequest, useSetTimeout, useRefreshList };
