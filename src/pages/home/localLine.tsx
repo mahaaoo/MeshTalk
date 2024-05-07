@@ -5,7 +5,8 @@ import DefaultLineItem from "./defaultLineItem";
 import HomeLineItem from "./timeLineItem";
 import { RefreshList } from "../../components";
 import { Colors } from "../../config";
-import useLocalStore from "../../store/useLocalStore";
+import { localLine } from "../../server/timeline";
+import { useLineList } from "../../utils/hooks";
 
 interface LocalProps {
   index: number;
@@ -13,13 +14,14 @@ interface LocalProps {
 }
 
 const Local: React.FC<LocalProps> = (props) => {
-  const { dataSource, onLoadMore, onRefresh, listStatus, fetchLocalData } =
-    useLocalStore();
+  const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
+    useLineList(localLine);
+
   const { index, currentIndex } = props;
 
   useEffect(() => {
     if (dataSource.length === 0 && index === currentIndex) {
-      fetchLocalData();
+      fetchData();
     }
   }, [currentIndex, index]);
 

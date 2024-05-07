@@ -3,7 +3,8 @@ import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { RefreshList } from "../../components";
-import usePublicStore from "../../store/usePublicStore";
+import { publicLine } from "../../server/timeline";
+import { useLineList } from "../../utils/hooks";
 import DefaultLineItem from "../home/defaultLineItem";
 import HomeLineItem from "../home/timeLineItem";
 
@@ -13,11 +14,11 @@ interface PublicProps {
 
 const Public: React.FC<PublicProps> = () => {
   const insets = useSafeAreaInsets();
-  const { dataSource, fetchPublicData, onLoadMore, onRefresh, listStatus } =
-    usePublicStore();
+  const { dataSource, fetchData, onLoadMore, onRefresh, listStatus } =
+    useLineList(publicLine);
 
   useEffect(() => {
-    fetchPublicData();
+    fetchData();
   }, []);
 
   return (

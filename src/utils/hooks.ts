@@ -1,6 +1,9 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { Loading, Toast } from "react-native-ma-modal";
 
+import { RefreshState } from "../components/RefreshList";
+import { Timelines } from "../config/interface";
+
 // 防抖hooks
 const useDebounce = <T extends () => void>(
   fn: T,
@@ -94,4 +97,47 @@ const useSetTimeout = (
   }, []);
 };
 
-export { useDebounce, useRequest, useSetTimeout };
+type FetchData = (params?: string) => Promise<Timelines[]>;
+
+const useLineList = (fetchApi: FetchData) => {
+  const [dataSource, setDataSource] = useState<Timelines[]>([]);
+  const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
+
+  const fetchData = async () => {
+    const data = await fetchApi();
+    if (data) {
+      if (data.length > 0) {
+        setDataSource(data);
+      } else {
+        // 主页没有数据
+        Toast.show("主页没有数据");
+      }
+    }
+    setListStatus(RefreshState.Idle);
+  };
+
+  const onRefresh = () => {
+    setListStatus(RefreshState.HeaderRefreshing);
+    fetchData();
+  };
+
+  const onLoadMore = useCallback(async () => {
+    setListStatus(RefreshState.FooterRefreshing);
+    const maxId = dataSource[dataSource.length - 1].id;
+    const data = await fetchApi(`?max_id=${maxId}`);
+    if (data) {
+      setDataSource(dataSource.concat(data));
+    }
+    setListStatus(RefreshState.Idle);
+  }, [dataSource]);
+
+  return {
+    dataSource,
+    listStatus,
+    fetchData,
+    onRefresh,
+    onLoadMore,
+  };
+};
+
+export { useDebounce, useRequest, useSetTimeout, useLineList };

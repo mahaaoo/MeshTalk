@@ -13,6 +13,7 @@ import Animated, {
 
 import DefaultTabBar from "./DefaultTabBar";
 import { TabViewContext, TabViewProps, TabStatus, TabViewRef } from "./type";
+import { Screen } from "../../config";
 
 const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
   const {
@@ -23,7 +24,7 @@ const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
     onChangeTab,
     style,
   } = props;
-  const contentWidth = useSharedValue(0);
+  const contentWidth = useSharedValue(Screen.width);
 
   // TabView Content translateX
   const translateX = useSharedValue(-initialPage * contentWidth.value);
@@ -102,17 +103,6 @@ const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
     };
   });
 
-  const onLayout = useCallback(
-    ({
-      nativeEvent: {
-        layout: { width: w },
-      },
-    }) => {
-      contentWidth.value = w;
-    },
-    [],
-  );
-
   useImperativeHandle(
     ref,
     () => ({
@@ -138,7 +128,7 @@ const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
     >
       <View style={style}>
         {renderTabBar && renderTabBar()}
-        <View onLayout={onLayout} style={[styles.main]}>
+        <View style={[styles.main]}>
           <GestureDetector gesture={panGesture}>
             <Animated.View
               style={[

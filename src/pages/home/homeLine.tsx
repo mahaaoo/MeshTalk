@@ -3,7 +3,8 @@ import React, { useEffect } from "react";
 import DefaultLineItem from "./defaultLineItem";
 import HomeLineItem from "./timeLineItem";
 import { RefreshList } from "../../components";
-import useHomeStore from "../../store/useHomeStore";
+import { homeLine } from "../../server/timeline";
+import { useLineList } from "../../utils/hooks";
 
 interface HomeLineProps {
   index: number;
@@ -11,13 +12,13 @@ interface HomeLineProps {
 }
 
 const HomeLine: React.FC<HomeLineProps> = (props) => {
-  const { dataSource, onLoadMore, onRefresh, listStatus, fetchHomeData } =
-    useHomeStore();
+  const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
+    useLineList(homeLine);
   const { index, currentIndex } = props;
 
   useEffect(() => {
     if (dataSource.length === 0 && index === currentIndex) {
-      fetchHomeData();
+      fetchData();
     }
   }, [currentIndex, index]);
 
