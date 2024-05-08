@@ -1,9 +1,9 @@
-import { Timelines } from "../config/interface";
+import { Timelines, Response } from "../config/interface";
 import { get, post } from "../utils/request";
 
 // https://mastodon.example/api/v1/statuses/:id
 // 根据id查询一个推文详情
-export const getStatusesById = (id: string = ""): Promise<Timelines> => {
+export const getStatusesById = (id: string = ""): Response<Timelines> => {
   const url = "/api/v1/statuses/" + id;
 
   return get<Timelines>(url);
@@ -11,7 +11,7 @@ export const getStatusesById = (id: string = ""): Promise<Timelines> => {
 
 // https://mastodon.example/api/v1/statuses
 // 发表一个推文
-export const postNewStatuses = (params: object): Promise<Timelines> => {
+export const postNewStatuses = (params: object): Response<Timelines> => {
   const url = "/api/v1/statuses";
 
   return post<Timelines>(url, params);

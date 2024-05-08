@@ -16,16 +16,17 @@ import { Screen, Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import { replaceContentEmoji, DateUtil, navigate } from "../../utils";
 
-interface HomeLineItemProps {
+interface TimeLineItemProps {
   item: Timelines;
   needToolbar?: boolean; // 是否显示转发工具条
 }
 
-const HomeLineItem: React.FC<HomeLineItemProps> = (props) => {
+const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
   const { item, needToolbar = true } = props;
   const showItem = item?.reblog || item;
 
   const handleAvatar = useCallback(() => {
+    console.log({ id: item?.account.id });
     navigate("User", { id: item?.account.id });
   }, [item]);
 
@@ -174,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeLineItem;
+export default TimeLineItem;

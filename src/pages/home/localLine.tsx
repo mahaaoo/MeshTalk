@@ -15,7 +15,7 @@ interface LocalProps {
 
 const Local: React.FC<LocalProps> = (props) => {
   const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
-    useRefreshList(localLine, 20);
+    useRefreshList(localLine, "Normal", 20);
 
   const { index, currentIndex } = props;
 

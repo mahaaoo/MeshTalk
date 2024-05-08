@@ -1,3 +1,7 @@
+import { ApiResponse } from "apisauce";
+
+export type Response<T> = Promise<ApiResponse<T>>;
+
 export interface AppInterface {
   client_id: string;
   client_secret: string;

@@ -13,7 +13,7 @@ interface HomeLineProps {
 
 const HomeLine: React.FC<HomeLineProps> = (props) => {
   const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
-    useRefreshList(homeLine, 20);
+    useRefreshList(homeLine, "Normal", 20);
   const { index, currentIndex } = props;
 
   useEffect(() => {

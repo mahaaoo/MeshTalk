@@ -17,7 +17,7 @@ const useEmojiStore = create<EmojiStoreState>((set, get) => ({
   initEmoji: async () => {
     const emojiStorage = await getItem(constant.EMOJI);
     if (!emojiStorage || emojiStorage === undefined) {
-      const data = await getInstanceEmojis();
+      const { data } = await getInstanceEmojis();
       if (data) {
         setItem(constant.EMOJI, JSON.stringify(data));
         const hash = new Map();

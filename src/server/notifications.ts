@@ -1,9 +1,9 @@
-import { Notification } from "../config/interface";
+import { Notification, Response } from "../config/interface";
 import { get } from "../utils/request";
 
 export const getNotifications = (
   params: string = "",
-): Promise<Notification[]> => {
+): Response<Notification[]> => {
   const url = "/api/v1/notifications" + params;
 
   return get<Notification[]>(url);

@@ -1,31 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Colors, Screen } from "../../config";
+import { Timelines } from "../../config/interface";
 import { getStatusesById } from "../../server/status";
-import { useRequest } from "../../utils";
 import HomeLineItem from "../home/timeLineItem";
 import ToolBar from "../home/toolBar";
 import { RouterProps } from "../index";
-
-const fetchStatusesById = (id: string) => {
-  const fn = () => {
-    return getStatusesById(id);
-  };
-  return fn;
-};
 
 interface StatusDetailProps extends RouterProps<"StatusDetail"> {}
 
 const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   const { id } = props?.route?.params;
   const inset = useSafeAreaInsets();
+  const [statusDetail, setStatusDetail] = useState<Timelines>();
 
-  const { data: statusDetail } = useRequest(fetchStatusesById(id), {
-    manual: false,
-    loading: true,
-  });
+  useEffect(() => {
+    const fetchStatus = async (id: string) => {
+      const { data } = await getStatusesById(id);
+      if (data) {
+        setStatusDetail(data);
+      }
+    };
+
+    fetchStatus(id);
+  }, [id]);
 
   if (!statusDetail) {
     return null;

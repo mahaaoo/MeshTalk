@@ -15,7 +15,6 @@ import {
 import Colors from "../../config/colors";
 import { Relationship } from "../../config/interface";
 import { followById, unfollowById } from "../../server/account";
-import { useRequest } from "../../utils/hooks";
 
 export enum FollowButtonStatus {
   UnFollow, // 关注
@@ -23,20 +22,6 @@ export enum FollowButtonStatus {
   BothFollow, // 互相关注
   Requesting, // 正在请求
 }
-
-const fetchFollowById = (id: string = "") => {
-  const fn = () => {
-    return followById(id);
-  };
-  return fn;
-};
-
-const fetchUnfollowById = (id: string = "") => {
-  const fn = () => {
-    return unfollowById(id);
-  };
-  return fn;
-};
 
 interface FollowButtonProps {
   relationships: Relationship[] | undefined;
@@ -47,20 +32,10 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
   const { relationships, id } = props;
   // 获取上一次渲染的组件样式
   const prevContentRef: any = useRef();
-
   const [buttonStatus, setButtonStatus] = useState(
     FollowButtonStatus.Requesting,
   );
   const [relationship, setRelationship] = useState<Relationship>();
-
-  const { data: followData, run: getFollowById } = useRequest(
-    fetchFollowById(id),
-    { manual: true, loading: false },
-  );
-  const { data: unFollowData, run: getUnfollowById } = useRequest(
-    fetchUnfollowById(id),
-    { manual: true, loading: false },
-  );
 
   // 每次渲染都执行，由于useEffect在Render之后执行，所以当前的prevContentRef.current为上一次的状态
   useEffect(() => {
@@ -73,18 +48,6 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       setRelationship(newRelationship);
     }
   }, [relationships]);
-
-  useEffect(() => {
-    if (followData) {
-      setRelationship(followData);
-    }
-  }, [followData]);
-
-  useEffect(() => {
-    if (unFollowData) {
-      setRelationship(unFollowData);
-    }
-  }, [unFollowData]);
 
   useEffect(() => {
     if (relationship) {
@@ -190,18 +153,20 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     }
   }, [buttonStatus]);
 
-  const handleOnPress = useCallback(() => {
+  const handleOnPress = useCallback(async () => {
     if (buttonStatus === FollowButtonStatus.UnFollow) {
-      getFollowById();
+      const { data } = await followById(id);
+      setRelationship(data);
     }
     if (
       buttonStatus === FollowButtonStatus.Following ||
       buttonStatus === FollowButtonStatus.BothFollow
     ) {
-      getUnfollowById();
+      const { data } = await unfollowById(id);
+      setRelationship(data);
     }
     setButtonStatus(FollowButtonStatus.Requesting);
-  }, [buttonStatus]);
+  }, [buttonStatus, id]);
 
   return (
     <TouchableOpacity
@@ -214,7 +179,9 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
           color={content.indicatorColor}
         />
       ) : (
-        <Text style={content.textStyle}>{content.buttonText}</Text>
+        <Text style={[{ textAlign: "center" }, content.textStyle]}>
+          {content.buttonText}
+        </Text>
       )}
     </TouchableOpacity>
   );

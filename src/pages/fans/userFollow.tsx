@@ -12,7 +12,8 @@ interface UserFollowProps extends RouterProps<"UserFollow"> {}
 const UserFollow: React.FC<UserFollowProps> = (props) => {
   const { id } = props?.route?.params;
   const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
-    () => getFollowingById(id),
+    (params) => getFollowingById(id, params),
+    "Link",
     40,
   );
 

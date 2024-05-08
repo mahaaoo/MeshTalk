@@ -1,7 +1,13 @@
-import { Timelines, Account, Relationship, FollowAndFansQueryParameters } from "../config/interface";
+import {
+  Timelines,
+  Account,
+  Relationship,
+  FollowAndFansQueryParameters,
+  Response,
+} from "../config/interface";
 import { get, post } from "../utils/request";
 
-export const getAccountsById = (id: string): Promise<Account> => {
+export const getAccountsById = (id: string): Response<Account> => {
   const url = "/api/v1/accounts/" + id;
 
   return get<Account>(url);
@@ -11,14 +17,14 @@ export const getAccountsById = (id: string): Promise<Account> => {
 export const getStatusesById = (
   id: string,
   params: string = "",
-): Promise<Timelines[]> => {
+): Response<Timelines[]> => {
   const url = "/api/v1/accounts/" + id + "/statuses" + params;
 
   return get<Timelines[]>(url);
 };
 
 // 获取当前账号的用户信息  返回当前用户账号信息
-export const getSelfInformation = (): Promise<Account> => {
+export const getSelfInformation = (): Response<Account> => {
   const url = "/api/v1/accounts/verify_credentials";
 
   return get<Account>(url);
@@ -28,7 +34,7 @@ export const getSelfInformation = (): Promise<Account> => {
 export const getStatusesReplyById = (
   id: string,
   params: string = "",
-): Promise<Timelines[]> => {
+): Response<Timelines[]> => {
   const url =
     "/api/v1/accounts/" + id + "/statuses?exclude_replies=false&" + params;
 
@@ -39,7 +45,7 @@ export const getStatusesReplyById = (
 export const getStatusesMediaById = (
   id: string,
   params: string = "",
-): Promise<Timelines[]> => {
+): Response<Timelines[]> => {
   const url = "/api/v1/accounts/" + id + "/statuses?only_media=true&" + params;
 
   return get<Timelines[]>(url);
@@ -49,7 +55,7 @@ export const getStatusesMediaById = (
 export const getStatusesPinById = (
   id: string,
   params: string = "",
-): Promise<Timelines[]> => {
+): Response<Timelines[]> => {
   const url = "/api/v1/accounts/" + id + "/statuses?pinned=true&" + params;
 
   return get<Timelines[]>(url);
@@ -58,7 +64,7 @@ export const getStatusesPinById = (
 // 获取点赞的内容
 export const getFavouritesById = (
   params: string = "",
-): Promise<Timelines[]> => {
+): Response<Timelines[]> => {
   const url = "/api/v1/favourites" + params;
 
   return get<Timelines[]>(url);
@@ -67,7 +73,7 @@ export const getFavouritesById = (
 // 获取当前登录用户与所传递用户的关系
 export const getRelationships = (
   id: string[] | string,
-): Promise<Relationship[]> => {
+): Response<Relationship[]> => {
   let url = "/api/v1/accounts/relationships?";
   if (Array.isArray(id)) {
     url += id.map((item) => `id[]=${item}`).join("&");
@@ -79,14 +85,14 @@ export const getRelationships = (
 };
 
 // 关注一个用户
-export const followById = (id: string = ""): Promise<Relationship> => {
+export const followById = (id: string = ""): Response<Relationship> => {
   const url = "/api/v1/accounts/" + id + "/follow";
 
   return post<Relationship>(url);
 };
 
 // 取关一个用户
-export const unfollowById = (id: string = ""): Promise<Relationship> => {
+export const unfollowById = (id: string = ""): Response<Relationship> => {
   const url = "/api/v1/accounts/" + id + "/unfollow";
 
   return post<Relationship>(url);
@@ -97,7 +103,7 @@ export const unfollowById = (id: string = ""): Promise<Relationship> => {
 export const getFollowersById = (
   id: string = "",
   params?: Partial<FollowAndFansQueryParameters>,
-): Promise<Account[]> => {
+): Response<Account[]> => {
   const url = "/api/v1/accounts/" + id + "/followers";
 
   return get<Account[]>(url, params);
@@ -108,7 +114,7 @@ export const getFollowersById = (
 export const getFollowingById = (
   id: string = "",
   params?: Partial<FollowAndFansQueryParameters>,
-): Promise<Account[]> => {
+): Response<Account[]> => {
   const url = "/api/v1/accounts/" + id + "/following";
 
   return get<Account[]>(url, params);

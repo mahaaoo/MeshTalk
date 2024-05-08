@@ -1,5 +1,7 @@
 import { create, ApiResponse } from "apisauce";
 
+import { Response } from "../config/interface";
+
 const api = create({
   timeout: 3000,
   baseURL: "",
@@ -26,7 +28,7 @@ api.addResponseTransform((response) => {
   console.log("============================================\n");
 });
 
-const get = <T>(url, params?, axiosConfig?): Promise<T> => {
+const get = <T>(url, params?, axiosConfig?): Response<T> => {
   console.log("get", {
     base: api.getBaseURL(),
     hear: api.headers,
@@ -39,7 +41,7 @@ const get = <T>(url, params?, axiosConfig?): Promise<T> => {
         status: response.status,
         problem: response.problem,
       }); // 假设response有这些属性
-      return response.data as T;
+      return response;
     })
     .catch((error: any) => {
       console.log("catch", error);
@@ -47,7 +49,7 @@ const get = <T>(url, params?, axiosConfig?): Promise<T> => {
     });
 };
 
-const post = <T>(url, data?, axiosConfig?): Promise<T> => {
+const post = <T>(url, data?, axiosConfig?): Response<T> => {
   return api
     .post(url, data, axiosConfig)
     .then((response: ApiResponse<T>) => {
@@ -56,7 +58,7 @@ const post = <T>(url, data?, axiosConfig?): Promise<T> => {
         status: response.status,
         problem: response.problem,
       }); // 假设response有这些属性
-      return response.data as T;
+      return response;
     })
     .catch((error: any) => {
       console.log("catch", error);

@@ -22,7 +22,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
   },
   onPressLogin: async () => {
     if (get().path.length > 0) {
-      const data = await getAppConfig("https://" + get().path);
+      const { data } = await getAppConfig("https://" + get().path);
       if (data) {
         set({ loginData: data });
 
@@ -42,7 +42,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
       client_secret: get().loginData.client_secret,
       code,
     };
-    const data = await getToken("https://" + get().path, params);
+    const { data } = await getToken("https://" + get().path, params);
     if (data) {
       useAppStore.getState().setHostURL("https://" + get().path);
       useAppStore.getState().setToken(data.access_token);

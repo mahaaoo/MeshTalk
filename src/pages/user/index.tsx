@@ -1,12 +1,12 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useRef, useEffect, useCallback, useState } from "react";
 import {
+  Animated,
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Animated,
 } from "react-native";
-// @ts-ignore
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import UseLine from "./userLine";
@@ -20,6 +20,8 @@ import {
   FollowButton,
   Icon,
   HTMLContent,
+  TabView,
+  DefaultTabBar,
 } from "../../components";
 import { Screen, Colors } from "../../config";
 import {
@@ -188,51 +190,65 @@ const User: React.FC<UserProps> = (props) => {
             </View>
           </View>
         </View>
-        {/* <StickyHeader
-          stickyHeaderY={headHeight} // 把头部高度传入
-          stickyScrollY={scrollY} // 把滑动距离传入
+        <TabView
+          tabBar={["嘟文", "嘟文和回复", "已置顶", "媒体"]}
+          initialPage={0}
+          style={{ flex: 1 }}
+          renderTabBar={() => (
+            <DefaultTabBar
+              tabBarWidth={Screen.width / 4}
+              tabBarInactiveTextColor="#333"
+              tabBarActiveTextColor={Colors.theme}
+              tabBarTextStyle={{
+                fontSize: 16,
+                fontWeight: "bold",
+              }}
+              tabBarUnderlineStyle={{
+                height: 4,
+                backgroundColor: Colors.theme,
+                width: 50,
+                marginLeft: (Screen.width / 4 - 50) / 2,
+              }}
+            />
+          )}
         >
-          <ScrollableTabView
-            style={styles.headerTab}
-            renderTabBar={() => <MyTabBar style={styles.tabBar} />}>
-            <UseLine
-              tabLabel="嘟文"
-              scrollEnabled={!enableScrollViewScroll}
-              onTop={handleSlide}
-              id={id}
-              refreshing={refreshing}
-              onFinish={handleFinish}
-              request={getStatusesById}
-            />
-            <UseLine
-              tabLabel="嘟文和回复"
-              scrollEnabled={!enableScrollViewScroll}
-              onTop={handleSlide}
-              id={id}
-              refreshing={refreshing}
-              onFinish={handleFinish}
-              request={getStatusesReplyById}
-            />
-            <UseLine
-              tabLabel="已置顶"
-              scrollEnabled={!enableScrollViewScroll}
-              onTop={handleSlide}
-              id={id}
-              refreshing={refreshing}
-              onFinish={handleFinish}
-              request={getStatusesPinById}
-            />
-            <UseLine
-              tabLabel="媒体"
-              scrollEnabled={!enableScrollViewScroll}
-              onTop={handleSlide}
-              id={id}
-              refreshing={refreshing}
-              onFinish={handleFinish}
-              request={getStatusesMediaById}
-            />
-          </ScrollableTabView>
-        </StickyHeader> */}
+          <UseLine
+            tabLabel="嘟文"
+            scrollEnabled={!enableScrollViewScroll}
+            onTop={handleSlide}
+            id={id}
+            refreshing={refreshing}
+            onFinish={handleFinish}
+            request={getStatusesById}
+          />
+          <UseLine
+            tabLabel="嘟文和回复"
+            scrollEnabled={!enableScrollViewScroll}
+            onTop={handleSlide}
+            id={id}
+            refreshing={refreshing}
+            onFinish={handleFinish}
+            request={getStatusesReplyById}
+          />
+          <UseLine
+            tabLabel="已置顶"
+            scrollEnabled={!enableScrollViewScroll}
+            onTop={handleSlide}
+            id={id}
+            refreshing={refreshing}
+            onFinish={handleFinish}
+            request={getStatusesPinById}
+          />
+          <UseLine
+            tabLabel="媒体"
+            scrollEnabled={!enableScrollViewScroll}
+            onTop={handleSlide}
+            id={id}
+            refreshing={refreshing}
+            onFinish={handleFinish}
+            request={getStatusesMediaById}
+          />
+        </TabView>
       </Animated.ScrollView>
       <SlideHeader
         offsetY={IMAGEHEIGHT}

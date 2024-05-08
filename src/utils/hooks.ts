@@ -2,7 +2,7 @@ import { useRef, useEffect, useCallback, useState } from "react";
 import { Loading, Toast } from "react-native-ma-modal";
 
 import { RefreshState } from "../components/RefreshList";
-import { Timelines } from "../config/interface";
+import { Response } from "../config/interface";
 
 // 防抖hooks
 const useDebounce = <T extends () => void>(
@@ -42,7 +42,8 @@ const useRequest = <T>(
   const run: (...args: any) => void = useCallback(
     (...args: any) => {
       async function getData() {
-        setData(await current.fn.call(null, ...args));
+        const { data } = await current.fn.call(null, ...args);
+        setData(data);
       }
       if (options.loading) {
         Loading.show();
@@ -97,25 +98,33 @@ const useSetTimeout = (
   }, []);
 };
 
+// 下拉刷新和上拉加载列表
 const useRefreshList = <T extends { id: string }>(
-  fetchApi: (...args) => Promise<T[]>, // 请求接口
-  limit?: number, // 列表每次请求的数量
+  fetchApi: (...args) => Response<T[]>, // 请求接口
+  loadType: "Normal" | "Link",
+  limit: number = 20,
 ) => {
   const [dataSource, setDataSource] = useState<T[]>([]);
+  const [link, setLink] = useState<string>();
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
   const [end, setEnd] = useState(false);
 
   const fetchData = async () => {
-    const data = await fetchApi();
+    const { data, headers } = await fetchApi({ limit });
     if (data) {
       if (data.length > 0) {
         setDataSource(data);
+
         if (limit > 0 && data.length < limit) {
           setEnd(true);
           setListStatus(RefreshState.NoMoreData);
         } else {
           setEnd(false);
           setListStatus(RefreshState.Idle);
+        }
+
+        if (loadType === "Link") {
+          setLink(headers.link);
         }
       } else {
         Toast.show("暂时没有数据");
@@ -132,8 +141,19 @@ const useRefreshList = <T extends { id: string }>(
   const onLoadMore = useCallback(async () => {
     if (!end) {
       setListStatus(RefreshState.FooterRefreshing);
-      const maxId = dataSource[dataSource.length - 1].id;
-      const data = await fetchApi({ max_id: maxId, limit });
+      // max_id获取方式和接口有关
+      let maxId = "";
+      if (loadType === "Normal") {
+        maxId = dataSource[dataSource.length - 1].id;
+      }
+      if (loadType === "Link") {
+        const regex = /max_id=(\d+)/;
+        const match = link.match(regex);
+        if (match && match.length > 1) {
+          maxId = match[1]; // 提取 max_id 的值
+        }
+      }
+      const { data } = await fetchApi({ max_id: maxId, limit });
       if (data) {
         setDataSource(dataSource.concat(data));
         if (limit > 0 && data.length < limit) {
@@ -146,7 +166,7 @@ const useRefreshList = <T extends { id: string }>(
         // 请求报错
       }
     }
-  }, [dataSource, end]);
+  }, [dataSource, end, link]);
 
   return {
     dataSource,

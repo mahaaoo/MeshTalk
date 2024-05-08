@@ -14,7 +14,7 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
   statusContent: "",
   inputContent: (input: string) => set({ statusContent: input }),
   postNewStatuses: async (param: object) => {
-    const data = await postNewStatuses(param);
+    const { data } = await postNewStatuses(param);
     if (data) {
       set({ statusContent: "" });
       Toast.show("发送成功");
