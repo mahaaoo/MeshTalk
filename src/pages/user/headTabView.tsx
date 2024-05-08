@@ -37,6 +37,7 @@ type GestureTypeRef = React.MutableRefObject<GestureType | undefined>;
 export interface HeadTabViewContextProps {
   mainTranslate: SharedValue<number>;
   handleChildRef: (ref: GestureTypeRef) => void;
+  onScrollCallback: (y: number) => void;
 }
 
 export const HeadTabViewContext = React.createContext<HeadTabViewContextProps>(
@@ -144,27 +145,16 @@ const HeadTabView: React.FC<HeadTabViewProps> = (props) => {
       value={{
         mainTranslate,
         handleChildRef,
+        onScrollCallback,
       }}
     >
       <GestureDetector gesture={panGesture}>
         <Animated.View style={main}>
-          <Animated.View
-            style={[
-              {
-                height: HEADER_HEIGHT,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "orange",
-              },
-              header,
-            ]}
-          >
-            {children}
-          </Animated.View>
+          <Animated.View>{children}</Animated.View>
           <TabView
             tabBar={["嘟文", "嘟文和回复", "已置顶", "媒体"]}
             initialPage={0}
-            style={{ flex: 1 }}
+            style={{ width: Screen.width }}
             renderTabBar={() => (
               <DefaultTabBar
                 tabBarWidth={Screen.width / 4}
@@ -183,10 +173,14 @@ const HeadTabView: React.FC<HeadTabViewProps> = (props) => {
               />
             )}
           >
+            <UserLine id={id} index={0} currentIndex={currentIndex}  />
             <UserLine id={id} />
             <UserLine id={id} />
             <UserLine id={id} />
-            <UserLine id={id} />
+            {/* <HeadTabViewItem id={id} index={0} currentIndex={currentIndex} />
+            <HeadTabViewItem id={id} index={0} currentIndex={currentIndex} />
+            <HeadTabViewItem id={id} index={0} currentIndex={currentIndex} />
+            <HeadTabViewItem id={id} index={0} currentIndex={currentIndex} /> */}
           </TabView>
         </Animated.View>
       </GestureDetector>
@@ -197,15 +191,15 @@ const HeadTabView: React.FC<HeadTabViewProps> = (props) => {
 interface HeadTabViewItemProps {
   index: number;
   currentIndex: number;
-  onScrollCallback: (y: number) => void;
+  id: string;
 }
 
 const HeadTabViewItem: React.FC<HeadTabViewItemProps> = (props) => {
-  const { index, currentIndex, onScrollCallback } = props;
+  const { index, currentIndex, id } = props;
 
   const scroll = useSharedValue(0);
   const aref = useAnimatedRef();
-  const { mainTranslate, handleChildRef } = useHeadTab();
+  const { mainTranslate, handleChildRef, onScrollCallback } = useHeadTab();
   const nativeRef = useRef();
 
   // 当某一个tab滑到顶，所有重置所有tab
@@ -266,24 +260,11 @@ const HeadTabViewItem: React.FC<HeadTabViewItemProps> = (props) => {
           width,
         }}
         style={{
-          backgroundColor: TabListColor[index],
           width,
         }}
       >
         <Animated.View style={[ansyt, styles.itemContainer]}>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
-          <Text style={{ fontSize: 30 }}>{`Tab${index + 1}`}</Text>
+          <UserLine id={id} />
         </Animated.View>
       </Animated.ScrollView>
     </GestureDetector>
@@ -296,6 +277,7 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     width: Screen.width,
+    backgroundColor: "red",
   },
 });
 

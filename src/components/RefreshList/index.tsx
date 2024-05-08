@@ -30,7 +30,7 @@ interface RefreshListProps extends FlashListProps<any> {
   onHeaderRefresh?: () => void;
   onFooterRefresh?: () => void;
   data: any[];
-
+  
   footerContainerStyle?: StyleProp<ViewStyle>;
   footerTextStyle?: StyleProp<TextStyle>;
   emptyComponent?: React.ReactNode;

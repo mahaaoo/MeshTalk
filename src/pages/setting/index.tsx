@@ -3,9 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  Animated,
   TouchableOpacity,
 } from "react-native";
+import Animated, { useAnimatedScrollHandler, useSharedValue } from "react-native-reanimated";
 
 import {
   Avatar,
@@ -30,7 +30,8 @@ const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
 const Setting: React.FC<object> = () => {
-  const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
+  // const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
+  const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
 
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
@@ -67,17 +68,17 @@ const Setting: React.FC<object> = () => {
     navigate("User", { id: currentAccount?.id });
   }, []);
 
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (event, context) => {
+      scrollY.value = event.contentOffset.y;
+    }
+  });
+
   return (
     <Animated.ScrollView
       style={styles.container}
       bounces
-      onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        {
-          useNativeDriver: true,
-          listener: handleListener,
-        },
-      )}
+      onScroll={onScroll}
       scrollEventThrottle={1}
     >
       <StretchableImage
@@ -163,13 +164,13 @@ const Setting: React.FC<object> = () => {
           StorageUtil.clear();
         }}
       />
-      <PullLoading
+      {/* <PullLoading
         scrollY={scrollY}
         refreshing={refreshing}
         top={IMAGEHEIGHT / 2}
         left={Screen.width / 2}
         offsetY={PULLOFFSETY}
-      />
+      /> */}
     </Animated.ScrollView>
   );
 };

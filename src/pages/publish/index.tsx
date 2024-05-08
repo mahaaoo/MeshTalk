@@ -79,7 +79,7 @@ const Publish: React.FC<PublishProps> = () => {
         />
       ),
     });
-  }, []);
+  }, [statusContent]);
 
   const keyboardWillShow = useCallback((e: any) => {
     Animated.timing(offsetY, {

@@ -16,11 +16,11 @@ export const getAccountsById = (id: string): Response<Account> => {
 // 获取当前账号的所有推文
 export const getStatusesById = (
   id: string,
-  params: string = "",
+  params: object,
 ): Response<Timelines[]> => {
-  const url = "/api/v1/accounts/" + id + "/statuses" + params;
+  const url = "/api/v1/accounts/" + id + "/statuses";
 
-  return get<Timelines[]>(url);
+  return get<Timelines[]>(url, );
 };
 
 // 获取当前账号的用户信息  返回当前用户账号信息
