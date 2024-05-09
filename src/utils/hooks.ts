@@ -31,6 +31,7 @@ interface UseRequestOptions {
 }
 
 // 请求
+// 已废弃
 const useRequest = <T>(
   fn: (...args: any) => Promise<T>,
   options: UseRequestOptions = { loading: true, manual: false },

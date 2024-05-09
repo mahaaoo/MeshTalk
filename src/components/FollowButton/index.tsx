@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  View,
 } from "react-native";
 
 import Colors from "../../config/colors";
@@ -169,32 +170,28 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
   }, [buttonStatus, id]);
 
   return (
-    <TouchableOpacity
-      onPress={handleOnPress}
-      style={[styles.outView, content.buttonStyle]}
-    >
-      {buttonStatus === FollowButtonStatus.Requesting ? (
-        <ActivityIndicator
-          animating={buttonStatus === FollowButtonStatus.Requesting}
-          color={content.indicatorColor}
-        />
-      ) : (
-        <Text style={[{ textAlign: "center" }, content.textStyle]}>
-          {content.buttonText}
-        </Text>
-      )}
+    <TouchableOpacity onPress={handleOnPress}>
+      <View style={[styles.outView, content.buttonStyle, {}]}>
+        {buttonStatus === FollowButtonStatus.Requesting ? (
+          <ActivityIndicator
+            animating={buttonStatus === FollowButtonStatus.Requesting}
+            color={content.indicatorColor}
+          />
+        ) : (
+          <Text style={[{ textAlignVertical: "center" }, content.textStyle]}>
+            {content.buttonText}
+          </Text>
+        )}
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   outView: {
-    padding: 15,
-    backgroundColor: Colors.buttonDefaultBackground,
     justifyContent: "center",
     alignItems: "center",
-    height: 40,
-    paddingVertical: 8,
+    height: 38,
     borderRadius: 20,
     borderWidth: 1,
     width: 100,

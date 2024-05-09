@@ -19,6 +19,7 @@ export interface AppToken {
   create_at: number;
 }
 
+// 就是官网的Status对象
 export interface Timelines {
   account: Account;
   application: Application;

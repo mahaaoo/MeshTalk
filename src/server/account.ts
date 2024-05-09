@@ -71,7 +71,7 @@ export const getStatusesPinById = (
 
 // 获取点赞的内容
 export const getFavouritesById = (params: object): Response<Timelines[]> => {
-  const url = "/api/v1/favourites" + params;
+  const url = "/api/v1/favourites";
 
   return get<Timelines[]>(url, params);
 };

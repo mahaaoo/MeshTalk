@@ -26,9 +26,7 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
     <View style={styles.main}>
       <RefreshList
         data={dataSource}
-        renderItem={({ item }) => {
-          return <HomeLineItem item={item} />;
-        }}
+        renderItem={({ item }) => <HomeLineItem item={item} />}
         emptyComponent={
           <DefaultLineItem onRefresh={onRefresh} listStatus={listStatus} />
         }
@@ -43,8 +41,6 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
 
 const styles = StyleSheet.create({
   main: {
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: Colors.pageDefaultBackground,
     flex: 1,
   },
