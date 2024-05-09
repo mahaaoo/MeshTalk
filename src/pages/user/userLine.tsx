@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
@@ -11,34 +12,51 @@ import Animated, {
 
 import { useHeadTabView, HEADER_HEIGHT } from "./type";
 import { Screen } from "../../config";
-import { getStatusesById } from "../../server/account";
+import { Response, Timelines } from "../../config/interface";
 import { useRefreshList } from "../../utils/hooks";
 import HomeLineItem from "../home/timeLineItem";
 
 interface UserLineProps {
   index: number;
+  fetchApi: (...args) => Response<Timelines[]>;
+  onRefreshFinish: () => void;
 }
 
 const UserLine: React.FC<UserLineProps> = (props) => {
-  const { index } = props;
+  const { index, fetchApi, onRefreshFinish } = props;
   const {
     currentIndex,
-    id,
     scrollY,
     handleChildRef,
     enable,
     arefs,
     stickyHeight,
+    refreshing,
   } = useHeadTabView();
-  const { dataSource, onRefresh } = useRefreshList(
-    (params) => getStatusesById(id, params),
+  const { dataSource, onRefresh, err, fetchData } = useRefreshList(
+    fetchApi,
     "Normal",
     20,
   );
 
   useEffect(() => {
-    onRefresh();
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    const refresh = async () => {
+      console.log("1111111");
+      await onRefresh();
+      onRefreshFinish && onRefreshFinish();
+      console.log("22222222");
+    }
+    console.log("?????refrehs");
+
+    if (refreshing && index === currentIndex) {
+      console.log("触发下拉刷新");
+      refresh();
+    }
+  }, [index, currentIndex, refreshing]);
 
   // const handleListener = (e: any) => {
   //   const offsetY = e.nativeEvent.contentOffset.y;
@@ -60,9 +78,9 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     (value) => {
       if (index !== currentIndex) {
         if (value < -stickyHeight) {
-          scrollTo(aref, 0, Math.max(-value, scroll.value), false);
+          scrollTo(aref, 0, 0, false);
         } else {
-          scrollTo(aref, 0, -value, false);
+          // scrollTo(aref, 0, -value, false);
         }
       }
       // if (value < -stickyHeight) {
@@ -106,8 +124,16 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     };
   });
 
+  if (err) {
+    return (
+      <View
+        style={{ height: Screen.height - HEADER_HEIGHT, width: Screen.width }}
+      />
+    );
+  }
+
   return (
-    <GestureDetector gesture={nativeGesture}>
+    <GestureDetector key={index} gesture={nativeGesture}>
       <Animated.FlatList
         ref={aref}
         bounces={false}

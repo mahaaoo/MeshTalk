@@ -12,14 +12,11 @@ interface UserFansProps extends RouterProps<"UserFans"> {}
 
 const UserFans: React.FC<UserFansProps> = (props) => {
   const { id } = props?.route?.params;
-  const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
-    (params) => getFollowersById(id, params),
-    "Link",
-    40,
-  );
+  const { dataSource, listStatus, onLoadMore, onRefresh, fetchData } =
+    useRefreshList((params) => getFollowersById(id, params), "Link", 40);
 
   useEffect(() => {
-    onRefresh();
+    fetchData();
   }, []);
 
   return (

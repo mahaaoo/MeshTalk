@@ -8,6 +8,8 @@ import Animated, {
   interpolate,
   scrollTo,
   withTiming,
+  useAnimatedReaction,
+  runOnJS,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -18,6 +20,7 @@ import {
   HEADER_HEIGHT,
   PULL_OFFSETY,
   RESET_TIMING_EASING,
+  tabViewConfig,
 } from "./type";
 import UserLine from "./userLine";
 import {
@@ -48,11 +51,16 @@ const User: React.FC<UserProps> = (props) => {
   const inset = useSafeAreaInsets();
   const [stickyHeight, setStickyHeight] = useState(0); // 为StickyHead计算顶吸到顶端的距离
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
-  const [enableScrollViewScroll, setEnableScrollViewScroll] = useState(true); // 最外层ScrollView是否可以滚动
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [userData, setUserData] = useState<Account>();
   const [relationship, setRelationship] = useState<Relationship[]>();
+
+  const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
+  const offset = useSharedValue(0);
+  const enable = useSharedValue(false);
+  const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
+  const arefs = useRef(new Array(4));
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -83,28 +91,6 @@ const User: React.FC<UserProps> = (props) => {
     setStickyHeight(height + IMAGE_HEIGHT - HEADER_HEIGHT);
   };
 
-  // 监听当前滚动位置
-  const handleListener = (e: any) => {
-    const offsetY = e.nativeEvent.contentOffset.y;
-    // 下拉刷新
-    if (offsetY <= -PULL_OFFSETY && !refreshing) {
-      setRefreshing(true);
-    }
-    if (offsetY >= stickyHeight && enableScrollViewScroll) {
-      setEnableScrollViewScroll(false);
-    }
-    return null;
-  };
-
-  // 当嵌套在里面内容滑动到顶端，将外层的ScrollView设置为可滑动状态
-  const handleSlide = useCallback(() => {
-    setEnableScrollViewScroll(true);
-  }, []);
-
-  const handleFinish = useCallback(() => {
-    setRefreshing(false);
-  }, []);
-
   const handleNavigateToFans = useCallback(() => {
     navigate("UserFans", { id });
   }, []);
@@ -112,12 +98,6 @@ const User: React.FC<UserProps> = (props) => {
   const handleNavigateToFollowing = useCallback(() => {
     navigate("UserFollow", { id });
   }, []);
-
-  const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
-  const offset = useSharedValue(0);
-  const enable = useSharedValue(false);
-  const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
-  const arefs = useRef(new Array(4));
 
   const main = useAnimatedStyle(() => {
     return {
@@ -132,7 +112,6 @@ const User: React.FC<UserProps> = (props) => {
 
   const onScrollCallback = (y: number) => {
     "worklet";
-    // console.log("???", y);
     if (y < 0) return;
     if (y <= stickyHeight) {
       scrollY.value = -y;
@@ -184,6 +163,9 @@ const User: React.FC<UserProps> = (props) => {
     })
     .onEnd(() => {
       if (scrollY.value > 0) {
+        if (scrollY.value >= PULL_OFFSETY && !refreshing) {
+          runOnJS(setRefreshing)(true);
+        }
         scrollY.value = withTiming(
           0,
           {
@@ -219,6 +201,7 @@ const User: React.FC<UserProps> = (props) => {
         stickyHeight,
         enable,
         arefs,
+        refreshing
       }}
     >
       <GestureDetector gesture={panGesture}>
@@ -276,13 +259,13 @@ const User: React.FC<UserProps> = (props) => {
             </View>
           </View>
           <TabView
-            tabBar={["嘟文", "嘟文和回复", "已置顶", "媒体"]}
+            tabBar={tabViewConfig.map((tab) => tab.title)}
             initialPage={0}
             style={{ flex: 1 }}
             onChangeTab={(index) => setCurrentIndex(index)}
             renderTabBar={() => (
               <DefaultTabBar
-                tabBarWidth={Screen.width / 4}
+                tabBarWidth={Screen.width / tabViewConfig.length}
                 tabBarInactiveTextColor="#333"
                 tabBarActiveTextColor={Colors.theme}
                 tabBarTextStyle={{
@@ -293,15 +276,19 @@ const User: React.FC<UserProps> = (props) => {
                   height: 4,
                   backgroundColor: Colors.theme,
                   width: 50,
-                  marginLeft: (Screen.width / 4 - 50) / 2,
+                  marginLeft: (Screen.width / tabViewConfig.length - 50) / 2,
                 }}
               />
             )}
           >
-            <UserLine index={0} />
-            <UserLine index={1} />
-            <UserLine index={2} />
-            <UserLine index={3} />
+            {tabViewConfig.map((tab, index) => (
+              <UserLine
+                key={tab.title}
+                index={index}
+                fetchApi={tab.fetchApi(id)}
+                onRefreshFinish={() => setRefreshing(false)}
+              />
+            ))}
           </TabView>
         </Animated.View>
       </GestureDetector>

@@ -20,7 +20,7 @@ export const getStatusesById = (
 ): Response<Timelines[]> => {
   const url = "/api/v1/accounts/" + id + "/statuses";
 
-  return get<Timelines[]>(url, );
+  return get<Timelines[]>(url, params);
 };
 
 // 获取当前账号的用户信息  返回当前用户账号信息
@@ -33,7 +33,7 @@ export const getSelfInformation = (): Response<Account> => {
 // 获取当前账号的所有推文和回复
 export const getStatusesReplyById = (
   id: string,
-  params: string = "",
+  params: object,
 ): Response<Timelines[]> => {
   const url =
     "/api/v1/accounts/" + id + "/statuses?exclude_replies=false&" + params;
@@ -44,30 +44,36 @@ export const getStatusesReplyById = (
 // 获取当前账号的所有媒体信息
 export const getStatusesMediaById = (
   id: string,
-  params: string = "",
+  params: object,
 ): Response<Timelines[]> => {
-  const url = "/api/v1/accounts/" + id + "/statuses?only_media=true&" + params;
+  const defaultParams = {
+    only_media: true,
+  };
 
-  return get<Timelines[]>(url);
+  const url = "/api/v1/accounts/" + id + "/statuses";
+
+  return get<Timelines[]>(url, Object.assign(params, defaultParams));
 };
 
 // 获取当前账号的所有置顶消息
 export const getStatusesPinById = (
   id: string,
-  params: string = "",
+  params: object,
 ): Response<Timelines[]> => {
-  const url = "/api/v1/accounts/" + id + "/statuses?pinned=true&" + params;
+  const defaultParams = {
+    pinned: true,
+  };
 
-  return get<Timelines[]>(url);
+  const url = "/api/v1/accounts/" + id + "/statuses";
+
+  return get<Timelines[]>(url, Object.assign(params, defaultParams));
 };
 
 // 获取点赞的内容
-export const getFavouritesById = (
-  params: string = "",
-): Response<Timelines[]> => {
+export const getFavouritesById = (params: object): Response<Timelines[]> => {
   const url = "/api/v1/favourites" + params;
 
-  return get<Timelines[]>(url);
+  return get<Timelines[]>(url, params);
 };
 
 // 获取当前登录用户与所传递用户的关系

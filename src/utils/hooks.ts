@@ -108,8 +108,10 @@ const useRefreshList = <T extends { id: string }>(
   const [link, setLink] = useState<string>();
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
   const [end, setEnd] = useState(false);
+  const [err, setErr] = useState(false);
 
   const fetchData = async () => {
+    // setListStatus(RefreshState.Idle);
     const { data, headers } = await fetchApi({ limit });
     if (data) {
       if (data.length > 0) {
@@ -128,6 +130,7 @@ const useRefreshList = <T extends { id: string }>(
         }
       } else {
         Toast.show("暂时没有数据");
+        setErr(true);
         setListStatus(RefreshState.Idle);
       }
     }
@@ -164,6 +167,8 @@ const useRefreshList = <T extends { id: string }>(
         }
       } else {
         // 请求报错
+        setErr(true);
+        setListStatus(RefreshState.Idle);
       }
     }
   }, [dataSource, end, link]);
@@ -174,6 +179,7 @@ const useRefreshList = <T extends { id: string }>(
     fetchData,
     onRefresh,
     onLoadMore,
+    err,
   };
 };
 
