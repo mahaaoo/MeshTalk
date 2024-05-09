@@ -1,23 +1,25 @@
 import { Image } from "expo-image";
 import React, { useMemo } from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
+import { Emoji } from "../../config/interface";
 import { replaceNameEmoji } from "../../utils";
 
 interface LineItemNameProps {
   displayname: string;
   fontSize?: number;
+  emojis: Emoji[];
 }
 
 const LineItemName: React.FC<LineItemNameProps> = (props) => {
-  const { displayname, fontSize = 16 } = props;
+  const { displayname, fontSize = 16, emojis } = props;
 
   const name = useMemo(() => {
-    return replaceNameEmoji(displayname);
-  }, [displayname]);
+    return replaceNameEmoji(displayname, emojis);
+  }, [displayname, emojis]);
 
   return (
-    <>
+    <View style={styles.main}>
       {name.map((item, index) => {
         return !item.image ? (
           <Text
@@ -31,23 +33,27 @@ const LineItemName: React.FC<LineItemNameProps> = (props) => {
             key={`HomeLineItemName${index}`}
             style={styles.image}
             source={{
-              uri: "https://s3.acg.mn/custom_emojis/images/000/015/346/original/7341c51dd3b97a42.png",
+              uri: item.text,
             }}
             contentFit="cover"
           />
         );
       })}
-    </>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  main: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   text: {
     fontWeight: "bold",
   },
   image: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
   },
 });
 

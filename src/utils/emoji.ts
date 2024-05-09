@@ -315,8 +315,7 @@ export const replaceContentEmoji = (text: string): string => {
  * @param text 正文
  * @param emojis emojis数组
  */
-
-export const replaceNameEmoji = (text: string): any[] => {
+export const replaceNameEmoji = (text: string, emojis: Emoji[]): any[] => {
   if (!text || text.length === 0) {
     return [];
   }
@@ -330,10 +329,18 @@ export const replaceNameEmoji = (text: string): any[] => {
     ];
   }
 
-  const hash = useEmojiStore.getState().emojisHash;
+  let hash = new Map<string, Emoji>();
+
+  if (emojis && emojis.length > 0) {
+    for (const emoji of emojis) {
+      hash.set(emoji.shortcode, emoji);
+    }
+  } else {
+    hash = useEmojiStore.getState().emojisHash;
+  }
 
   const nameList = text.split(":");
-  return nameList.map((name: string) => {
+  const resizeList = nameList.map((name: string) => {
     const getEmoji = hash.get(name);
     if (!getEmoji || getEmoji === undefined) {
       return {
@@ -347,4 +354,5 @@ export const replaceNameEmoji = (text: string): any[] => {
       };
     }
   });
+  return resizeList;
 };

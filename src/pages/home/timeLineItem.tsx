@@ -27,7 +27,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
 
   const handleAvatar = useCallback(() => {
     console.log({ id: item.account.id });
-    navigate("User", { id: item.account.id });
+    navigate("User", { account: item.account });
   }, [item]);
 
   const handleNavigation = useCallback(() => {
@@ -67,6 +67,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
                         showItem.account.display_name ||
                         showItem.account.username
                       }
+                      emojis={showItem.account.emojis}
                     />
                     <Text style={styles.mentionText}>
                       {`@${showItem.account.acct}`}

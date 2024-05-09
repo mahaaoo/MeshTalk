@@ -15,22 +15,27 @@ import {
 
 import Colors from "../../config/colors";
 import { Relationship } from "../../config/interface";
-import { followById, unfollowById } from "../../server/account";
+import {
+  followById,
+  getRelationships,
+  unfollowById,
+} from "../../server/account";
 
 export enum FollowButtonStatus {
   UnFollow, // 关注
   Following, // 正在关注
   BothFollow, // 互相关注
+  LockFollowRequest, // 请求关注锁推账号
   Requesting, // 正在请求
 }
 
 interface FollowButtonProps {
-  relationships: Relationship[] | undefined;
   id: string;
+  locked: boolean; // 是否已锁定
 }
 
 const FollowButton: React.FC<FollowButtonProps> = (props) => {
-  const { relationships, id } = props;
+  const { id, locked } = props;
   // 获取上一次渲染的组件样式
   const prevContentRef: any = useRef();
   const [buttonStatus, setButtonStatus] = useState(
@@ -44,35 +49,41 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
   });
 
   useEffect(() => {
-    if (relationships && relationships.length > 0) {
-      const newRelationship = relationships.filter((item) => item.id === id)[0];
-      setRelationship(newRelationship);
-    }
-  }, [relationships]);
+    const fetchRelation = async () => {
+      const { data, ok } = await getRelationships(id);
+      if (ok && data) {
+        setRelationship(data[0]);
+      }
+    };
+
+    fetchRelation();
+  }, [id]);
 
   useEffect(() => {
-    if (relationship) {
-      const followed = relationship?.followed_by;
-      const following = relationship?.following;
+    const followedBy = relationship?.followed_by;
+    const following = relationship?.following;
+    const requested = relationship?.requested; // 关注lock账号，显示请求中
 
-      if (!followed && !following) {
-        // 既没有关注他、也没有被他关注
-        setButtonStatus(FollowButtonStatus.UnFollow);
-      }
-      if (followed && !following) {
-        // 他是你的粉丝
-        setButtonStatus(FollowButtonStatus.UnFollow);
-      }
-      if (!followed && following) {
-        // 仅仅关注他了
-        setButtonStatus(FollowButtonStatus.Following);
-      }
-      if (followed && following) {
-        // 既关注他、也被他关注、互关好友
-        setButtonStatus(FollowButtonStatus.BothFollow);
-      }
+    if (locked && requested) {
+      return setButtonStatus(FollowButtonStatus.LockFollowRequest);
     }
-  }, [relationship]);
+    if (!followedBy && !following) {
+      // 既没有关注他、也没有被他关注
+      return setButtonStatus(FollowButtonStatus.UnFollow);
+    }
+    if (followedBy && !following) {
+      // 他是你的粉丝
+      return setButtonStatus(FollowButtonStatus.UnFollow);
+    }
+    if (!followedBy && following) {
+      // 仅仅关注他了
+      return setButtonStatus(FollowButtonStatus.Following);
+    }
+    if (followedBy && following) {
+      // 既关注 他、也被他关注、互关好友
+      return setButtonStatus(FollowButtonStatus.BothFollow);
+    }
+  }, [relationship, locked]);
 
   const prevCount = prevContentRef.current;
 
@@ -97,7 +108,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     switch (true) {
       case buttonStatus === FollowButtonStatus.UnFollow: {
         return {
-          buttonText: "关注",
+          buttonText: locked ? "请求关注" : "关注",
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -137,36 +148,51 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
           indicatorColor: Colors.defaultWhite,
         };
       }
-      default: {
+      case buttonStatus === FollowButtonStatus.LockFollowRequest: {
         return {
-          buttonText: "关注",
+          buttonText: "等待通过",
           buttonStyle: {
-            backgroundColor: Colors.defaultWhite,
+            backgroundColor: Colors.theme,
             borderColor: Colors.theme,
           },
           textStyle: {
-            color: Colors.theme,
-            fontSize: 18,
+            color: Colors.defaultWhite,
+            fontSize: 16,
           },
-          indicatorColor: Colors.theme,
+          indicatorColor: Colors.defaultWhite,
         };
       }
     }
-  }, [buttonStatus]);
+  }, [buttonStatus, locked]);
 
   const handleOnPress = useCallback(async () => {
     if (buttonStatus === FollowButtonStatus.UnFollow) {
-      const { data } = await followById(id);
-      setRelationship(data);
+      setButtonStatus(FollowButtonStatus.Requesting);
+      const { data, ok } = await followById(id);
+      if (ok && data) {
+        setRelationship(data);
+      }
+      // setRelationship(data);
     }
     if (
       buttonStatus === FollowButtonStatus.Following ||
       buttonStatus === FollowButtonStatus.BothFollow
     ) {
-      const { data } = await unfollowById(id);
-      setRelationship(data);
+      setButtonStatus(FollowButtonStatus.Requesting);
+      const { data, ok } = await unfollowById(id);
+      if (ok && data) {
+        setRelationship(data);
+      }
+      // setRelationship(data);
     }
-    setButtonStatus(FollowButtonStatus.Requesting);
+    if (buttonStatus === FollowButtonStatus.LockFollowRequest) {
+      setButtonStatus(FollowButtonStatus.Requesting);
+      // TODO: 添加一个是否确认取消关注申请的alert
+      const { data, ok } = await unfollowById(id);
+      if (ok && data) {
+        setRelationship(data);
+      }
+    }
   }, [buttonStatus, id]);
 
   return (

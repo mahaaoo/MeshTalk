@@ -125,3 +125,15 @@ export const getFollowingById = (
 
   return get<Account[]>(url, params);
 };
+
+// Quickly lookup a username to see if it is available, skipping WebFinger resolution.
+// 根据用户id查询账户信息
+export const lookupAcct = (id: string): Response<Account> => {
+  const defaultParams = {
+    acct: id,
+  };
+
+  const url = "/api/v1/accounts/lookup";
+
+  return get<Account>(url, defaultParams);
+};

@@ -11,6 +11,7 @@ import Favourites from "./setting/favourites";
 import StatusDetail from "./statusDetail";
 import User from "./user";
 import WebView from "./webView";
+import { Account } from "../config/interface";
 
 export type RouterProps<T extends keyof StackParams> = NativeStackScreenProps<
   StackParams,
@@ -26,7 +27,7 @@ export type StackParams = {
     callBack: (code: string) => void;
   };
   User: {
-    id: string;
+    account: Account;
   };
   UserFans: {
     id: string;

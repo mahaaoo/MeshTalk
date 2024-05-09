@@ -15,7 +15,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
   const { item } = props;
 
   const handleNavigation = useCallback(() => {
-    navigate("User", { id: item.id });
+    navigate("User", { account: item });
   }, [item]);
 
   return (

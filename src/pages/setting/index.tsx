@@ -65,7 +65,7 @@ const Setting: React.FC<object> = () => {
   }, []);
 
   const handleToTest = useCallback(() => {
-    navigate("User", { id: currentAccount?.id });
+    navigate("User", { account: currentAccount });
   }, []);
 
   const onScroll = useAnimatedScrollHandler({
@@ -105,6 +105,7 @@ const Setting: React.FC<object> = () => {
                 currentAccount?.display_name || currentAccount?.username
               }
               fontSize={18}
+              emojis={currentAccount.emojis}
             />
             <Text style={styles.acct}>
               <Text>@</Text>

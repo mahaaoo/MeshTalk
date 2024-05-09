@@ -15,7 +15,7 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
   const { item, relationships } = props;
 
   const handleNavigation = useCallback(() => {
-    navigate("User", { id: item.account?.id });
+    navigate("User", { account: item.account });
   }, [item]);
 
   return (
@@ -32,10 +32,10 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
           <View style={styles.users}>
             <View style={styles.avatarContainer}>
               <Avatar url={item.account?.avatar} size={55} />
-              <FollowButton
+              {/* <FollowButton
                 relationships={relationships}
                 id={item.account?.id}
-              />
+              /> */}
             </View>
             <Text style={styles.displayName}>
               {item.account?.display_name || item.account?.username}

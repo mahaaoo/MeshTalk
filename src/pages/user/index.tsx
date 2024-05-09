@@ -8,7 +8,6 @@ import Animated, {
   interpolate,
   scrollTo,
   withTiming,
-  useAnimatedReaction,
   runOnJS,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -35,8 +34,8 @@ import {
   DefaultTabBar,
 } from "../../components";
 import { Screen, Colors } from "../../config";
-import { Account, Relationship } from "../../config/interface";
-import { getAccountsById, getRelationships } from "../../server/account";
+import { Account } from "../../config/interface";
+import { lookupAcct } from "../../server/account";
 import { StringUtil, goBack, replaceContentEmoji, navigate } from "../../utils";
 import LineItemName from "../home/lineItemName";
 import { RouterProps } from "../index";
@@ -46,7 +45,8 @@ const { height } = Screen;
 interface UserProps extends RouterProps<"User"> {}
 
 const User: React.FC<UserProps> = (props) => {
-  const { id } = props?.route?.params;
+  const { account } = props?.route?.params;
+  const { id, acct } = account;
 
   const inset = useSafeAreaInsets();
   const [stickyHeight, setStickyHeight] = useState(0); // 为StickyHead计算顶吸到顶端的距离
@@ -54,7 +54,8 @@ const User: React.FC<UserProps> = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [userData, setUserData] = useState<Account>();
-  const [relationship, setRelationship] = useState<Relationship[]>();
+  // const [relationship, setRelationship] = useState<Relationship[]>();
+  // const [account, setAccount] = useS
 
   const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
   const offset = useSharedValue(0);
@@ -65,22 +66,22 @@ const User: React.FC<UserProps> = (props) => {
   useEffect(() => {
     const fetchUserData = async () => {
       Loading.show();
-      const { data, ok } = await getAccountsById(id);
+      const { data, ok } = await lookupAcct(acct);
       if (ok && data) {
         setUserData(data);
       }
       Loading.hide();
     };
 
-    const fetchRelationships = async () => {
-      const { data, ok } = await getRelationships(id);
-      if (ok && data) {
-        setRelationship(data);
-      }
-    };
+    // const fetchRelationships = async () => {
+    //   const { data, ok } = await getRelationships(id);
+    //   if (ok && data) {
+    //     setRelationship(data);
+    //   }
+    // };
 
     fetchUserData();
-    fetchRelationships();
+    // fetchRelationships();
   }, []);
 
   // 返回上一页
@@ -201,7 +202,7 @@ const User: React.FC<UserProps> = (props) => {
         stickyHeight,
         enable,
         arefs,
-        refreshing
+        refreshing,
       }}
     >
       <GestureDetector gesture={panGesture}>
@@ -223,11 +224,12 @@ const User: React.FC<UserProps> = (props) => {
                     borderWidth={4}
                   />
                 </View>
-                <FollowButton relationships={relationship} id={id} />
+                <FollowButton id={id} locked={userData?.locked} />
               </View>
               <View style={{ marginTop: 5 }}>
                 <LineItemName
                   displayname={userData?.display_name}
+                  emojis={userData?.emojis}
                   fontSize={18}
                 />
                 <Text style={styles.acct}>
@@ -298,7 +300,11 @@ const User: React.FC<UserProps> = (props) => {
         height={HEADER_HEIGHT}
       >
         <View style={[styles.slider, { marginTop: inset.top }]}>
-          <LineItemName displayname={userData?.username} fontSize={18} />
+          <LineItemName
+            displayname={userData?.username}
+            fontSize={18}
+            emojis={userData?.emojis}
+          />
         </View>
       </SlideHeader>
       <PullLoading
