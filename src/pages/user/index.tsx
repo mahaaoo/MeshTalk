@@ -1,39 +1,27 @@
-import { useNavigation } from "@react-navigation/native";
-import React, {
-  useRef,
-  useEffect,
-  useCallback,
-  useState,
-  useMemo,
-} from "react";
+import React, { useEffect, useCallback, useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  GestureType,
-} from "react-native-gesture-handler";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Loading } from "react-native-ma-modal";
 import Animated, {
-  useAnimatedScrollHandler,
   useSharedValue,
-  useAnimatedProps,
   useAnimatedStyle,
   interpolate,
-  useAnimatedRef,
   scrollTo,
-  useAnimatedReaction,
-  Extrapolation,
   withTiming,
-  Easing,
-  SharedValue,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import HeadTabView from "./headTabView";
+import {
+  HeadTabViewContext,
+  GestureTypeRef,
+  IMAGE_HEIGHT,
+  HEADER_HEIGHT,
+  PULL_OFFSETY,
+  RESET_TIMING_EASING,
+} from "./type";
 import UserLine from "./userLine";
 import {
-  MyTabBar,
   Avatar,
-  StickyHeader,
   StretchableImage,
   PullLoading,
   SlideHeader,
@@ -44,83 +32,47 @@ import {
   DefaultTabBar,
 } from "../../components";
 import { Screen, Colors } from "../../config";
-import {
-  getAccountsById,
-  getStatusesById,
-  getStatusesReplyById,
-  getStatusesMediaById,
-  getStatusesPinById,
-  getRelationships,
-} from "../../server/account";
-import {
-  StringUtil,
-  useRequest,
-  goBack,
-  replaceContentEmoji,
-  navigate,
-} from "../../utils";
+import { Account, Relationship } from "../../config/interface";
+import { getAccountsById, getRelationships } from "../../server/account";
+import { StringUtil, goBack, replaceContentEmoji, navigate } from "../../utils";
 import LineItemName from "../home/lineItemName";
 import { RouterProps } from "../index";
 
-const { height, width } = Screen;
-
-const fetchUserById = (id: string = "") => {
-  const fn = () => {
-    return getAccountsById(id);
-  };
-  return fn;
-};
-
-const fetchRelationships = (id: string) => {
-  const fn = () => {
-    return getRelationships(id);
-  };
-  return fn;
-};
-
-type GestureTypeRef = React.MutableRefObject<GestureType | undefined>;
-const RESET_TIMING_EASING = Easing.bezier(0.33, 1, 0.68, 1);
+const { height } = Screen;
 
 interface UserProps extends RouterProps<"User"> {}
 
-const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
-const HEADERHEIGHT = 104; // 上滑逐渐显示的Header的高度, sticky最终停止的高度
-const PULLOFFSETY = 100; // 下拉刷新的触发距离
-
-// const HEADER_HEIGHT = IMAGEHEIGHT + 100 - HEADERHEIGHT;
-
 const User: React.FC<UserProps> = (props) => {
-  // const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
-  const scrollY = useSharedValue(0);
   const { id } = props?.route?.params;
 
   const inset = useSafeAreaInsets();
-  const { data: userData, run: getUserData } = useRequest(fetchUserById(id), {
-    manual: true,
-    loading: true,
-  }); // 获取用户的个人信息
-  const { data: relationship, run: getRelationship } = useRequest(
-    fetchRelationships(id),
-    {
-      manual: true,
-      loading: false,
-    },
-  );
-
   const [stickyHeight, setStickyHeight] = useState(0); // 为StickyHead计算顶吸到顶端的距离
   const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
   const [enableScrollViewScroll, setEnableScrollViewScroll] = useState(true); // 最外层ScrollView是否可以滚动
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // const onScroll = useAnimatedScrollHandler({
-  //   onScroll: (event, context) => {
-  //     scrollY.value = event.contentOffset.y;
-  //   }
-  // });
+  const [userData, setUserData] = useState<Account>();
+  const [relationship, setRelationship] = useState<Relationship[]>();
 
   useEffect(() => {
-    getUserData();
-    getRelationship();
+    const fetchUserData = async () => {
+      Loading.show();
+      const { data, ok } = await getAccountsById(id);
+      if (ok && data) {
+        setUserData(data);
+      }
+      Loading.hide();
+    };
+
+    const fetchRelationships = async () => {
+      const { data, ok } = await getRelationships(id);
+      if (ok && data) {
+        setRelationship(data);
+      }
+    };
+
+    fetchUserData();
+    fetchRelationships();
   }, []);
 
   // 返回上一页
@@ -128,16 +80,14 @@ const User: React.FC<UserProps> = (props) => {
   // 由于个人简介内容高度不定，所以在请求获取到内容之后，重新的吸顶测量高度
   const handleOnLayout = (e: any) => {
     const { height } = e.nativeEvent.layout;
-    console.log({
-      setHeight: height + IMAGEHEIGHT - HEADERHEIGHT,
-    });
-    setStickyHeight(height + IMAGEHEIGHT - HEADERHEIGHT);
+    setStickyHeight(height + IMAGE_HEIGHT - HEADER_HEIGHT);
   };
+
   // 监听当前滚动位置
   const handleListener = (e: any) => {
     const offsetY = e.nativeEvent.contentOffset.y;
     // 下拉刷新
-    if (offsetY <= -PULLOFFSETY && !refreshing) {
+    if (offsetY <= -PULL_OFFSETY && !refreshing) {
       setRefreshing(true);
     }
     if (offsetY >= stickyHeight && enableScrollViewScroll) {
@@ -163,21 +113,18 @@ const User: React.FC<UserProps> = (props) => {
     navigate("UserFollow", { id });
   }, []);
 
-  const mainTranslate = useSharedValue(0); // 最外层View的Y方向偏移量
+  const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
   const offset = useSharedValue(0);
   const enable = useSharedValue(false);
   const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
-  const aref1 = useAnimatedRef();
-  const aref2 = useAnimatedRef();
-  const aref3 = useAnimatedRef();
-  const aref4 = useAnimatedRef();
+  const arefs = useRef(new Array(4));
 
   const main = useAnimatedStyle(() => {
     return {
       height: height + stickyHeight,
       transform: [
         {
-          translateY: mainTranslate.value,
+          translateY: scrollY.value,
         },
       ],
     };
@@ -188,51 +135,41 @@ const User: React.FC<UserProps> = (props) => {
     // console.log("???", y);
     if (y < 0) return;
     if (y <= stickyHeight) {
-      mainTranslate.value = -y;
+      scrollY.value = -y;
     } else {
-      mainTranslate.value = -stickyHeight;
+      scrollY.value = -stickyHeight;
     }
   };
-
-  useAnimatedReaction(() => enable.value, (value) => {
-  console.log("是否可滑动", value);
-  });
-
 
   // useMemo是必须的，在切换到新tab之后，需要重新获取Gesture属性
   const panGesture = Gesture.Pan()
     .activeOffsetY([-10, 10])
     .simultaneousWithExternalGesture(...nativeRefs)
     .onBegin(() => {
-      offset.value = mainTranslate.value;
-      // offset.value = mainTranslate.value;
-      console.log("onBegin", mainTranslate.value);
+      offset.value = scrollY.value;
     })
     .onUpdate(({ translationY }) => {
-      // console.log({
-      //   translationY,
-      //   mainTranslate: mainTranslate.value,
-      // });
       if (enable.value === true) {
+        // 当内部在滚动的时候，停止手势响应，即外层不滚动
         // console.log(translationY);
-        // if (mainTranslate.value === -stickyHeight &&  translationY > 0) {
+        // if (scrollY.value === -stickyHeight &&  translationY > 0) {
         //   enable.value = false;
         // } else {
         //   return;
         // }
         return;
-      };
-      if (mainTranslate.value < 0) {
-        mainTranslate.value = Math.max(
-          translationY + offset.value,
-          -stickyHeight,
-        );
-        if (mainTranslate.value <= -stickyHeight) {
-          // enable.value = true;
+      }
+      if (scrollY.value < 0) {
+        // 外层向上移动到吸顶预设位置的时候，stop
+        scrollY.value = Math.max(translationY + offset.value, -stickyHeight);
+        if (scrollY.value <= -stickyHeight) {
           if (enable.value === false) {
-            console.log("补偿补偿补偿补偿", enable.value);
+            /**
+             * 当在外层滑动到哪层的临界点不松手的时候，内层enableScroll属性不刷新，无法无缝衔接到内层滚动
+             * 用此函数补偿模拟内容滚动，当松手onEnd的时候，再设置enable，让内层开始真正滚动
+             */
             scrollTo(
-              aref1,
+              arefs.current[currentIndex],
               0,
               Math.abs(translationY + offset.value + stickyHeight),
               false,
@@ -240,32 +177,25 @@ const User: React.FC<UserProps> = (props) => {
           }
         } else {
           enable.value = false;
-          // console.log("222");
         }
       } else {
-        mainTranslate.value = interpolate(
-          translationY,
-          [0, height],
-          [0, height / 4],
-        );
+        scrollY.value = interpolate(translationY, [0, height], [0, height / 4]);
       }
     })
     .onEnd(() => {
-      if (mainTranslate.value > 0) {
-        console.log("onEndonEnd", mainTranslate.value);
-        mainTranslate.value = withTiming(
+      if (scrollY.value > 0) {
+        scrollY.value = withTiming(
           0,
           {
             easing: RESET_TIMING_EASING,
           },
           () => {
-            console.log("onEndonEnd", mainTranslate.value);
             // 确保mainTranslate回到顶端
-            mainTranslate.value = 0;
+            scrollY.value = 0;
           },
         );
       } else {
-        if (mainTranslate.value === -stickyHeight) {
+        if (scrollY.value === -stickyHeight) {
           enable.value = true;
         }
       }
@@ -279,14 +209,25 @@ const User: React.FC<UserProps> = (props) => {
   };
 
   return (
-    <>
+    <HeadTabViewContext.Provider
+      value={{
+        scrollY,
+        handleChildRef,
+        onScrollCallback,
+        currentIndex,
+        id,
+        stickyHeight,
+        enable,
+        arefs,
+      }}
+    >
       <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.container, main]}>
           <StretchableImage
             isblur={refreshing}
             scrollY={scrollY}
             url={userData?.header}
-            imageHeight={IMAGEHEIGHT}
+            imageHeight={IMAGE_HEIGHT}
           />
           <View style={styles.header} onLayout={handleOnLayout}>
             <View style={styles.avatarContainer}>
@@ -357,90 +298,42 @@ const User: React.FC<UserProps> = (props) => {
               />
             )}
           >
-            <UserLine
-              index={0}
-              {...{
-                mainTranslate,
-                handleChildRef,
-                onScrollCallback,
-                currentIndex,
-                id,
-                enable,
-                stickyHeight,
-                aref: aref1,
-              }}
-            />
-            <UserLine
-              index={1}
-              {...{
-                mainTranslate,
-                handleChildRef,
-                onScrollCallback,
-                currentIndex,
-                id,
-                enable,
-                stickyHeight,
-                aref: aref2,
-              }}
-            />
-            <UserLine
-              index={2}
-              {...{
-                mainTranslate,
-                handleChildRef,
-                onScrollCallback,
-                currentIndex,
-                id,
-                enable,
-                stickyHeight,
-                aref: aref3,
-              }}
-            />
-            <UserLine
-              index={3}
-              {...{
-                mainTranslate,
-                handleChildRef,
-                onScrollCallback,
-                currentIndex,
-                id,
-                enable,
-                stickyHeight,
-                aref: aref4,
-              }}
-            />
+            <UserLine index={0} />
+            <UserLine index={1} />
+            <UserLine index={2} />
+            <UserLine index={3} />
           </TabView>
         </Animated.View>
       </GestureDetector>
       <SlideHeader
-        offsetY={IMAGEHEIGHT}
+        offsetY={IMAGE_HEIGHT}
         scrollY={scrollY}
-        height={HEADERHEIGHT}
+        height={HEADER_HEIGHT}
       >
         <View style={[styles.slider, { marginTop: inset.top }]}>
           <LineItemName displayname={userData?.username} fontSize={18} />
         </View>
       </SlideHeader>
-      {/* <PullLoading
+      <PullLoading
         scrollY={scrollY}
         refreshing={refreshing}
-        top={IMAGEHEIGHT / 2}
+        top={IMAGE_HEIGHT / 2}
         left={Screen.width / 2}
-        offsetY={PULLOFFSETY}
-      /> */}
+        offsetY={PULL_OFFSETY}
+      />
       <TouchableOpacity
         style={[styles.back, { top: inset.top + 10 }]}
         onPress={handleBack}
       >
         <Icon name="arrowLeft" color="#fff" size={18} />
       </TouchableOpacity>
-    </>
+    </HeadTabViewContext.Provider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
+    backgroundColor: Colors.pageDefaultBackground,
   },
   back: {
     position: "absolute",
@@ -453,7 +346,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
-    backgroundColor: "orange",
+    backgroundColor: Colors.defaultWhite,
     paddingBottom: 10,
   },
   avatarContainer: {

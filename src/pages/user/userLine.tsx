@@ -1,59 +1,36 @@
-import { FlashList } from "@shopify/flash-list";
-import React, { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
-import {
-  Gesture,
-  GestureDetector,
-  GestureType,
-} from "react-native-gesture-handler";
+import React, { useEffect, useRef } from "react";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedRef,
   useAnimatedReaction,
   useAnimatedScrollHandler,
-  useAnimatedStyle,
   scrollTo,
-  SharedValue,
   useAnimatedProps,
-  runOnJS,
 } from "react-native-reanimated";
 
-import { useHeadTab } from "./headTabView";
-import { RefreshList } from "../../components";
-import { Colors, Screen } from "../../config";
+import { useHeadTabView, HEADER_HEIGHT } from "./type";
+import { Screen } from "../../config";
 import { getStatusesById } from "../../server/account";
 import { useRefreshList } from "../../utils/hooks";
-import DefaultLineItem from "../home/defaultLineItem";
 import HomeLineItem from "../home/timeLineItem";
 
-const HEADERHEIGHT = 104; // 上滑逐渐显示的Header的高度
-const AnimatedRefreshList = Animated.createAnimatedComponent(FlatList);
-type GestureTypeRef = React.MutableRefObject<GestureType | undefined>;
-
 interface UserLineProps {
-  id: string;
   index: number;
-  currentIndex: number;
-  mainTranslate: SharedValue<number>;
-  handleChildRef: (ref: GestureTypeRef) => void;
-  onScrollCallback: (y: number) => void;
-  enable: SharedValue<boolean>;
-  stickyHeight: number;
 }
 
 const UserLine: React.FC<UserLineProps> = (props) => {
+  const { index } = props;
   const {
-    index,
     currentIndex,
     id,
-    mainTranslate,
+    scrollY,
     handleChildRef,
-    onScrollCallback,
     enable,
+    arefs,
     stickyHeight,
-    aref,
-  } = props;
-  const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
+  } = useHeadTabView();
+  const { dataSource, onRefresh } = useRefreshList(
     (params) => getStatusesById(id, params),
     "Normal",
     20,
@@ -74,35 +51,33 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   // };
 
   const scroll = useSharedValue(0);
-  // const aref = useAnimatedRef();
+  const aref = useAnimatedRef();
   const nativeRef = useRef();
 
   // 当某一个tab滑到顶，所有重置所有tab
   useAnimatedReaction(
-    () => mainTranslate.value,
+    () => scrollY.value,
     (value) => {
       if (index !== currentIndex) {
-        // if (value === -stickyHeight) {
-        //   scrollTo(aref, 0, Math.max(-value, scroll.value), false);
-        // } else {
-        //   scrollTo(aref, 0, -value, false);
-        // }
+        if (value < -stickyHeight) {
+          scrollTo(aref, 0, Math.max(-value, scroll.value), false);
+        } else {
+          scrollTo(aref, 0, -value, false);
+        }
       }
-      // if (value === -stickyHeight) {
-      //   console.log("可以滑动了");
-      //   enable.value = true;
+      // if (value < -stickyHeight) {
+      //   console.log("aaaa", scroll.value);
       // }
-      // console.log({value, scroll});
-      // scrollTo(aref, 0, -mainTranslate.value, false);
     },
     [index, currentIndex, scroll],
   );
 
   useEffect(() => {
     if (aref) {
-      scrollTo(aref, 0, -mainTranslate.value, false);
+      arefs.current[index] = aref;
+      // scrollTo(aref, 0, -scrollY.value, false);
     }
-  }, [aref]);
+  }, [aref, index]);
 
   useEffect(() => {
     if (nativeRef.current) {
@@ -114,8 +89,9 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   const onScroll = useAnimatedScrollHandler({
     onScroll(event) {
       scroll.value = event.contentOffset.y;
-      console.log("scroll", scroll.value);
-      if (scroll.value === 0) {
+      // console.log("scroll", scroll.value);
+      if (scroll.value < 5) {
+        scrollTo(aref, 0, 0, false);
         enable.value = false;
       }
       // onScrollCallback && onScrollCallback(event.contentOffset.y);
@@ -136,7 +112,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         ref={aref}
         bounces={false}
         onScroll={onScroll}
-        style={{ height: Screen.height - HEADERHEIGHT }}
+        style={{ height: Screen.height - HEADER_HEIGHT }}
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         data={dataSource}
@@ -147,16 +123,5 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     </GestureDetector>
   );
 };
-
-const styles = StyleSheet.create({
-  main: {
-    flex: 1,
-    backgroundColor: "cyan",
-  },
-  freshList: {
-    flex: 1,
-    width: Screen.width,
-  },
-});
 
 export default UserLine;

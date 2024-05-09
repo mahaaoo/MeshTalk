@@ -33,7 +33,7 @@ const SlideHeader: React.FC<SlideHeaderProps> = (props) => {
   const animatedStyle = useAnimatedStyle(() => {
     return {
       opacity: interpolate(
-        scrollY.value,
+        -scrollY.value,
         [0, offsetY / 2, offsetY],
         [0, 0.3, 1],
         Extrapolation.CLAMP,

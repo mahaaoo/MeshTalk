@@ -42,26 +42,26 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
     return blurRadius;
   }, [isblur, blurRadius]);
 
-  const imageStyle = useAnimatedStyle(() => {
+  const imageStyle = useAnimatedStyle<{ transform }>(() => {
     return {
       opacity: imageOpcity.value,
       transform: [
         {
           translateY: interpolate(
-            scrollY.value,
+            -scrollY.value,
             [-imageHeight, 0],
             [-imageHeight / 2, 0],
             Extrapolation.CLAMP,
           ),
         },
-        // {
-        //   scale: interpolate(
-        //     scrollY.value,
-        //     [-imageHeight, 0, imageHeight],
-        //     [2, 1, 1],
-        //     Extrapolation.CLAMP,
-        //   ),
-        // },
+        {
+          scale: interpolate(
+            -scrollY.value,
+            [-imageHeight, 0, imageHeight],
+            [2, 1, 1],
+            Extrapolation.CLAMP,
+          ),
+        },
       ],
     };
   });

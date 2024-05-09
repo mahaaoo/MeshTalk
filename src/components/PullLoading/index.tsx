@@ -2,7 +2,12 @@
  * 根据ScrollView或者FlatList等组件，下拉动作显示的Loading
  */
 import React, { useMemo, useEffect, memo } from "react";
-import { ActivityIndicator, Animated, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+} from "react-native-reanimated";
 
 interface PullLoadingProps {
   refreshing: boolean;
@@ -25,13 +30,11 @@ const PullLoading: React.FC<PullLoadingProps> = memo((props) => {
     onRefresh,
   } = props;
 
+  const opacity = useSharedValue(0);
+
   const optatus = useMemo(() => {
     if (!refreshing) {
-      return scrollY.interpolate({
-        inputRange: [-offsetY, 0],
-        outputRange: [1, 0],
-        extrapolate: "clamp",
-      });
+      return interpolate(-scrollY.value, [-offsetY, 0], [1, 0]);
     } else {
       return 1;
     }
@@ -43,6 +46,18 @@ const PullLoading: React.FC<PullLoadingProps> = memo((props) => {
     }
   }, [refreshing]);
 
+  const animatedStyle = useAnimatedStyle(() => {
+    if (!refreshing) {
+      return {
+        opacity: interpolate(-scrollY.value, [-offsetY, 0], [1, 0]),
+      };
+    } else {
+      return {
+        opacity: 1,
+      };
+    }
+  });
+
   return (
     <Animated.View
       style={[
@@ -50,10 +65,10 @@ const PullLoading: React.FC<PullLoadingProps> = memo((props) => {
         {
           width: size,
           height: size,
-          opacity: optatus,
           top: top - size / 2,
           left: left - size / 2,
         },
+        animatedStyle,
       ]}
     >
       <ActivityIndicator color="#fff" />
