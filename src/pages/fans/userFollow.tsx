@@ -11,11 +11,14 @@ interface UserFollowProps extends RouterProps<"UserFollow"> {}
 
 const UserFollow: React.FC<UserFollowProps> = (props) => {
   const { id } = props?.route?.params;
-  const { dataSource, listStatus, onLoadMore, onRefresh, fetchData } =
-    useRefreshList((params) => getFollowingById(id, params), "Link", 40);
+  const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
+    (params) => getFollowingById(id, params),
+    "Link",
+    40,
+  );
 
   useEffect(() => {
-    fetchData();
+    onRefresh();
   }, []);
 
   return (

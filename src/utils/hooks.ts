@@ -110,13 +110,13 @@ const useRefreshList = <T extends { id: string }>(
   const [end, setEnd] = useState(false);
   const [err, setErr] = useState(false);
 
+  // 直接使用fetchData，如果首页数据不够一屏，会触发loadMore方法，多发一次请求，直接使用onRefresh则没问题
   const fetchData = async () => {
     // setListStatus(RefreshState.Idle);
     const { data, headers } = await fetchApi({ limit });
     if (data) {
       if (data.length > 0) {
         setDataSource(data);
-
         if (limit > 0 && data.length < limit) {
           setEnd(true);
           setListStatus(RefreshState.NoMoreData);
