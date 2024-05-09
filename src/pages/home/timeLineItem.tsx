@@ -18,7 +18,7 @@ import { replaceContentEmoji, DateUtil, navigate } from "../../utils";
 
 interface TimeLineItemProps {
   item: Timelines;
-  needToolbar: boolean; // 是否显示转发工具条
+  needToolbar?: boolean; // 是否显示转发工具条
 }
 
 const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
@@ -69,16 +69,14 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
                       }
                       emojis={showItem.account.emojis}
                     />
-                    <Text style={styles.mentionText}>
-                      {`@${showItem.account.acct}`}
-                    </Text>
                   </Text>
                 </View>
-                <Icon name="arrowDown" size={18} color="#ddd" />
               </View>
               <View style={styles.sourceContainer}>
-                <Text style={styles.sourceText}>
-                  {DateUtil.dateToFromNow(showItem.created_at)}
+                <View style={styles.sourceView}>
+                  <Text style={styles.mentionText}>
+                    {`@${showItem.account.acct}`}
+                  </Text>
                   {showItem.application ? (
                     <Text style={styles.nameText}>
                       &nbsp;&nbsp;来自
@@ -89,6 +87,9 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
                   ) : (
                     <View />
                   )}
+                </View>
+                <Text style={styles.sourceText}>
+                  {DateUtil.dateToFromNow(showItem.created_at)}
                 </Text>
               </View>
             </View>
@@ -110,6 +111,9 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
           ) : null}
         </View>
       </TouchableOpacity>
+      <View style={styles.more}>
+        <Icon name="three_point" size={18} color="#bbb" />
+      </View>
     </View>
   );
 };
@@ -166,15 +170,27 @@ const styles = StyleSheet.create({
   },
   sourceContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sourceView: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   sourceText: {
-    fontSize: 13,
+    fontSize: 12,
     color: Colors.commonToolBarText,
-    marginTop: 8,
+    marginLeft: 8,
   },
   nameText: {
     fontSize: 12,
+    color: Colors.commonToolBarText,
   },
+  more: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+  }
 });
 
 export default TimeLineItem;

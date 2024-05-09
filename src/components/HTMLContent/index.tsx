@@ -13,11 +13,11 @@ import Colors from "../../config/colors";
 const defaultTagsStyles = {
   p: {
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 23,
   },
   a: {
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 23,
     textDecorationLine: "none",
     color: Colors.linkTagColor,
   },

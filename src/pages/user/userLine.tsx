@@ -8,9 +8,10 @@ import Animated, {
   useAnimatedScrollHandler,
   scrollTo,
   useAnimatedProps,
+  withTiming,
 } from "react-native-reanimated";
 
-import { useHeadTabView, HEADER_HEIGHT } from "./type";
+import { useHeadTabView, HEADER_HEIGHT, RESET_TIMING_EASING } from "./type";
 import { Screen } from "../../config";
 import { Response, Timelines } from "../../config/interface";
 import { useRefreshList } from "../../utils/hooks";
@@ -45,12 +46,13 @@ const UserLine: React.FC<UserLineProps> = (props) => {
 
   useEffect(() => {
     const refresh = async () => {
-      console.log("1111111");
       await onRefresh();
       onRefreshFinish && onRefreshFinish();
-      console.log("22222222");
-    }
-    console.log("?????refrehs");
+      scrollY.value = withTiming(-stickyHeight, {
+        duration: 500,
+        easing: RESET_TIMING_EASING,
+      });
+    };
 
     if (refreshing && index === currentIndex) {
       console.log("触发下拉刷新");
@@ -140,7 +142,6 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         onScroll={onScroll}
         style={{ height: Screen.height - HEADER_HEIGHT }}
         scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
         data={dataSource}
         renderItem={({ item }) => <HomeLineItem item={item} />}
         keyExtractor={(item, index) => item?.id || index.toString()}
