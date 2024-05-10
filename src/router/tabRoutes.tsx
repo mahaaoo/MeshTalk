@@ -54,7 +54,7 @@ const TabRouter: React.FC<object> = () => {
         name="New"
         component={Publish}
         options={{
-          tabBarLabel: "新推文",
+          tabBarLabel: "新嘟文",
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {

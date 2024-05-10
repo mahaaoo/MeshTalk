@@ -11,7 +11,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { useHeadTabView, HEADER_HEIGHT, RESET_TIMING_EASING } from "./type";
+import {
+  useHeadTabView,
+  HEADER_HEIGHT,
+  RESET_TIMING_EASING,
+  NestedScrollStatus,
+  NUMBER_AROUND,
+} from "./type";
 import { Screen } from "../../config";
 import { Response, Timelines } from "../../config/interface";
 import { useRefreshList } from "../../utils/hooks";
@@ -33,6 +39,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     arefs,
     stickyHeight,
     refreshing,
+    nestedScrollStatus,
   } = useHeadTabView();
   const { dataSource, onRefresh, err, fetchData } = useRefreshList(
     fetchApi,
@@ -40,9 +47,22 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     20,
   );
 
+  const scroll = useSharedValue(0);
+  const aref = useAnimatedRef();
+  const nativeRef = useRef();
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    "worklet";
+    if (scroll.value > 0) {
+      nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
+    } else {
+      nestedScrollStatus.value = NestedScrollStatus.OutScrolling;
+    }
+  }, [currentIndex]);
 
   useEffect(() => {
     const refresh = async () => {
@@ -60,30 +80,23 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     }
   }, [index, currentIndex, refreshing]);
 
-  // const handleListener = (e: any) => {
-  //   const offsetY = e.nativeEvent.contentOffset.y;
-  //   if (offsetY < 1) {
-  //     onTop && onTop();
-  //     // 保证table滚到最上面
-  //     table?.current?.scrollToOffset({ x: 0, y: 0, animated: true });
-  //   }
-  //   return null;
-  // };
-
-  const scroll = useSharedValue(0);
-  const aref = useAnimatedRef();
-  const nativeRef = useRef();
-
   // 当某一个tab滑到顶，所有重置所有tab
   useAnimatedReaction(
     () => scrollY.value,
     (value) => {
-      if (index !== currentIndex) {
-        if (value < -stickyHeight) {
-          scrollTo(aref, 0, 0, false);
-        } else {
-          // scrollTo(aref, 0, -value, false);
-        }
+      // // 当外层开始响应滚动的时候，所有内层滚动到顶
+      // if (index === 0) {
+      //   console.log("ad", {
+      //     value,
+      //     cc: -stickyHeight,
+      //   });
+      // }
+
+      if (value > -stickyHeight + NUMBER_AROUND && scroll.value > 0) {
+        console.log("reset");
+        scrollTo(aref, 0, 0, false);
+      } else {
+        // scrollTo(aref, 0, -value, false);
       }
       // if (value < -stickyHeight) {
       //   console.log("aaaa", scroll.value);
@@ -110,11 +123,12 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     onScroll(event) {
       scroll.value = event.contentOffset.y;
       // console.log("scroll", scroll.value);
-      if (scroll.value < 5) {
+      if (scroll.value < NUMBER_AROUND) {
         scrollTo(aref, 0, 0, false);
         enable.value = false;
+      } else {
+        nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
       }
-      // onScrollCallback && onScrollCallback(event.contentOffset.y);
     },
   });
 

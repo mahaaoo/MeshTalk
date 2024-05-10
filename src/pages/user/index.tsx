@@ -9,6 +9,7 @@ import Animated, {
   scrollTo,
   withTiming,
   runOnJS,
+  withDecay,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -20,6 +21,7 @@ import {
   PULL_OFFSETY,
   RESET_TIMING_EASING,
   tabViewConfig,
+  NestedScrollStatus,
 } from "./type";
 import UserLine from "./userLine";
 import {
@@ -54,14 +56,14 @@ const User: React.FC<UserProps> = (props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [userData, setUserData] = useState<Account>();
-  // const [relationship, setRelationship] = useState<Relationship[]>();
-  // const [account, setAccount] = useS
 
   const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
   const offset = useSharedValue(0);
   const enable = useSharedValue(false);
   const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
   const arefs = useRef(new Array(4));
+
+  const nestedScrollStatus = useSharedValue(NestedScrollStatus.OutScrolling);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -73,15 +75,7 @@ const User: React.FC<UserProps> = (props) => {
       Loading.hide();
     };
 
-    // const fetchRelationships = async () => {
-    //   const { data, ok } = await getRelationships(id);
-    //   if (ok && data) {
-    //     setRelationship(data);
-    //   }
-    // };
-
     fetchUserData();
-    // fetchRelationships();
   }, []);
 
   // 返回上一页
@@ -129,14 +123,25 @@ const User: React.FC<UserProps> = (props) => {
       offset.value = scrollY.value;
     })
     .onUpdate(({ translationY }) => {
+      // console.log("onUpdate", {
+      //   translationY,
+      //   enable: enable.value,
+      //   scrollY: scrollY.value,
+      // });
       if (enable.value === true) {
-        // 当内部在滚动的时候，停止手势响应，即外层不滚动
-        // console.log(translationY);
-        // if (scrollY.value === -stickyHeight &&  translationY > 0) {
-        //   enable.value = false;
-        // } else {
-        //   return;
-        // }
+        // 当内部在滚动的时候，停止手势响应，即外层不滚动, 当在临界点的时候，让向上滚动继续
+        // console.log(translationY); ?
+        if (
+          scrollY.value === -stickyHeight &&
+          translationY > 0 &&
+          // 排除掉内部滚动正在进行中的情况
+          nestedScrollStatus.value !== NestedScrollStatus.InnerScrolling
+        ) {
+          // console.log("aref", arefs.current[currentIndex].viewName.value);
+          enable.value = false;
+        } else {
+          return;
+        }
         return;
       }
       if (scrollY.value < 0) {
@@ -162,7 +167,7 @@ const User: React.FC<UserProps> = (props) => {
         scrollY.value = interpolate(translationY, [0, height], [0, height / 4]);
       }
     })
-    .onEnd(() => {
+    .onEnd(({ velocityY }) => {
       if (scrollY.value > 0) {
         if (scrollY.value >= PULL_OFFSETY && !refreshing) {
           runOnJS(setRefreshing)(true);
@@ -178,6 +183,14 @@ const User: React.FC<UserProps> = (props) => {
           },
         );
       } else {
+        if (enable.value === false) {
+          // 在这里需要做一个根据速度的缓动
+          scrollY.value = withDecay({
+            velocity: velocityY,
+            clamp: [-stickyHeight, 0],
+          });
+        }
+
         if (scrollY.value === -stickyHeight) {
           enable.value = true;
         }
@@ -203,6 +216,7 @@ const User: React.FC<UserProps> = (props) => {
         enable,
         arefs,
         refreshing,
+        nestedScrollStatus,
       }}
     >
       <GestureDetector gesture={panGesture}>
