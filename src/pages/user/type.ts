@@ -14,13 +14,12 @@ export type GestureTypeRef = MutableRefObject<GestureType | undefined>;
 export interface HeadTabViewContextProps {
   scrollY: SharedValue<number>;
   handleChildRef: (ref: GestureTypeRef) => void;
-  onScrollCallback: (y: number) => void;
-  currentIndex: number;
+  currentIndex: SharedValue<number>;
   id: string;
   enable: SharedValue<boolean>;
-  stickyHeight: number;
+  stickyHeight: SharedValue<number>;
   arefs: MutableRefObject<AnimatedRef<any>[]>;
-  refreshing: boolean;
+  refreshing: SharedValue<boolean>;
   nestedScrollStatus: SharedValue<NestedScrollStatus>;
 }
 
@@ -45,11 +44,11 @@ export const tabViewConfig = [
     title: "嘟文和回复",
   },
   {
-    fetchApi: (id) => (params) => getStatusesMediaById(id, params),
+    fetchApi: (id) => (params) => getStatusesPinById(id, params),
     title: "已置顶",
   },
   {
-    fetchApi: (id) => (params) => getStatusesPinById(id, params),
+    fetchApi: (id) => (params) => getStatusesMediaById(id, params),
     title: "媒体",
   },
 ];

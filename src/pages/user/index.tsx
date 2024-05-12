@@ -8,7 +8,6 @@ import Animated, {
   interpolate,
   scrollTo,
   withTiming,
-  runOnJS,
   withDecay,
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -27,13 +26,13 @@ import UserLine from "./userLine";
 import {
   Avatar,
   StretchableImage,
-  PullLoading,
   SlideHeader,
   FollowButton,
   Icon,
   HTMLContent,
   TabView,
   DefaultTabBar,
+  PullLoading,
 } from "../../components";
 import { Screen, Colors } from "../../config";
 import { Account } from "../../config/interface";
@@ -51,9 +50,9 @@ const User: React.FC<UserProps> = (props) => {
   const { id, acct } = account;
 
   const inset = useSafeAreaInsets();
-  const [stickyHeight, setStickyHeight] = useState(0); // 为StickyHead计算顶吸到顶端的距离
-  const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const stickyHeight = useSharedValue(0);
+  // const [currentIndex, setCurrentIndex] = useState(0);
+  const currentIndex = useSharedValue(0);
 
   const [userData, setUserData] = useState<Account>();
 
@@ -61,9 +60,10 @@ const User: React.FC<UserProps> = (props) => {
   const offset = useSharedValue(0);
   const enable = useSharedValue(false);
   const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
-  const arefs = useRef(new Array(4));
+  const arefs = useRef(new Array(tabViewConfig.length));
 
   const nestedScrollStatus = useSharedValue(NestedScrollStatus.OutScrolling);
+  const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -83,7 +83,7 @@ const User: React.FC<UserProps> = (props) => {
   // 由于个人简介内容高度不定，所以在请求获取到内容之后，重新的吸顶测量高度
   const handleOnLayout = (e: any) => {
     const { height } = e.nativeEvent.layout;
-    setStickyHeight(height + IMAGE_HEIGHT - HEADER_HEIGHT);
+    stickyHeight.value = height + IMAGE_HEIGHT - HEADER_HEIGHT;
   };
 
   const handleNavigateToFans = useCallback(() => {
@@ -96,24 +96,14 @@ const User: React.FC<UserProps> = (props) => {
 
   const main = useAnimatedStyle(() => {
     return {
-      height: height + stickyHeight,
+      height: height + stickyHeight.value,
       transform: [
         {
           translateY: scrollY.value,
         },
       ],
     };
-  }, [stickyHeight]);
-
-  const onScrollCallback = (y: number) => {
-    "worklet";
-    if (y < 0) return;
-    if (y <= stickyHeight) {
-      scrollY.value = -y;
-    } else {
-      scrollY.value = -stickyHeight;
-    }
-  };
+  });
 
   // useMemo是必须的，在切换到新tab之后，需要重新获取Gesture属性
   const panGesture = Gesture.Pan()
@@ -123,21 +113,15 @@ const User: React.FC<UserProps> = (props) => {
       offset.value = scrollY.value;
     })
     .onUpdate(({ translationY }) => {
-      // console.log("onUpdate", {
-      //   translationY,
-      //   enable: enable.value,
-      //   scrollY: scrollY.value,
-      // });
       if (enable.value === true) {
         // 当内部在滚动的时候，停止手势响应，即外层不滚动, 当在临界点的时候，让向上滚动继续
         // console.log(translationY); ?
         if (
-          scrollY.value === -stickyHeight &&
+          scrollY.value === -stickyHeight.value &&
           translationY > 0 &&
           // 排除掉内部滚动正在进行中的情况
           nestedScrollStatus.value !== NestedScrollStatus.InnerScrolling
         ) {
-          // console.log("aref", arefs.current[currentIndex].viewName.value);
           enable.value = false;
         } else {
           return;
@@ -146,17 +130,20 @@ const User: React.FC<UserProps> = (props) => {
       }
       if (scrollY.value < 0) {
         // 外层向上移动到吸顶预设位置的时候，stop
-        scrollY.value = Math.max(translationY + offset.value, -stickyHeight);
-        if (scrollY.value <= -stickyHeight) {
+        scrollY.value = Math.max(
+          translationY + offset.value,
+          -stickyHeight.value,
+        );
+        if (scrollY.value <= -stickyHeight.value) {
           if (enable.value === false) {
             /**
              * 当在外层滑动到哪层的临界点不松手的时候，内层enableScroll属性不刷新，无法无缝衔接到内层滚动
              * 用此函数补偿模拟内容滚动，当松手onEnd的时候，再设置enable，让内层开始真正滚动
              */
             scrollTo(
-              arefs.current[currentIndex],
+              arefs.current[currentIndex.value],
               0,
-              Math.abs(translationY + offset.value + stickyHeight),
+              Math.abs(translationY + offset.value + stickyHeight.value),
               false,
             );
           }
@@ -164,13 +151,16 @@ const User: React.FC<UserProps> = (props) => {
           enable.value = false;
         }
       } else {
-        scrollY.value = interpolate(translationY, [0, height], [0, height / 4]);
+        scrollY.value = interpolate(translationY, [0, height], [0, height / 3]);
       }
     })
     .onEnd(({ velocityY }) => {
       if (scrollY.value > 0) {
-        if (scrollY.value >= PULL_OFFSETY && !refreshing) {
-          runOnJS(setRefreshing)(true);
+        console.log("scrollY", scrollY.value);
+        if (scrollY.value >= PULL_OFFSETY && !refreshing.value) {
+          // runOnJS(setRefreshing)(true);
+          console.log("触发下拉刷新PULL_OFFSETY");
+          refreshing.value = true;
         }
         scrollY.value = withTiming(
           0,
@@ -187,11 +177,11 @@ const User: React.FC<UserProps> = (props) => {
           // 在这里需要做一个根据速度的缓动
           scrollY.value = withDecay({
             velocity: velocityY,
-            clamp: [-stickyHeight, 0],
+            clamp: [-stickyHeight.value, 0],
           });
         }
 
-        if (scrollY.value === -stickyHeight) {
+        if (scrollY.value === -stickyHeight.value) {
           enable.value = true;
         }
       }
@@ -209,7 +199,6 @@ const User: React.FC<UserProps> = (props) => {
       value={{
         scrollY,
         handleChildRef,
-        onScrollCallback,
         currentIndex,
         id,
         stickyHeight,
@@ -222,7 +211,7 @@ const User: React.FC<UserProps> = (props) => {
       <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.container, main]}>
           <StretchableImage
-            isblur={refreshing}
+            isblur={refreshing.value === true}
             scrollY={scrollY}
             url={userData?.header}
             imageHeight={IMAGE_HEIGHT}
@@ -278,7 +267,9 @@ const User: React.FC<UserProps> = (props) => {
             tabBar={tabViewConfig.map((tab) => tab.title)}
             initialPage={0}
             style={{ flex: 1 }}
-            onChangeTab={(index) => setCurrentIndex(index)}
+            onChangeTab={(index) => {
+              currentIndex.value = index;
+            }}
             renderTabBar={() => (
               <DefaultTabBar
                 tabBarWidth={Screen.width / tabViewConfig.length}
@@ -302,7 +293,9 @@ const User: React.FC<UserProps> = (props) => {
                 key={tab.title}
                 index={index}
                 fetchApi={tab.fetchApi(id)}
-                onRefreshFinish={() => setRefreshing(false)}
+                onRefreshFinish={() => {
+                  refreshing.value = false;
+                }}
               />
             ))}
           </TabView>

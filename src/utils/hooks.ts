@@ -137,9 +137,9 @@ const useRefreshList = <T extends { id: string }>(
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     setListStatus(RefreshState.HeaderRefreshing);
-    fetchData();
+    await fetchData();
   };
 
   const onLoadMore = useCallback(async () => {

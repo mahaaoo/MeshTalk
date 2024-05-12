@@ -9,6 +9,8 @@ import Animated, {
   scrollTo,
   useAnimatedProps,
   withTiming,
+  runOnJS,
+  runOnUI,
 } from "react-native-reanimated";
 
 import {
@@ -30,7 +32,7 @@ interface UserLineProps {
 }
 
 const UserLine: React.FC<UserLineProps> = (props) => {
-  const { index, fetchApi, onRefreshFinish } = props;
+  const { index, fetchApi } = props;
   const {
     currentIndex,
     scrollY,
@@ -51,70 +53,67 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   const aref = useAnimatedRef();
   const nativeRef = useRef();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useAnimatedReaction(
+    () => currentIndex.value,
+    () => {
+      if (dataSource.length === 0 && index === currentIndex.value) {
+        runOnJS(fetchData)();
+      }
 
-  useEffect(() => {
+      if (scroll.value > 0) {
+        nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
+      } else {
+        nestedScrollStatus.value = NestedScrollStatus.OutScrolling;
+      }
+    },
+    [scroll, dataSource, index],
+  );
+
+  const move = () => {
     "worklet";
-    if (scroll.value > 0) {
-      nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
-    } else {
-      nestedScrollStatus.value = NestedScrollStatus.OutScrolling;
-    }
-  }, [currentIndex]);
+    refreshing.value = false;
+    scrollY.value = withTiming(-stickyHeight.value, {
+      duration: 500,
+      easing: RESET_TIMING_EASING,
+    });
+  };
 
-  useEffect(() => {
-    const refresh = async () => {
-      await onRefresh();
-      onRefreshFinish && onRefreshFinish();
-      scrollY.value = withTiming(-stickyHeight, {
-        duration: 500,
-        easing: RESET_TIMING_EASING,
-      });
-    };
+  const handleRefresh = async () => {
+    await onRefresh();
+    runOnUI(move)();
+  };
 
-    if (refreshing && index === currentIndex) {
-      console.log("触发下拉刷新");
-      refresh();
-    }
-  }, [index, currentIndex, refreshing]);
+  useAnimatedReaction(
+    () => refreshing.value,
+    (value) => {
+      if (value && index === currentIndex.value) {
+        console.log("触发下拉刷新");
+        runOnJS(handleRefresh)();
+      }
+    },
+    [index, currentIndex],
+  );
 
   // 当某一个tab滑到顶，所有重置所有tab
   useAnimatedReaction(
     () => scrollY.value,
     (value) => {
-      // // 当外层开始响应滚动的时候，所有内层滚动到顶
-      // if (index === 0) {
-      //   console.log("ad", {
-      //     value,
-      //     cc: -stickyHeight,
-      //   });
-      // }
-
-      if (value > -stickyHeight + NUMBER_AROUND && scroll.value > 0) {
+      if (value > -stickyHeight.value + NUMBER_AROUND && scroll.value > 0) {
         console.log("reset");
         scrollTo(aref, 0, 0, false);
-      } else {
-        // scrollTo(aref, 0, -value, false);
       }
-      // if (value < -stickyHeight) {
-      //   console.log("aaaa", scroll.value);
-      // }
     },
-    [index, currentIndex, scroll],
+    [scroll],
   );
 
   useEffect(() => {
     if (aref) {
       arefs.current[index] = aref;
-      // scrollTo(aref, 0, -scrollY.value, false);
     }
   }, [aref, index]);
 
   useEffect(() => {
     if (nativeRef.current) {
-      console.log("NativeRef");
       handleChildRef && handleChildRef(nativeRef);
     }
   }, [nativeRef.current]);
@@ -122,7 +121,6 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   const onScroll = useAnimatedScrollHandler({
     onScroll(event) {
       scroll.value = event.contentOffset.y;
-      // console.log("scroll", scroll.value);
       if (scroll.value < NUMBER_AROUND) {
         scrollTo(aref, 0, 0, false);
         enable.value = false;
@@ -139,6 +137,14 @@ const UserLine: React.FC<UserLineProps> = (props) => {
       scrollEnabled: enable.value,
     };
   });
+
+  if (!dataSource || dataSource.length === 0) {
+    return (
+      <View
+        style={{ height: Screen.height - HEADER_HEIGHT, width: Screen.width }}
+      />
+    );
+  }
 
   if (err) {
     return (
