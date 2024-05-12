@@ -16,6 +16,7 @@ import SplitLine from "./SplitLine";
 import StickyHeader from "./StickyHeader";
 import StretchableImage from "./StretchableImage";
 import { TabView, DefaultTabBar } from "./TabView";
+export * from "./ErrorBoundary";
 
 export {
   ActionsSheet,
