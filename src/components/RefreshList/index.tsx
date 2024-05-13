@@ -44,17 +44,17 @@ interface RefreshListProps extends FlashListProps<any> {
 
 const RefreshList: React.FC<RefreshListProps> = (props) => {
   const {
-    refreshState,
+    refreshState = RefreshState.Idle,
     data = [0, 0, 0, 0, 0, 0],
     onFooterRefresh,
     onHeaderRefresh,
     emptyComponent,
     footerContainerStyle,
     footerTextStyle,
-    footerRefreshingText,
-    footerFailureText,
-    footerNoMoreDataText,
-    canRefresh,
+    footerRefreshingText = "数据加载中…",
+    footerFailureText = "点击重新加载",
+    footerNoMoreDataText = "已加载全部数据",
+    canRefresh = true,
     ref,
     ...options
   } = props;
@@ -180,14 +180,6 @@ const RefreshList: React.FC<RefreshListProps> = (props) => {
       ) : null}
     </>
   );
-};
-
-RefreshList.defaultProps = {
-  footerRefreshingText: "数据加载中…",
-  footerFailureText: "点击重新加载",
-  footerNoMoreDataText: "已加载全部数据",
-  canRefresh: true,
-  refreshState: RefreshState.Idle,
 };
 
 const styles = StyleSheet.create({

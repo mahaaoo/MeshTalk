@@ -13,7 +13,13 @@ interface SplitLineProps {
 }
 
 const SplitLine: React.FC<SplitLineProps> = (props) => {
-  const { color, start, end, type, width } = props;
+  const {
+    color = Colors.defaultLineGreyColor,
+    start = 0,
+    end = 0,
+    type = "Horizontal",
+    width = 1,
+  } = props;
 
   if (type === "Vertical") {
     return (
@@ -41,14 +47,6 @@ const SplitLine: React.FC<SplitLineProps> = (props) => {
       />
     </Svg>
   );
-};
-
-SplitLine.defaultProps = {
-  color: Colors.defaultLineGreyColor,
-  start: 0,
-  end: 0,
-  type: "Horizontal",
-  width: 1,
 };
 
 export default SplitLine;

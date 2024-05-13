@@ -36,8 +36,8 @@ interface MyTabBarItemProps extends MyTabBarProps {
 
 const MyTabBarItem: React.FC<MyTabBarItemProps> = (props) => {
   const {
-    activeTextColor,
-    inactiveTextColor,
+    activeTextColor = "#2593FC",
+    inactiveTextColor = "black",
     textStyle,
     isTabActive,
     name,
@@ -159,11 +159,6 @@ const MyTabBar: React.FC<MyTabBarProps> = (props) => {
       />
     </View>
   );
-};
-
-MyTabBarItem.defaultProps = {
-  activeTextColor: "#2593FC",
-  inactiveTextColor: "black",
 };
 
 const styles = StyleSheet.create({
