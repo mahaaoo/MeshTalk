@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import LineItemName from "./lineItemName";
 import ToolBar from "./toolBar";
@@ -126,6 +125,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     alignItems: "center",
     marginLeft: 5,
+    marginRight: 50,
   },
   main: {
     backgroundColor: Colors.defaultWhite,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   turnText: {
-    color: Colors.defaultWhite,
+    color: Colors.commonToolBarText,
     marginLeft: 2,
   },
   commentText: {

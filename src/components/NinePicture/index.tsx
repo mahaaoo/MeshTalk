@@ -1,7 +1,8 @@
 import { Image } from "expo-image";
-import React, { useRef, useCallback } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useCallback } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 
+import { ImagePreviewUtil } from "../ImagePreview";
 import SpacingBox from "../SpacingBox";
 interface MediaImageProps {
   item: any;
@@ -14,8 +15,8 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
 
   return (
     <TouchableOpacity
-      style={styles.imageContainer}
       activeOpacity={1}
+      style={styles.imageContainer}
       onPress={() => handleClick && handleClick(index)}
     >
       <Image
@@ -40,30 +41,14 @@ interface NinePictureProps {
 
 const NinePicture: React.FC<NinePictureProps> = (props) => {
   const { imageList = [], height = 220 } = props;
-
-  const overlayRef: any = useRef(null);
+  // console.log(imageList);
 
   const handleClick = useCallback((index: number) => {
-    // const overlayView = (
-    //   <Overlay.PopView
-    //     containerStyle={{flex: 1}}
-    //     overlayOpacity={1}
-    //     type="custom"
-    //     customBounds={{x: 0, y: 0, width: Screen.width, height: Screen.height}}
-    //     ref={overlayRef}>
-    //     <AlbumView
-    //       style={{flex: 1}}
-    //       control={true}
-    //       images={imageList.map(item => {
-    //         return {uri: item?.url};
-    //       })}
-    //       defaultIndex={index}
-    //       onPress={() => overlayRef && overlayRef?.current?.close()}
-    //     />
-    //     <StatusBar animated={false} hidden={true} />
-    //   </Overlay.PopView>
-    // );
-    // Overlay.show(overlayView);
+    // console.log("handleClick", index);
+    ImagePreviewUtil.show(
+      imageList.map((image) => image.url),
+      index,
+    );
   }, []);
 
   if (imageList.length === 0) {

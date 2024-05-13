@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Icon } from "../../components";
 import { Colors } from "../../config";
