@@ -29,10 +29,6 @@ api.addResponseTransform((response) => {
 });
 
 const get = <T>(url, params?, axiosConfig?): Response<T> => {
-  console.log("get", {
-    base: api.getBaseURL(),
-    hear: api.headers,
-  });
   return api
     .get(url, params, axiosConfig)
     .then((response: ApiResponse<T>) => {

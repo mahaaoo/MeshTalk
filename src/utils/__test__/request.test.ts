@@ -1,10 +1,10 @@
-import { get, post } from "../request";
+import { get } from "../request";
 
-describe("TEST: apisauce", () => {
-  test("GET request", () => {
-    const { data } = get(
+describe("TEST: apisauce get", () => {
+  test("GET request", async () => {
+    const { ok } = await get(
       "https://cache.video.iqiyi.com/jp/avlist/202861101/1/",
     );
-    console.log(data);
+    expect(ok).toBe(true);
   });
 });
