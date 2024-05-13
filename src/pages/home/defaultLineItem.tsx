@@ -11,16 +11,18 @@ import { RefreshState, Skeleton } from "../../components";
 import { Screen } from "../../config";
 
 interface DefaultLineItemProps {
-  listStatus: RefreshState;
-  onRefresh: () => void;
+  listStatus?: RefreshState;
+  onRefresh?: () => void;
   style?: ViewStyle;
+  scrollEnabled?: boolean;
 }
 
 const DefaultLineItem: React.FC<DefaultLineItemProps> = (props) => {
-  const { listStatus, onRefresh, style } = props;
+  const { listStatus, onRefresh, style, scrollEnabled = true } = props;
 
   return (
     <ScrollView
+      scrollEnabled={scrollEnabled}
       refreshControl={
         <RefreshControl
           refreshing={listStatus === RefreshState.HeaderRefreshing}

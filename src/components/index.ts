@@ -1,6 +1,7 @@
 import ActionsSheet from "./ActionsSheet";
 import Avatar from "./Avatar";
 import Button from "./Button";
+import Error from "./Error";
 import FollowButton from "./FollowButton";
 import HTMLContent from "./HTMLContent";
 import { Icon } from "./Icon";
@@ -39,4 +40,5 @@ export {
   StretchableImage,
   TabView,
   DefaultTabBar,
+  Error,
 };

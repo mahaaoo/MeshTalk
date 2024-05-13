@@ -108,29 +108,29 @@ const useRefreshList = <T extends { id: string }>(
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [link, setLink] = useState<string>();
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
-  const [end, setEnd] = useState(false);
+  const end = useRef(false);
   const [err, setErr] = useState(false);
 
   // 直接使用fetchData，如果首页数据不够一屏，会触发loadMore方法，多发一次请求，直接使用onRefresh则没问题
   const fetchData = async () => {
-    // setListStatus(RefreshState.Idle);
     const { data, headers } = await fetchApi({ limit });
     if (data) {
       if (data.length > 0) {
         setDataSource(data);
         if (limit > 0 && data.length < limit) {
-          setEnd(true);
+          end.current = true;
           setListStatus(RefreshState.NoMoreData);
         } else {
-          setEnd(false);
+          end.current = false;
           setListStatus(RefreshState.Idle);
         }
-
         if (loadType === "Link") {
           setLink(headers.link);
         }
+        setErr(false);
       } else {
         Toast.show("暂时没有数据");
+        console.log("啊？", err);
         setErr(true);
         setListStatus(RefreshState.Idle);
       }
@@ -143,7 +143,7 @@ const useRefreshList = <T extends { id: string }>(
   };
 
   const onLoadMore = useCallback(async () => {
-    if (!end) {
+    if (end.current === false) {
       setListStatus(RefreshState.FooterRefreshing);
       // max_id获取方式和接口有关
       let maxId = "";
@@ -161,11 +161,12 @@ const useRefreshList = <T extends { id: string }>(
       if (data) {
         setDataSource(dataSource.concat(data));
         if (limit > 0 && data.length < limit) {
-          setEnd(true);
+          end.current = true;
           setListStatus(RefreshState.NoMoreData);
         } else {
           setListStatus(RefreshState.Idle);
         }
+        setErr(false);
       } else {
         // 请求报错
         setErr(true);
