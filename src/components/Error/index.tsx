@@ -20,7 +20,7 @@ const Error: React.FC<ErrorProps> = (props) => {
     <View style={style}>
       <Image
         source={Assets[type]}
-        style={{ width: 150, height: 150 }}
+        style={[{ width: 150, height: 150 }]}
         contentFit="cover"
       />
     </View>

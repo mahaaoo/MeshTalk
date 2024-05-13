@@ -93,6 +93,7 @@ const Publish: React.FC<PublishProps> = () => {
   }, []);
 
   const handleClickEmojis = useCallback(() => {
+    console.log("sc", scrollHeight);
     initEmoji();
     Keyboard.dismiss();
   }, []);

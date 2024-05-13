@@ -1,11 +1,11 @@
 import { Header } from "@react-navigation/elements";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 
 import FavouriteItem from "./favouriteItem";
 import FollowItem from "./followItem";
 import MetionItem from "./metionItem";
-import { RefreshList } from "../../components";
+import { RefreshList, Error } from "../../components";
 import { Colors } from "../../config";
 import { getRelationships } from "../../server/account";
 import { getNotifications } from "../../server/notifications";
@@ -14,7 +14,7 @@ import { useRefreshList } from "../../utils/hooks";
 interface AllNotifyProps {}
 
 const AllNotify: React.FC<AllNotifyProps> = () => {
-  const { dataSource, listStatus, onRefresh, onLoadMore } = useRefreshList(
+  const { dataSource, listStatus, onRefresh, onLoadMore, err } = useRefreshList(
     getNotifications,
     "Normal",
     40,
@@ -50,6 +50,25 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
       fetchRelationships();
     }
   }, [dataSource, relationships]);
+
+  if (err) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: Colors.defaultWhite,
+          alignItems: "center",
+        }}
+      >
+        <Header title="通知" />
+        <View style={styles.line} />
+        <Error type="NoNotify" style={{ marginTop: 200 }} />
+        <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
+          暂时没有通知
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

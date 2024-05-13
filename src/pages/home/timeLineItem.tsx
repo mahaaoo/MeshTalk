@@ -39,7 +39,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
       <TouchableOpacity activeOpacity={1} onPress={handleNavigation}>
         {item.reblog ? (
           <View style={styles.status}>
-            <Icon name="turn" size={20} color="#fff" />
+            <Icon name="turn" size={20} color={Colors.commonToolBarText} />
             <Text style={styles.turnText}>
               {item.account.display_name || item.account.username} 转发了
             </Text>
@@ -47,7 +47,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
         ) : null}
         {item.in_reply_to_id ? (
           <View style={styles.status}>
-            <Icon name="comment" size={20} color="#fff" />
+            <Icon name="comment" size={20} color={Colors.commonToolBarText} />
             <Text style={styles.commentText}>
               {item.account.display_name || item.account.username} 转评了
             </Text>
@@ -123,12 +123,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingHorizontal: 10,
     flexDirection: "row",
-    backgroundColor: Colors.timelineStatusTag,
-    marginTop: 15,
-    height: 30,
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
+    marginTop: 8,
     alignItems: "center",
+    marginLeft: 5,
   },
   main: {
     backgroundColor: Colors.defaultWhite,
@@ -151,7 +148,7 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   commentText: {
-    color: Colors.defaultWhite,
+    color: Colors.commonToolBarText,
     marginLeft: 2,
   },
   content: {
