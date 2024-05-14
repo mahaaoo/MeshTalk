@@ -35,6 +35,11 @@ interface ImagePreviewProps {
   initialIndex?: number;
 }
 
+const SCALE_MAX = 2;
+const SCALE_MIN = 0.5;
+
+const duration = 400;
+
 const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
   const { imageList, initialIndex = 0 } = props;
 
@@ -51,28 +56,57 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
 
   const opacity = useSharedValue(1);
 
+  const childrenX = useSharedValue(0);
+
+  const imageY = useSharedValue(0);
+  const offsetImageY = useSharedValue(0);
+  const imageX = useSharedValue(0);
+  const offsetImageX = useSharedValue(0);
+
+  const scale = useSharedValue(1);
+  const offsetScale = useSharedValue(0);
+
   const panGestureY = Gesture.Pan()
-    .activeOffsetY([-10, 10])
     .onBegin(() => {
+      offsetImageY.value = imageY.value;
+      offsetImageX.value = imageX.value;
+
       offsetY.value = translateY.value;
     })
-    .onUpdate(({ translationY }) => {
-      translateY.value = translationY + offsetY.value;
-      opacity.value = interpolate(
-        translateY.value,
-        [-0.3 * height, 0, 0.3 * height],
-        [0.7, 1, 0.7],
-        Extrapolation.CLAMP,
-      );
+    .onUpdate(({ translationY, translationX }) => {
+      if (scale.value > 1) {
+        imageX.value = translationX + offsetImageX.value;
+        imageY.value = translationY + offsetImageY.value;
+      } else {
+        childrenX.value = translationX;
+        translateY.value = translationY + offsetY.value;
+        opacity.value = interpolate(
+          translateY.value,
+          [-0.3 * height, 0, 0.3 * height],
+          [0.7, 1, 0.7],
+          Extrapolation.CLAMP,
+        );
+        scale.value = interpolate(
+          translateY.value,
+          [-height, 0, height],
+          [0.5, 1, 0.5],
+          Extrapolation.CLAMP,
+        );
+      }
     })
     .onEnd(({ velocityY }) => {
-      const destY = snapPoint(translateY.value, velocityY, snapPointsY);
+      if (scale.value > 1) {
+      } else {
+        const destY = snapPoint(translateY.value, velocityY, snapPointsY);
 
-      if (Math.abs(destY) >= 0.25 * height) {
-        // TODO：可以关闭
+        if (Math.abs(destY) >= 0.25 * height) {
+          // TODO：可以关闭
+        }
+        translateY.value = withTiming(0, { duration });
+        childrenX.value = withTiming(0, { duration });
+        opacity.value = withTiming(1, { duration });
+        scale.value = withTiming(1, { duration });
       }
-      translateY.value = withTiming(0, { duration: 500 });
-      opacity.value = withTiming(1, { duration: 500 });
     });
 
   const panGestureX = Gesture.Pan()
@@ -81,7 +115,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
       offsetX.value = translateX.value;
     })
     .onUpdate(({ translationX }) => {
-      // console.log(translationX + offsetX.value);
+      if (translateY.value !== 0 || scale.value !== 1) return;
       translateX.value = clamp(
         translationX + offsetX.value,
         -(imageList.length - 1) * width,
@@ -89,6 +123,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
       );
     })
     .onEnd(({ velocityX }) => {
+      if (translateY.value !== 0 || scale.value !== 1) return;
       const destX = snapPoint(translateX.value, velocityX, snapPointsX);
       const nextIndex = Math.abs(destX / width);
 
@@ -98,8 +133,35 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         currentIndex.value + 1,
       );
       translateX.value = withTiming(-currentIndex.value * width, {
-        duration: 500,
+        duration,
       });
+    });
+
+  const pinchGesture = Gesture.Pinch()
+    .onBegin(() => {
+      offsetScale.value = scale.value;
+    })
+    .onUpdate((e) => {
+      scale.value = clamp(offsetScale.value * e.scale, 0.5, 2);
+    })
+    .onEnd(() => {
+      if (scale.value < 1) {
+        scale.value = withTiming(1, { duration });
+        imageX.value = 0;
+        imageY.value = 0;
+      }
+    });
+
+  const doubleClick = Gesture.Tap()
+    .numberOfTaps(2)
+    .onEnd(() => {
+      imageX.value = 0;
+      imageY.value = 0;
+      if (scale.value === 1) {
+        scale.value = withTiming(2, { duration });
+      } else {
+        scale.value = withTiming(1, { duration });
+      }
     });
 
   const animationStyle = useAnimatedStyle(() => {
@@ -135,7 +197,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
           opacityStyle,
         ]}
       />
-      <GestureDetector gesture={Gesture.Race(panGestureX, panGestureY)}>
+      <GestureDetector
+        gesture={Gesture.Exclusive(
+          Gesture.Race(panGestureY, panGestureX, pinchGesture),
+          doubleClick,
+        )}
+      >
         <Animated.View
           style={[
             {
@@ -149,7 +216,19 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
           ]}
         >
           {imageList.map((a, index) => (
-            <ImageContainer key={index} url={a} {...{ translateY }} />
+            <ImageContainer
+              key={index}
+              url={a}
+              {...{
+                translateY,
+                childrenX,
+                index,
+                currentIndex,
+                scale,
+                imageY,
+                imageX,
+              }}
+            />
           ))}
         </Animated.View>
       </GestureDetector>
@@ -162,59 +241,57 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
 };
 
 const ImageContainer = (props) => {
-  const { url, translateY } = props;
-
-  const scale = useSharedValue(1);
-  const offset = useSharedValue(0);
-
-  const pinchGesture = Gesture.Pinch()
-    .onUpdate((e) => {
-      scale.value = offset.value * e.scale;
-    })
-    .onEnd(() => {
-      if (scale.value < 1) {
-        scale.value = withTiming(1, { duration: 500 });
-        offset.value = 1;
-      } else {
-        offset.value = scale.value;
-      }
-    });
-
-  useAnimatedReaction(
-    () => translateY.value,
-    (value) => {
-      scale.value = interpolate(
-        value,
-        [-height, 0, height],
-        [0.5, 1, 0.5],
-        Extrapolation.CLAMP,
-      );
-    },
-  );
+  const {
+    url,
+    translateY,
+    childrenX,
+    index,
+    currentIndex,
+    scale,
+    imageY,
+    imageX,
+  } = props;
 
   const animationStyle = useAnimatedStyle<{ transform }>(() => {
+    if (scale.value > 1) {
+      return {
+        transform: [
+          {
+            scale: currentIndex.value === index ? scale.value : 1,
+          },
+          {
+            translateY: currentIndex.value === index ? imageY.value : 0,
+          },
+          {
+            translateX: currentIndex.value === index ? imageX.value : 0,
+          },
+        ],
+      };
+    }
+
     return {
       transform: [
         {
-          scale: scale.value,
+          scale: currentIndex.value === index ? scale.value : 1,
         },
         {
-          translateY: translateY.value,
+          translateY: currentIndex.value === index ? translateY.value : 0,
+        },
+        {
+          translateX: currentIndex.value === index ? childrenX.value : 0,
         },
       ],
     };
   });
 
   return (
-    <GestureDetector gesture={pinchGesture}>
-      <Animated.View style={[animationStyle]}>
-        <Image
-          source={url}
-          style={{ flex: 1, width, height: undefined }}
-          contentFit="contain"
-        />
-      </Animated.View>
-    </GestureDetector>
+    <Animated.View style={[animationStyle]}>
+      <Image
+        source={url}
+        style={{ flex: 1, width, height: undefined }}
+        contentFit="contain"
+      />
+    </Animated.View>
   );
 };
 

@@ -52,6 +52,8 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
   const { html, tagsStyles } = props;
   const { width } = useWindowDimensions();
 
+  // TODO: 过长的内容，需要有一个max-height来省略过多的内容，类似于展开全文
+  // 可以考虑自行拆解 目前有<a> <p> <img> <span> <br />
   return (
     <HTML
       source={{ html }}

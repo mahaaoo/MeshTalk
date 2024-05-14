@@ -76,16 +76,6 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
                   <Text style={styles.mentionText}>
                     {`@${showItem.account.acct}`}
                   </Text>
-                  {showItem.application ? (
-                    <Text style={styles.nameText}>
-                      &nbsp;&nbsp;来自
-                      <Text style={{ color: Colors.linkTagColor }}>
-                        {showItem.application.name}
-                      </Text>
-                    </Text>
-                  ) : (
-                    <View />
-                  )}
                 </View>
                 <Text style={styles.sourceText}>
                   {DateUtil.dateToFromNow(showItem.created_at)}
@@ -94,10 +84,30 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
             </View>
           </View>
           <HTMLContent html={replaceContentEmoji(showItem.content)} />
-          <NinePicture imageList={showItem.media_attachments} />
+          <View style={{ paddingVertical: 8 }}>
+            <NinePicture imageList={showItem.media_attachments} />
+          </View>
           {showItem.media_attachments.length === 0 ? (
             <WebCard card={showItem.card} />
           ) : null}
+
+          {showItem.application ? (
+            <View
+              style={{
+                width: "100%",
+                paddingBottom: 8,
+                alignItems: "flex-end",
+              }}
+            >
+              <Text style={styles.nameText}>
+                &nbsp;&nbsp;来自
+                <Text style={{ color: Colors.linkTagColor }}>
+                  {showItem.application.name}
+                </Text>
+              </Text>
+            </View>
+          ) : null}
+
           <SplitLine start={0} end={Screen.width - 30} />
           {needToolbar ? (
             <ToolBar
@@ -123,7 +133,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: "row",
     marginTop: 8,
-    alignItems: "center",
+    alignItems: "flex-start",
     marginLeft: 5,
     marginRight: 50,
   },
@@ -184,10 +194,10 @@ const styles = StyleSheet.create({
     color: Colors.commonToolBarText,
   },
   more: {
-    position: 'absolute',
+    position: "absolute",
     right: 15,
     top: 15,
-  }
+  },
 });
 
 export default TimeLineItem;

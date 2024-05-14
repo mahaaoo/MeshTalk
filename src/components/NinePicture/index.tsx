@@ -57,121 +57,81 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
 
   if (imageList.length === 1) {
     return (
-      <>
-        <View
-          style={[
-            styles.singleImage,
-            {
-              height,
-            },
-          ]}
-        >
-          <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
-        </View>
-        <SpacingBox height={15} />
-      </>
+      <View
+        style={[
+          styles.singleImage,
+          {
+            height,
+          },
+        ]}
+      >
+        <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
+      </View>
     );
   }
 
   if (imageList.length === 2) {
     return (
-      <>
-        <View
-          style={[
-            styles.singleImage,
-            {
-              height,
-            },
-          ]}
-        >
-          <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
-          <SpacingBox width={5} />
-          <MediaImage item={imageList[1]} index={1} handleClick={handleClick} />
-        </View>
-        <SpacingBox height={15} />
-      </>
+      <View
+        style={[
+          styles.singleImage,
+          {
+            height,
+          },
+        ]}
+      >
+        <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
+        <SpacingBox width={5} />
+        <MediaImage item={imageList[1]} index={1} handleClick={handleClick} />
+      </View>
     );
   }
 
   if (imageList.length === 3) {
     return (
-      <>
-        <View
-          style={[
-            styles.singleImage,
-            {
-              height,
-            },
-          ]}
-        >
-          <View style={styles.imageContainer}>
-            <MediaImage
-              item={imageList[0]}
-              index={0}
-              handleClick={handleClick}
-            />
-          </View>
-          <SpacingBox width={5} />
-          <View style={styles.imageContainer}>
-            <MediaImage
-              item={imageList[1]}
-              index={1}
-              handleClick={handleClick}
-            />
-            <SpacingBox height={5} />
-            <MediaImage
-              item={imageList[2]}
-              index={2}
-              handleClick={handleClick}
-            />
-          </View>
+      <View
+        style={[
+          styles.singleImage,
+          {
+            height,
+          },
+        ]}
+      >
+        <View style={styles.imageContainer}>
+          <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
         </View>
-        <SpacingBox height={15} />
-      </>
+        <SpacingBox width={5} />
+        <View style={styles.imageContainer}>
+          <MediaImage item={imageList[1]} index={1} handleClick={handleClick} />
+          <SpacingBox height={5} />
+          <MediaImage item={imageList[2]} index={2} handleClick={handleClick} />
+        </View>
+      </View>
     );
   }
 
   if (imageList.length === 4) {
     return (
-      <>
-        <View
-          style={[
-            styles.singleImage,
-            {
-              height,
-            },
-          ]}
-        >
-          <View style={[{ height }, styles.imageContainer]}>
-            <MediaImage
-              item={imageList[0]}
-              index={0}
-              handleClick={handleClick}
-            />
-            <SpacingBox height={5} />
-            <MediaImage
-              item={imageList[2]}
-              index={2}
-              handleClick={handleClick}
-            />
-          </View>
-          <SpacingBox width={5} />
-          <View style={[{ height }, styles.imageContainer]}>
-            <MediaImage
-              item={imageList[1]}
-              index={1}
-              handleClick={handleClick}
-            />
-            <SpacingBox height={5} />
-            <MediaImage
-              item={imageList[3]}
-              index={3}
-              handleClick={handleClick}
-            />
-          </View>
+      <View
+        style={[
+          styles.singleImage,
+          {
+            height,
+          },
+        ]}
+      >
+        <View style={[{ height }, styles.imageContainer]}>
+          <MediaImage item={imageList[0]} index={0} handleClick={handleClick} />
+          <SpacingBox height={5} />
+          <MediaImage item={imageList[2]} index={2} handleClick={handleClick} />
         </View>
-        <SpacingBox height={15} />
-      </>
+        <SpacingBox width={5} />
+        <View style={[{ height }, styles.imageContainer]}>
+          <MediaImage item={imageList[1]} index={1} handleClick={handleClick} />
+          <SpacingBox height={5} />
+          <MediaImage item={imageList[3]} index={3} handleClick={handleClick} />
+        </View>
+      </View>
     );
   }
 
