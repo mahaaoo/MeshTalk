@@ -1,7 +1,7 @@
 {
   "name": "meshtalk",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "expo-router/entry",
   "scripts": {
     "lint": "eslint .",
     "lint-fix": "eslint . --fix",
@@ -38,7 +38,10 @@
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.8.6",
     "typescript": "~5.3.3",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "expo-router": "~3.5.14",
+    "expo-linking": "~6.3.1",
+    "expo-constants": "~16.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
