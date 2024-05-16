@@ -1,7 +1,9 @@
+import { Platform } from "react-native";
 import { create } from "zustand";
 
 import useAccountStore from "./useAccountStore";
 import useEmojiStore from "./useEmojiStore";
+import useLoginStore from "./useLoginStore";
 import * as constant from "../config/constant";
 import { api } from "../utils/request";
 import { setItem, getItem } from "../utils/storage";
@@ -52,6 +54,18 @@ const useAppStore = create<AppStoreState>((set, get) => ({
       localHostUrl,
       localToken,
     });
+    // web端回调的时候code在这处理
+    if (Platform.OS === "web") {
+      // const url = window.location.search;
+      // if (url?.indexOf("code") > 0) {
+      //   const urlList = url.split("?");
+      //   if (urlList.length === 2 && urlList[1].length !== 0) {
+      //     const codeList = urlList[1].split("=");
+      //     useLoginStore.getState().webGetToken(codeList[1]);
+      //   }
+      // }
+      // 测试web
+    }
 
     if (
       localHostUrl &&

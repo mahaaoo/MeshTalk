@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { Platform } from "react-native";
 import { Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
@@ -28,12 +29,17 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
         set({ loginData: data });
 
         const url = `https://${get().path}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${get().loginData?.redirect_uri}&client_id=${get().loginData?.client_id}`;
-        router.push({
-          pathname: "/webview",
-          params: {
-            initUrl: url,
-          },
-        });
+
+        if (Platform.OS === "web") {
+          window.open(url);
+        } else {
+          router.push({
+            pathname: "/webview",
+            params: {
+              initUrl: url,
+            },
+          });
+        }
       }
     } else {
       Toast.show("请输入应用实例地址");
