@@ -1,5 +1,13 @@
+import {
+  Button,
+  Avatar,
+  SplitLine,
+  ActionsSheet,
+  Icon,
+  Screen,
+} from "@components";
 import { Image } from "expo-image";
-import { Stack, router, useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Text,
@@ -12,14 +20,12 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Colors, Screen } from "../config";
+import { Colors } from "../config";
 import useAccountStore from "../store/useAccountStore";
+import useDeviceStore from "../store/useDeviceStore";
 import useEmojiStore from "../store/useEmojiStore";
 import usePublishStore from "../store/usePublishStore";
-
-import { Button, Avatar, SplitLine, ActionsSheet, Icon } from "@/components";
 
 interface PublishProps {}
 
@@ -30,11 +36,9 @@ const Publish: React.FC<PublishProps> = () => {
   const { postNewStatuses, statusContent, inputContent } = usePublishStore();
 
   const [reply, setReply] = useState("任何人可以回复");
-  const inset = useSafeAreaInsets();
+  const { insets, width } = useDeviceStore();
 
-  // const inset = { bottom: 0 };
-
-  const offsetY: any = useRef(new Animated.Value(inset.bottom)).current;
+  const offsetY: any = useRef(new Animated.Value(insets.bottom)).current;
   const InputRef: any = useRef();
 
   const [scrollHeight, setScrollHeight] = useState(0);
@@ -82,7 +86,7 @@ const Publish: React.FC<PublishProps> = () => {
       useNativeDriver: false,
       easing: Easing.linear,
     }).start(() => {
-      setScrollHeight(e.endCoordinates.height - inset.bottom);
+      setScrollHeight(e.endCoordinates.height - insets.bottom);
     });
   }, []);
 
@@ -96,8 +100,7 @@ const Publish: React.FC<PublishProps> = () => {
   }, []);
 
   return (
-    <>
-      <Stack.Screen />
+    <Screen>
       <View style={styles.main}>
         <View style={styles.container}>
           <View style={styles.avatarContainer}>
@@ -131,7 +134,7 @@ const Publish: React.FC<PublishProps> = () => {
                     onClose: () => {
                       handleClickPic();
                     },
-                    bottom: inset.bottom,
+                    bottom: insets.bottom,
                   });
                 }}
               >
@@ -141,7 +144,7 @@ const Publish: React.FC<PublishProps> = () => {
                 />
                 <Text style={styles.replayText}>{reply}</Text>
               </TouchableOpacity>
-              <SplitLine start={0} end={Screen.width} />
+              <SplitLine start={0} end={width} />
             </View>
             <View style={styles.iconContainer}>
               <View style={styles.iconView}>
@@ -176,7 +179,7 @@ const Publish: React.FC<PublishProps> = () => {
           <View
             style={[
               styles.flatlist,
-              { height: scrollHeight, bottom: inset.bottom },
+              { height: scrollHeight, bottom: insets.bottom },
             ]}
           >
             <FlatList
@@ -194,8 +197,8 @@ const Publish: React.FC<PublishProps> = () => {
                       key={item.shortcode}
                       style={[
                         {
-                          width: (Screen.width - 80) / 7,
-                          height: (Screen.width - 80) / 7,
+                          width: (width - 80) / 7,
+                          height: (width - 80) / 7,
                         },
                         styles.emojiItem,
                       ]}
@@ -211,7 +214,7 @@ const Publish: React.FC<PublishProps> = () => {
           </View>
         </View>
       </View>
-    </>
+    </Screen>
   );
 };
 
@@ -227,7 +230,7 @@ const styles = StyleSheet.create({
   main: {
     flex: 1,
     backgroundColor: Colors.defaultWhite,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   header: {
     paddingVertical: 0,
@@ -240,13 +243,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   tool: {
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     backgroundColor: "#fff",
     position: "absolute",
   },
   input: {
     flex: 1,
-    height: Screen.height / 3,
+    height: useDeviceStore.getState().width / 3,
     fontSize: 18,
     marginHorizontal: 10,
     marginTop: 10,
@@ -254,7 +257,7 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     position: "absolute",
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     overflow: "hidden",
   },
   power: {
@@ -271,13 +274,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   contentContainer: {
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     backgroundColor: "#fff",
     position: "absolute",
     bottom: 0,
   },
   toolBar: {
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     height: 50,
   },
   iconErath: {

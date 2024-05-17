@@ -2,8 +2,9 @@ import { Image } from "expo-image";
 import React, { useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
-import { Screen, Colors } from "../../config";
+import { Colors } from "../../config";
 import { Card } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface WebCardProps {
   card: Card;
@@ -55,7 +56,7 @@ const WebCard: React.FC<WebCardProps> = (props) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 8,
-    borderWidth: Screen.onePixel,
+    borderWidth: useDeviceStore.getState().onePixel,
     borderColor: Colors.defaultLineGreyColor,
     flexDirection: "row",
     overflow: "hidden",

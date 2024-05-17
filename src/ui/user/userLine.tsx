@@ -27,15 +27,16 @@ import {
   NUMBER_AROUND,
 } from "./type";
 import { Error, RefreshState } from "../../components";
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Response, Timelines } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import { useRefreshList } from "../../utils/hooks";
 import DefaultLineItem from "../home/defaultLineItem";
 import HomeLineItem from "../home/timeLineItem";
 
 interface UserLineProps {
   index: number;
-  fetchApi: (...args) => Response<Timelines[]>;
+  fetchApi: (...args: any) => Response<Timelines[]>;
   onRefreshFinish: () => void;
 }
 
@@ -53,6 +54,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   } = useHeadTabView();
   const { dataSource, onRefresh, err, fetchData, onLoadMore, listStatus } =
     useRefreshList(fetchApi, "Normal", 20);
+  const { width, height } = useDeviceStore();
 
   const scroll = useSharedValue(0);
   const aref = useAnimatedRef();
@@ -204,8 +206,8 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     return (
       <View
         style={{
-          height: Screen.height - HEADER_HEIGHT,
-          width: Screen.width,
+          height: height - HEADER_HEIGHT,
+          width,
           backgroundColor: Colors.defaultWhite,
           alignItems: "center",
         }}
@@ -220,9 +222,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
 
   if (!dataSource || dataSource.length === 0) {
     return (
-      <View
-        style={{ height: Screen.height - HEADER_HEIGHT, width: Screen.width }}
-      >
+      <View style={{ height: height - HEADER_HEIGHT, width }}>
         <DefaultLineItem scrollEnabled={false} />
       </View>
     );
@@ -235,7 +235,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         bounces={false}
         onScroll={onScroll}
         // 计算FlatList高度，需要减去吸顶高度和tabbar的高度
-        style={{ height: Screen.height - HEADER_HEIGHT - 50 }}
+        style={{ height: height - HEADER_HEIGHT - 50 }}
         scrollEventThrottle={16}
         data={dataSource}
         renderItem={({ item }) => <HomeLineItem item={item} />}

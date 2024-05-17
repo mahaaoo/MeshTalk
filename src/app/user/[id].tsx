@@ -1,11 +1,11 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Screen } from "@components";
+import User from "@ui/user";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Loading } from "react-native-ma-modal";
 
 import { Account } from "../../config/interface";
 import { lookupAcct } from "../../server/account";
-
-import User from "@/ui/user";
 
 const Users: React.FC<object> = () => {
   const { id, acct } = useLocalSearchParams<{ id: string; acct: string }>();
@@ -24,10 +24,9 @@ const Users: React.FC<object> = () => {
   }, []);
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
+    <Screen>
       <User userData={userData} id={id} />
-    </>
+    </Screen>
   );
 };
 

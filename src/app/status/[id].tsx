@@ -1,20 +1,20 @@
+import { Screen } from "@components";
+import HomeLineItem from "@ui/home/timeLineItem";
+import ToolBar from "@ui/home/toolBar";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import { getStatusesById } from "../../server/status";
-
-import HomeLineItem from "@/ui/home/timeLineItem";
-import ToolBar from "@/ui/home/toolBar";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface StatusDetailProps {}
 
 const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   const { id } = useLocalSearchParams();
-  const inset = useSafeAreaInsets();
+  const { insets } = useDeviceStore();
   const [statusDetail, setStatusDetail] = useState<Timelines>();
 
   useEffect(() => {
@@ -33,19 +33,19 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   }
 
   return (
-    <>
+    <Screen headerShown title="详情">
       <HomeLineItem item={statusDetail} needToolbar={false} />
-      <View style={[styles.toolBar, { height: 40 + inset.bottom }]}>
-        <ToolBar />
+      <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
+        <ToolBar id={id} />
       </View>
-    </>
+    </Screen>
   );
 };
 
 const styles = StyleSheet.create({
   toolBar: {
     position: "absolute",
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     bottom: 0,
     left: 0,
     backgroundColor: Colors.defaultWhite,

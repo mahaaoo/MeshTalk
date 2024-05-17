@@ -1,8 +1,8 @@
+import { router } from "expo-router";
 import { Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
 import { postNewStatuses } from "../server/status";
-import { goBack } from "../utils";
 
 interface PublishStoreState {
   statusContent: string;
@@ -18,7 +18,7 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
     if (data && ok) {
       set({ statusContent: "" });
       Toast.show("发表成功");
-      goBack();
+      router.back();
     } else {
       Toast.show("发表失败");
     }

@@ -1,22 +1,21 @@
+import { DefaultTabBar, TabView } from "@components";
+import HomeLine from "@ui/home/homeLine";
+import Local from "@ui/home/localLine";
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Colors, Screen } from "../../config";
-
-import { DefaultTabBar, TabView } from "@/components";
-import HomeLine from "@/ui/home/homeLine";
-import Local from "@/ui/home/localLine";
+import { Colors } from "../../config";
+import useDeviceStore from "../../store/useDeviceStore";
 
 const Home: React.FC<object> = () => {
-  const insets = useSafeAreaInsets();
   const [index, setIndex] = useState(0);
+  const { insets, width } = useDeviceStore();
 
   return (
     <View style={styles.container}>
       <View
         style={{
-          width: Screen.width,
+          width,
           height: insets.top,
           backgroundColor: "#fff",
         }}
@@ -28,7 +27,7 @@ const Home: React.FC<object> = () => {
         onChangeTab={(index) => setIndex(index)}
         renderTabBar={() => (
           <DefaultTabBar
-            tabBarWidth={Screen.width / 2}
+            tabBarWidth={width / 2}
             tabBarInactiveTextColor="#333"
             tabBarActiveTextColor={Colors.theme}
             tabBarTextStyle={{
@@ -39,7 +38,7 @@ const Home: React.FC<object> = () => {
               height: 4,
               backgroundColor: Colors.theme,
               width: 50,
-              marginLeft: (Screen.width / 2 - 50) / 2,
+              marginLeft: (width / 2 - 50) / 2,
             }}
           />
         )}
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
 });
 

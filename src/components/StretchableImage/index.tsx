@@ -14,7 +14,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 import Colors from "../../config/colors";
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface StretchableImageProps {
   imageHeight: number;
@@ -29,7 +29,8 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
 
   const [isShow, setShow] = useState(false);
   const imageOpcity = useSharedValue(0);
-
+  const { width } = useDeviceStore();
+  
   const onImageLoad = useCallback(() => {
     setShow(true);
     imageOpcity.value = withTiming(1, { duration: 1000 });
@@ -42,7 +43,7 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
     return blurRadius;
   }, [isblur, blurRadius]);
 
-  const imageStyle = useAnimatedStyle<{ transform }>(() => {
+  const imageStyle = useAnimatedStyle<{ transform: any }>(() => {
     return {
       opacity: imageOpcity.value,
       transform: [
@@ -83,7 +84,7 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
           style={[
             {
               height: imageHeight,
-              width: Screen.width,
+              width,
             },
             imageStyle,
           ]}
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
   container: {
     position: "absolute",
     top: 0,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
 });
 

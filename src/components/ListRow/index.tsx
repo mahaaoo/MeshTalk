@@ -2,7 +2,7 @@ import React from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
 import Colors from "../../config/colors";
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
 
@@ -45,6 +45,7 @@ const renderRightIcon = (props: ListRowProps) => {
 
 const ListRow: React.FC<ListRowProps> = (props) => {
   const { title, height = 55, onPress, canClick = true } = props;
+  const { width } = useDeviceStore();
   return (
     <>
       <TouchableOpacity
@@ -55,7 +56,7 @@ const ListRow: React.FC<ListRowProps> = (props) => {
           },
         ]}
         onPress={() => {
-          canClick ? onPress && onPress() : null;
+          canClick && onPress && onPress();
         }}
         activeOpacity={canClick ? 0.2 : 1}
       >
@@ -68,7 +69,7 @@ const ListRow: React.FC<ListRowProps> = (props) => {
           {renderRightIcon(props)}
         </View>
       </TouchableOpacity>
-      <SplitLine start={0} end={Screen.width} />
+      <SplitLine start={0} end={width} />
     </>
   );
 };

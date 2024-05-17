@@ -9,7 +9,7 @@ import {
   TextStyle,
 } from "react-native";
 
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface MyTabBarProps {
   goToPage?: (number: number) => void;
@@ -73,8 +73,9 @@ const MyTabBarItem: React.FC<MyTabBarItemProps> = (props) => {
 };
 
 const MyTabBar: React.FC<MyTabBarProps> = (props) => {
+  const { width } = useDeviceStore();
   const {
-    containerWidth = Screen.width,
+    containerWidth = width,
     tabs,
     scrollValue,
     backgroundColor,

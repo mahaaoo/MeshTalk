@@ -1,17 +1,17 @@
-import { Stack, router } from "expo-router";
+import { Button, Screen } from "@components";
+import { router } from "expo-router";
 import React from "react";
 import { View, Text, TextInput, StyleSheet, SafeAreaView } from "react-native";
 
-import { Button } from "../components";
-import { Screen, Colors } from "../config";
+import { Colors } from "../config";
+import useDeviceStore from "../store/useDeviceStore";
 import useLoginStore from "../store/useLoginStore";
 
 const Login: React.FC<object> = () => {
   const { path, onPressLogin, onChangePath } = useLoginStore();
 
   return (
-    <>
-      <Stack.Screen options={{ headerShown: false }} />
+    <Screen>
       <SafeAreaView style={styles.main_view}>
         <View style={styles.go_back_view}>
           <Text style={styles.go_back_text} onPress={() => router.back()}>
@@ -32,7 +32,7 @@ const Login: React.FC<object> = () => {
           style={styles.button_style}
         />
       </SafeAreaView>
-    </>
+    </Screen>
   );
 };
 
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   button_style: {
-    width: Screen.width - 80,
+    width: useDeviceStore.getState().width - 80,
     marginVertical: 50,
   },
   go_back_view: {

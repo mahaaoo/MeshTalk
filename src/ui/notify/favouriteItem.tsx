@@ -2,8 +2,9 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 
 import { Avatar, SplitLine, HTMLContent, Icon } from "../../components";
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Notification } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji } from "../../utils";
 import LineItemName from "../home/lineItemName";
 
@@ -27,6 +28,7 @@ interface FavouriteItemProps {
 
 const FavouriteItem: React.FC<FavouriteItemProps> = (props) => {
   const { item } = props;
+  const { width } = useDeviceStore();
   return (
     <View style={styles.main}>
       <View style={styles.content}>
@@ -52,7 +54,7 @@ const FavouriteItem: React.FC<FavouriteItemProps> = (props) => {
           />
         </View>
       </View>
-      <SplitLine start={0} end={Screen.width} />
+      <SplitLine start={0} end={width} />
     </View>
   );
 };
@@ -60,7 +62,7 @@ const FavouriteItem: React.FC<FavouriteItemProps> = (props) => {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.defaultWhite,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   content: {
     flexDirection: "row",

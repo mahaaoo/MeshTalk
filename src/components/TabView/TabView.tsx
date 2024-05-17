@@ -13,7 +13,7 @@ import Animated, {
 
 import DefaultTabBar from "./DefaultTabBar";
 import { TabViewContext, TabViewProps, TabStatus, TabViewRef } from "./type";
-import { Screen } from "../../config";
+import useDeviceStore from "../../store/useDeviceStore";
 
 const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
   const {
@@ -24,7 +24,8 @@ const TabView = forwardRef<TabViewRef, TabViewProps>((props, ref) => {
     onChangeTab,
     style,
   } = props;
-  const contentWidth = useSharedValue(Screen.width);
+  const { width } = useDeviceStore();
+  const contentWidth = useSharedValue(width);
 
   // TabView Content translateX
   const translateX = useSharedValue(-initialPage * contentWidth.value);

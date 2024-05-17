@@ -3,8 +3,9 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import HTML from "react-native-render-html";
 
 import { Avatar, SplitLine } from "../../components";
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Notification } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji } from "../../utils";
 import LineItemName from "../home/lineItemName";
 
@@ -41,6 +42,8 @@ interface MetionItemProps {
 
 const MetionItem: React.FC<MetionItemProps> = (props) => {
   const { item } = props;
+  const { width } = useDeviceStore();
+
   return (
     <View style={styles.main}>
       <View style={styles.content}>
@@ -73,7 +76,7 @@ const MetionItem: React.FC<MetionItemProps> = (props) => {
           />
         </View>
       </View>
-      <SplitLine start={0} end={Screen.width} />
+      <SplitLine start={0} end={width} />
     </View>
   );
 };
@@ -81,7 +84,7 @@ const MetionItem: React.FC<MetionItemProps> = (props) => {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.defaultWhite,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   content: {
     flexDirection: "row",

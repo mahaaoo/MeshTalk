@@ -12,8 +12,9 @@ import {
   HTMLContent,
   Icon,
 } from "../../components";
-import { Screen, Colors } from "../../config";
+import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji, DateUtil } from "../../utils";
 
 interface TimeLineItemProps {
@@ -24,6 +25,7 @@ interface TimeLineItemProps {
 const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
   const { item, needToolbar = true } = props;
   const showItem = item.reblog || item;
+  const { width } = useDeviceStore();
 
   const handleAvatar = useCallback(() => {
     router.push({
@@ -120,7 +122,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
             </View>
           ) : null}
 
-          <SplitLine start={0} end={Screen.width - 30} />
+          <SplitLine start={0} end={width - 30} />
           {needToolbar ? (
             <ToolBar
               id={showItem.id}
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.defaultWhite,
     marginBottom: 10,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   title: {
     flexDirection: "row",

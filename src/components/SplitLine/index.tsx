@@ -2,7 +2,7 @@ import React from "react";
 import { Line, Svg } from "react-native-svg";
 
 import Colors from "../../config/colors";
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface SplitLineProps {
   color?: string;
@@ -20,10 +20,11 @@ const SplitLine: React.FC<SplitLineProps> = (props) => {
     type = "Horizontal",
     width = 1,
   } = props;
+  const { height: deviceHeight, width: deviceWidth } = useDeviceStore();
 
   if (type === "Vertical") {
     return (
-      <Svg height={Screen.height} width={width}>
+      <Svg height={deviceHeight} width={width}>
         <Line
           x1="0"
           y1={start}
@@ -36,7 +37,7 @@ const SplitLine: React.FC<SplitLineProps> = (props) => {
     );
   }
   return (
-    <Svg height={width} width={Screen.width}>
+    <Svg height={width} width={deviceWidth}>
       <Line
         x1={start}
         y1="0"

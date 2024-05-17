@@ -8,7 +8,7 @@ import {
 } from "react-native";
 
 import { RefreshState, Skeleton } from "../../components";
-import { Screen } from "../../config";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface DefaultLineItemProps {
   listStatus?: RefreshState;
@@ -92,16 +92,16 @@ const styles = StyleSheet.create({
   },
   contentText1: {
     height: 30,
-    width: Screen.width - 30,
+    width: useDeviceStore.getState().width - 30,
   },
   contentText2: {
     height: 30,
-    width: Screen.width - 130,
+    width: useDeviceStore.getState().width - 130,
     marginTop: 5,
   },
   contentText3: {
     height: 30,
-    width: Screen.width - 250,
+    width: useDeviceStore.getState().width - 250,
     marginTop: 5,
   },
 });

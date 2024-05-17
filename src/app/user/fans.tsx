@@ -1,13 +1,12 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { RefreshList, Screen } from "@components";
+import UserItem from "@ui/fans/userItem";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
-import { RefreshList } from "../../components";
 import { Colors } from "../../config";
 import { getFollowersById } from "../../server/account";
 import { useRefreshList } from "../../utils/hooks";
-
-import UserItem from "@/ui/fans/userItem";
 
 interface UserFansProps {}
 
@@ -24,18 +23,19 @@ const UserFans: React.FC<UserFansProps> = (props) => {
   }, []);
 
   return (
-    <View style={styles.main}>
-      <Stack.Screen options={{ title: "粉丝" }} />
-      <RefreshList
-        showsVerticalScrollIndicator={false}
-        data={dataSource}
-        renderItem={({ item }) => <UserItem item={item} />}
-        onHeaderRefresh={onRefresh}
-        onFooterRefresh={onLoadMore}
-        scrollEventThrottle={16}
-        refreshState={listStatus}
-      />
-    </View>
+    <Screen headerShown title="粉丝">
+      <View style={styles.main}>
+        <RefreshList
+          showsVerticalScrollIndicator={false}
+          data={dataSource}
+          renderItem={({ item }) => <UserItem item={item} />}
+          onHeaderRefresh={onRefresh}
+          onFooterRefresh={onLoadMore}
+          scrollEventThrottle={16}
+          refreshState={listStatus}
+        />
+      </View>
+    </Screen>
   );
 };
 

@@ -1,17 +1,16 @@
-import { Stack, useLocalSearchParams } from "expo-router";
+import { RefreshList, Screen } from "@components";
+import UserItem from "@ui/fans/userItem";
+import { useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { getFollowingById } from "../../server/account";
 import { useRefreshList } from "../../utils/hooks";
 
-import { RefreshList } from "@/components";
-import UserItem from "@/ui/fans/userItem";
-
 interface UserFollowProps {}
 
 const UserFollow: React.FC<UserFollowProps> = (props) => {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
     (params) => getFollowingById(id, params),
     "Link",
@@ -23,18 +22,19 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
   }, []);
 
   return (
-    <View style={styles.main}>
-      <Stack.Screen options={{ title: "关注" }} />
-      <RefreshList
-        showsVerticalScrollIndicator={false}
-        data={dataSource}
-        renderItem={({ item }) => <UserItem item={item} />}
-        onHeaderRefresh={onRefresh}
-        onFooterRefresh={onLoadMore}
-        scrollEventThrottle={1}
-        refreshState={listStatus}
-      />
-    </View>
+    <Screen headerShown title="关注">
+      <View style={styles.main}>
+        <RefreshList
+          showsVerticalScrollIndicator={false}
+          data={dataSource}
+          renderItem={({ item }) => <UserItem item={item} />}
+          onHeaderRefresh={onRefresh}
+          onFooterRefresh={onLoadMore}
+          scrollEventThrottle={1}
+          refreshState={listStatus}
+        />
+      </View>
+    </Screen>
   );
 };
 

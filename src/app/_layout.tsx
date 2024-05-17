@@ -3,14 +3,19 @@ import React, { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ModalProvider, modalRef } from "react-native-ma-modal";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import useAppStore from "../store/useAppStore";
+import useDeviceStore from "../store/useDeviceStore";
 
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
+  const { setInset } = useDeviceStore();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     initApp();
+    setInset(insets);
   }, []);
 
   if (!isReady) {

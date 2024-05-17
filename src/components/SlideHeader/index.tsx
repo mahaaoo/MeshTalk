@@ -11,7 +11,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface SlideHeaderProps {
   width?: number;
@@ -22,9 +22,10 @@ interface SlideHeaderProps {
 }
 
 const SlideHeader: React.FC<SlideHeaderProps> = (props) => {
+  const { width: deviceWidth } = useDeviceStore();
   const {
     children,
-    width = Screen.width,
+    width = deviceWidth,
     height,
     scrollY,
     offsetY = height,
@@ -38,8 +39,8 @@ const SlideHeader: React.FC<SlideHeaderProps> = (props) => {
         [0, 0.3, 1],
         Extrapolation.CLAMP,
       ),
-    }
-  })
+    };
+  });
 
   return (
     <Animated.View

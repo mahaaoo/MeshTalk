@@ -3,8 +3,9 @@ import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Avatar, SplitLine } from "../../components";
-import { Screen, Colors } from "../../config";
+import { Colors } from "../../config";
 import { Account } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import LineItemName from "../home/lineItemName";
 
 interface UserItemProps {
@@ -13,6 +14,7 @@ interface UserItemProps {
 
 const UserItem: React.FC<UserItemProps> = (props) => {
   const { item } = props;
+  const { width } = useDeviceStore();
 
   const handleNavigation = useCallback(() => {
     router.push({
@@ -44,7 +46,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
           </Text>
         </View>
       </View>
-      <SplitLine start={0} end={Screen.width} />
+      <SplitLine start={0} end={width} />
     </TouchableOpacity>
   );
 };
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: Colors.defaultWhite,
     padding: 15,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   acct: {
     fontSize: 14,

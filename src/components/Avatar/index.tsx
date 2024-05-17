@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
-import Screen from "../../config/screen";
+import useDeviceStore from "../../store/useDeviceStore";
 import { Icon } from "../Icon";
 
 interface AvatarProps {
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 8,
     borderColor: "#9f9f9f",
-    borderWidth: Screen.onePixel,
+    borderWidth: useDeviceStore.getState().onePixel,
     justifyContent: "center",
     alignItems: "center",
   },

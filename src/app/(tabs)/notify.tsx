@@ -1,4 +1,4 @@
-import { Header } from "@react-navigation/elements";
+import { RefreshList, Error, Screen } from "@components";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 
@@ -9,8 +9,6 @@ import FavouriteItem from "../../ui/notify/favouriteItem";
 import FollowItem from "../../ui/notify/followItem";
 import MetionItem from "../../ui/notify/metionItem";
 import { useRefreshList } from "../../utils/hooks";
-
-import { RefreshList, Error } from "@/components";
 
 interface AllNotifyProps {}
 
@@ -52,52 +50,46 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
     }
   }, [dataSource, relationships]);
 
-  if (err) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: Colors.defaultWhite,
-          alignItems: "center",
-        }}
-      >
-        <Header title="通知" />
-        <View style={styles.line} />
-        <Error type="NoNotify" style={{ marginTop: 200 }} />
-        <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-          暂时没有通知
-        </Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={styles.container}>
-      <Header title="通知" />
-      <View style={styles.line} />
-      <View style={styles.main}>
-        <RefreshList
-          showsVerticalScrollIndicator={false}
-          data={dataSource}
-          renderItem={({ item }) => {
-            if (item?.type === "follow") {
-              return <FollowItem item={item} relationships={relationships} />;
-            }
-            if (item?.type === "favourite") {
-              return <FavouriteItem item={item} />;
-            }
-            if (item?.type === "mention") {
-              return <MetionItem item={item} />;
-            }
-            return <View />;
+    <Screen title="通知" headerShown>
+      {err ? (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: Colors.defaultWhite,
+            alignItems: "center",
           }}
-          onHeaderRefresh={onRefresh}
-          onFooterRefresh={onLoadMore}
-          scrollEventThrottle={1}
-          refreshState={listStatus}
-        />
-      </View>
-    </View>
+        >
+          <Error type="NoNotify" style={{ marginTop: 200 }} />
+          <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
+            暂时没有通知
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.main}>
+          <RefreshList
+            showsVerticalScrollIndicator={false}
+            data={dataSource}
+            renderItem={({ item }) => {
+              if (item?.type === "follow") {
+                return <FollowItem item={item} relationships={relationships} />;
+              }
+              if (item?.type === "favourite") {
+                return <FavouriteItem item={item} />;
+              }
+              if (item?.type === "mention") {
+                return <MetionItem item={item} />;
+              }
+              return <View />;
+            }}
+            onHeaderRefresh={onRefresh}
+            onFooterRefresh={onLoadMore}
+            scrollEventThrottle={1}
+            refreshState={listStatus}
+          />
+        </View>
+      )}
+    </Screen>
   );
 };
 

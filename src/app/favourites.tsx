@@ -1,13 +1,12 @@
+import DefaultLineItem from "@ui/home/defaultLineItem";
+import TimeLineItem from "@ui/home/timeLineItem";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
-import { RefreshList } from "../components";
+import { RefreshList, Screen } from "@components";
 import { Colors } from "../config";
 import { getFavouritesById } from "../server/account";
 import { useRefreshList } from "../utils/hooks";
-
-import DefaultLineItem from "@/ui/home/defaultLineItem";
-import TimeLineItem from "@/ui/home/timeLineItem";
 
 interface FavouritiesProps {}
 
@@ -23,19 +22,21 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
   }, []);
 
   return (
-    <View style={styles.main}>
-      <RefreshList
-        data={dataSource}
-        renderItem={({ item }) => <TimeLineItem item={item} />}
-        emptyComponent={
-          <DefaultLineItem onRefresh={onRefresh} listStatus={listStatus} />
-        }
-        scrollEventThrottle={1}
-        refreshState={listStatus}
-        onRefresh={onRefresh}
-        onFooterRefresh={onLoadMore}
-      />
-    </View>
+    <Screen headerShown title="喜欢的内容">
+      <View style={styles.main}>
+        <RefreshList
+          data={dataSource}
+          renderItem={({ item }) => <TimeLineItem item={item} />}
+          emptyComponent={
+            <DefaultLineItem onRefresh={onRefresh} listStatus={listStatus} />
+          }
+          scrollEventThrottle={1}
+          refreshState={listStatus}
+          onRefresh={onRefresh}
+          onFooterRefresh={onLoadMore}
+        />
+      </View>
+    </Screen>
   );
 };
 

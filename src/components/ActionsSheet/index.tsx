@@ -2,7 +2,8 @@ import React from "react";
 import { View, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
 import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
+import useDeviceStore from "../../store/useDeviceStore";
 
 type ActionsSheetTyps = {
   onSelect: (reply: string) => void;
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   actionitem: {
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
     height: 70,
     flexDirection: "row",
     alignItems: "center",

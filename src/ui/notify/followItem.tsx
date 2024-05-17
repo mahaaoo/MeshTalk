@@ -3,8 +3,9 @@ import React, { useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
 import { Avatar, SplitLine, Icon } from "../../components";
-import { Colors, Screen } from "../../config";
+import { Colors } from "../../config";
 import { Notification, Relationship } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface FollowItemProps {
   item: Notification;
@@ -13,6 +14,7 @@ interface FollowItemProps {
 
 const FollowItem: React.FC<FollowItemProps> = (props) => {
   const { item } = props;
+  const { width } = useDeviceStore();
 
   const handleNavigation = useCallback(() => {
     router.push({
@@ -50,7 +52,7 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
           </View>
         </View>
       </View>
-      <SplitLine start={0} end={Screen.width} />
+      <SplitLine start={0} end={width} />
     </TouchableOpacity>
   );
 };
@@ -58,7 +60,7 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
 const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.defaultWhite,
-    width: Screen.width,
+    width: useDeviceStore.getState().width,
   },
   content: {
     flexDirection: "row",
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   users: {
-    borderWidth: Screen.onePixel,
+    borderWidth: useDeviceStore.getState().onePixel,
     borderColor: Colors.defaultLineGreyColor,
     borderRadius: 10,
     padding: 15,

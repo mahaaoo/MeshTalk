@@ -30,7 +30,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="public"
         options={{
-          title: "跨站",
+          tabBarLabel: "跨站",
           tabBarIcon: ({ color }) => (
             <Icon name="areas" size={22} color={color} />
           ),

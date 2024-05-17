@@ -14,7 +14,7 @@ import Animated, {
   Extrapolation,
 } from "react-native-reanimated";
 
-import { Screen } from "../../config";
+import useDeviceStore from "../../store/useDeviceStore";
 import { Icon } from "../Icon";
 
 const snapPoint = (
@@ -29,7 +29,6 @@ const snapPoint = (
   return points.filter((p) => Math.abs(point - p) === minDelta)[0];
 };
 
-const { height, width } = Screen;
 interface ImagePreviewProps {
   imageList: string[];
   initialIndex?: number;
@@ -42,7 +41,7 @@ const duration = 400;
 
 const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
   const { imageList, initialIndex = 0 } = props;
-
+  const { width, height } = useDeviceStore();
   const currentIndex = useSharedValue(initialIndex);
 
   // 水平平移
@@ -251,8 +250,9 @@ const ImageContainer = (props) => {
     imageY,
     imageX,
   } = props;
+  const { width } = useDeviceStore();
 
-  const animationStyle = useAnimatedStyle<{ transform }>(() => {
+  const animationStyle = useAnimatedStyle<{ transform: any }>(() => {
     if (scale.value > 1) {
       return {
         transform: [

@@ -11,7 +11,6 @@ import Animated, {
   withTiming,
   withDecay,
 } from "react-native-reanimated";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   HeadTabViewContext,
@@ -35,12 +34,11 @@ import {
   DefaultTabBar,
   PullLoading,
 } from "../../components";
-import { Screen, Colors } from "../../config";
+import { Colors } from "../../config";
 import { Account } from "../../config/interface";
+import useDeviceStore from "../../store/useDeviceStore";
 import { StringUtil, replaceContentEmoji } from "../../utils";
 import LineItemName from "../home/lineItemName";
-
-const { height } = Screen;
 
 interface UserProps {
   id: string;
@@ -52,7 +50,7 @@ const User: React.FC<UserProps> = (props) => {
   // const { id, acct } = account;
   const { userData, id } = props;
 
-  const inset = useSafeAreaInsets();
+  const { insets, width, height } = useDeviceStore();
   const stickyHeight = useSharedValue(0);
   // const [currentIndex, setCurrentIndex] = useState(0);
   const currentIndex = useSharedValue(0);
@@ -285,7 +283,7 @@ const User: React.FC<UserProps> = (props) => {
             }}
             renderTabBar={() => (
               <DefaultTabBar
-                tabBarWidth={Screen.width / tabViewConfig.length}
+                tabBarWidth={width / tabViewConfig.length}
                 tabBarInactiveTextColor="#333"
                 tabBarActiveTextColor={Colors.theme}
                 tabBarTextStyle={{
@@ -296,7 +294,7 @@ const User: React.FC<UserProps> = (props) => {
                   height: 4,
                   backgroundColor: Colors.theme,
                   width: 50,
-                  marginLeft: (Screen.width / tabViewConfig.length - 50) / 2,
+                  marginLeft: (width / tabViewConfig.length - 50) / 2,
                 }}
               />
             )}
@@ -319,7 +317,7 @@ const User: React.FC<UserProps> = (props) => {
         scrollY={scrollY}
         height={HEADER_HEIGHT}
       >
-        <View style={[styles.slider, { marginTop: inset.top }]}>
+        <View style={[styles.slider, { marginTop: insets.top }]}>
           <LineItemName
             displayname={userData?.username}
             fontSize={18}
@@ -331,11 +329,11 @@ const User: React.FC<UserProps> = (props) => {
         scrollY={scrollY}
         refreshing={refreshing}
         top={IMAGE_HEIGHT / 2}
-        left={Screen.width / 2}
+        left={width / 2}
         offsetY={PULL_OFFSETY}
       />
       <TouchableOpacity
-        style={[styles.back, { top: inset.top + 10 }]}
+        style={[styles.back, { top: insets.top + 10 }]}
         onPress={handleBack}
       >
         <Icon name="arrowLeft" color="#fff" size={18} />
