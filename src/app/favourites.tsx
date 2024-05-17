@@ -1,6 +1,6 @@
 import { RefreshList, Screen } from "@components";
 import DefaultLineItem from "@ui/home/defaultLineItem";
-import TimeLineItem from "@ui/home/timeLineItem";
+import StatusItem from "@ui/statusItem";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
@@ -26,7 +26,7 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
       <View style={styles.main}>
         <RefreshList
           data={dataSource}
-          renderItem={({ item }) => <TimeLineItem item={item} />}
+          renderItem={({ item }) => <StatusItem item={item} />}
           emptyComponent={
             <DefaultLineItem onRefresh={onRefresh} listStatus={listStatus} />
           }

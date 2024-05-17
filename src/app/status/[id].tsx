@@ -1,6 +1,6 @@
 import { Screen } from "@components";
-import HomeLineItem from "@ui/home/timeLineItem";
-import ToolBar from "@ui/home/toolBar";
+import StatusItem from "@ui/statusItem";
+import ToolBar from "@ui/statusItem/toolBar";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
@@ -34,7 +34,7 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
         <View />
       ) : (
         <>
-          <HomeLineItem item={statusDetail} needToolbar={false} />
+          <StatusItem item={statusDetail} needToolbar={false} />
           <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
             <ToolBar id={id} />
           </View>

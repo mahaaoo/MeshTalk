@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import DefaultLineItem from "./defaultLineItem";
-import HomeLineItem from "./timeLineItem";
+import StatusItem from "../statusItem";
 import { RefreshList } from "../../components";
 import { homeLine } from "../../server/timeline";
 import { useRefreshList } from "../../utils/hooks";
@@ -25,7 +25,7 @@ const HomeLine: React.FC<HomeLineProps> = (props) => {
   return (
     <RefreshList
       data={dataSource}
-      renderItem={({ item }) => <HomeLineItem item={item} />}
+      renderItem={({ item }) => <StatusItem item={item} />}
       onHeaderRefresh={onRefresh}
       onFooterRefresh={onLoadMore}
       refreshState={listStatus}

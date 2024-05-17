@@ -32,7 +32,7 @@ import { Response, Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import { useRefreshList } from "../../utils/hooks";
 import DefaultLineItem from "../home/defaultLineItem";
-import HomeLineItem from "../home/timeLineItem";
+import StatusItem from "../statusItem";
 
 interface UserLineProps {
   index: number;
@@ -238,7 +238,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         style={{ height: height - HEADER_HEIGHT - 50 }}
         scrollEventThrottle={16}
         data={dataSource}
-        renderItem={({ item }) => <HomeLineItem item={item} />}
+        renderItem={({ item }) => <StatusItem item={item} />}
         keyExtractor={(item, index) => item?.id || index.toString()}
         animatedProps={animatedProps}
         onEndReached={onLoadMore}

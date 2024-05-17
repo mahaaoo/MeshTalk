@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
 import DefaultLineItem from "./defaultLineItem";
-import HomeLineItem from "./timeLineItem";
+import StatusItem from "../statusItem";
 import { RefreshList } from "../../components";
 import { Colors } from "../../config";
 import { localLine } from "../../server/timeline";
@@ -29,7 +29,7 @@ const Local: React.FC<LocalProps> = (props) => {
     <View style={styles.main}>
       <RefreshList
         data={dataSource}
-        renderItem={({ item }) => <HomeLineItem item={item} />}
+        renderItem={({ item }) => <StatusItem item={item} />}
         onHeaderRefresh={onRefresh}
         onFooterRefresh={onLoadMore}
         refreshState={listStatus}

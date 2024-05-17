@@ -7,7 +7,7 @@ import { Colors } from "../../config";
 import { Notification } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji } from "../../utils";
-import LineItemName from "../home/lineItemName";
+import UserName from "../home/userName";
 
 const tagsStyles = {
   p: {
@@ -56,7 +56,7 @@ const MetionItem: React.FC<MetionItemProps> = (props) => {
         <View style={styles.right}>
           <Avatar url={item.account?.avatar} />
           <Text style={styles.username}>
-            <LineItemName
+            <UserName
               displayname={item.account?.display_name || item.account?.username}
               emojis={item.account?.emojis}
               fontSize={15}

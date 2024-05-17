@@ -268,7 +268,7 @@ class Mint extends Tree {
  * @param text 正文
  * @param emojis emojis数组
  */
-export const replaceContentEmoji = (text: string): string => {
+export const replaceContentEmoji = (text: string, emojis: Emoji[]): string => {
   if (!text || text.length === 0) {
     return "";
   }
@@ -277,7 +277,15 @@ export const replaceContentEmoji = (text: string): string => {
     return text;
   }
 
-  const hash = useEmojiStore.getState().emojisHash;
+  let hash = new Map<string, Emoji>();
+
+  if (emojis && emojis.length > 0) {
+    for (const emoji of emojis) {
+      hash.set(emoji.shortcode, emoji);
+    }
+  } else {
+    hash = useEmojiStore.getState().emojisHash;
+  }
 
   let isEmoji = false;
   let handledText = "";

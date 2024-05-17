@@ -1,6 +1,6 @@
 import { RefreshList, Screen } from "@components";
 import DefaultLineItem from "@ui/home/defaultLineItem";
-import HomeLineItem from "@ui/home/timeLineItem";
+import StatusItem from "@ui/statusItem";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
@@ -28,7 +28,7 @@ const Public: React.FC<PublicProps> = () => {
         <View style={{ backgroundColor: "#fff", height: insets.top }} />
         <RefreshList
           data={dataSource}
-          renderItem={({ item }) => <HomeLineItem item={item} />}
+          renderItem={({ item }) => <StatusItem item={item} />}
           onHeaderRefresh={onRefresh}
           onFooterRefresh={onLoadMore}
           refreshState={listStatus}

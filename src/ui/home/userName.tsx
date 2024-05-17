@@ -1,36 +1,37 @@
 import { Image } from "expo-image";
 import React, { useMemo } from "react";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, TextStyle } from "react-native";
 
 import { Emoji } from "../../config/interface";
 import { replaceNameEmoji } from "../../utils";
 
-interface LineItemNameProps {
+interface UserNameProps {
   displayname: string;
   fontSize?: number;
   emojis: Emoji[];
+  style?: TextStyle;
 }
 
-const LineItemName: React.FC<LineItemNameProps> = (props) => {
-  const { displayname, fontSize = 16, emojis } = props;
+const UserName: React.FC<UserNameProps> = (props) => {
+  const { displayname, fontSize = 16, emojis, style } = props;
 
   const name = useMemo(() => {
     return replaceNameEmoji(displayname, emojis);
   }, [displayname, emojis]);
 
   return (
-    <View style={styles.main}>
+    <>
       {name.map((item, index) => {
         return !item.image ? (
           <Text
-            style={[styles.text, { fontSize }]}
-            key={`HomeLineItemName${index}`}
+            style={[styles.text, { fontSize }, style]}
+            key={`HomeUserName${index}`}
           >
             {item.text}
           </Text>
         ) : (
           <Image
-            key={`HomeLineItemName${index}`}
+            key={`HomeUserName${index}`}
             style={styles.image}
             source={{
               uri: item.text,
@@ -39,15 +40,11 @@ const LineItemName: React.FC<LineItemNameProps> = (props) => {
           />
         );
       })}
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  main: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   text: {
     fontWeight: "bold",
   },
@@ -57,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LineItemName;
+export default UserName;

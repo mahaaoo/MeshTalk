@@ -8,7 +8,7 @@ import {
   Icon,
   Screen,
 } from "@components";
-import LineItemName from "@ui/home/lineItemName";
+import UserName from "@ui/home/userName";
 import { router } from "expo-router";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -117,7 +117,7 @@ const Setting: React.FC<object> = () => {
               </TouchableOpacity>
             </View>
             <View>
-              <LineItemName
+              <UserName
                 displayname={
                   currentAccount!.display_name || currentAccount!.username
                 }
@@ -129,7 +129,12 @@ const Setting: React.FC<object> = () => {
                 {currentAccount?.acct}
               </Text>
             </View>
-            <HTMLContent html={replaceContentEmoji(currentAccount!.note)} />
+            <HTMLContent
+              html={replaceContentEmoji(
+                currentAccount!.note,
+                currentAccount!.emojis,
+              )}
+            />
             <View style={styles.act}>
               <View style={styles.actItem}>
                 <Text style={styles.msg_number}>

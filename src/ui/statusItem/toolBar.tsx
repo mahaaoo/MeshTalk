@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
+import { styles } from "./index.style";
 import { Icon } from "../../components";
 import { Colors } from "../../config";
 import { favouriteStatuses, unfavouriteStatuses } from "../../server/status";
@@ -74,28 +75,5 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  tool: {
-    flexDirection: "row",
-    alignItems: "center",
-    height: 40,
-  },
-  toolItem: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  toolTitle: {
-    fontSize: 16,
-    color: Colors.commonToolBarText,
-    marginLeft: 2,
-  },
-  iconTurn: {
-    width: 24,
-    height: 22,
-  },
-});
 
 export default ToolBar;

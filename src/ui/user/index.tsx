@@ -38,7 +38,7 @@ import { Colors } from "../../config";
 import { Account } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import { StringUtil, replaceContentEmoji } from "../../utils";
-import LineItemName from "../home/lineItemName";
+import UserName from "../home/userName";
 
 interface UserProps {
   id: string;
@@ -240,18 +240,24 @@ const User: React.FC<UserProps> = (props) => {
                 </View>
                 <FollowButton id={id} locked={userData?.locked} />
               </View>
-              <View style={{ marginTop: 5 }}>
-                <LineItemName
-                  displayname={userData?.display_name}
-                  emojis={userData?.emojis}
-                  fontSize={18}
-                />
-                <Text style={styles.acct}>
-                  <Text>@</Text>
-                  {userData?.acct}
+              <View style={{ marginTop: 5, flexDirection: "row" }}>
+                <Text numberOfLines={10}>
+                  <UserName
+                    displayname={userData?.display_name}
+                    emojis={userData?.emojis}
+                    fontSize={18}
+                  />
                 </Text>
               </View>
-              <HTMLContent html={replaceContentEmoji(userData?.note)} />
+              <Text style={styles.acct}>
+                <Text>@</Text>
+                {userData?.acct}
+              </Text>
+              <View style={{ marginVertical: 5 }}>
+                <HTMLContent
+                  html={replaceContentEmoji(userData?.note, userData?.emojis)}
+                />
+              </View>
               <View style={styles.act}>
                 <Text style={styles.msgNumber}>
                   {StringUtil.stringAddComma(userData?.statuses_count)}
@@ -318,7 +324,7 @@ const User: React.FC<UserProps> = (props) => {
         height={HEADER_HEIGHT}
       >
         <View style={[styles.slider, { marginTop: insets.top }]}>
-          <LineItemName
+          <UserName
             displayname={userData?.username}
             fontSize={18}
             emojis={userData?.emojis}

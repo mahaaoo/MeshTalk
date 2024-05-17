@@ -1,28 +1,25 @@
+import { Avatar, SplitLine, NinePicture, HTMLContent, Icon } from "@components";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
-import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
-import LineItemName from "./lineItemName";
+import { styles } from "./index.style";
+import ReplyName from "./replyName";
 import ToolBar from "./toolBar";
 import WebCard from "./webCard";
-import {
-  Avatar,
-  SplitLine,
-  NinePicture,
-  HTMLContent,
-  Icon,
-} from "../../components";
 import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji, DateUtil } from "../../utils";
+import UserName from "../home/userName";
+import StatusOptions from "./statusOptions";
 
-interface TimeLineItemProps {
+interface StatusItemProps {
   item: Timelines;
   needToolbar?: boolean; // 是否显示转发工具条
 }
 
-const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
+const StatusItem: React.FC<StatusItemProps> = (props) => {
   const { item, needToolbar = true } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
@@ -51,20 +48,18 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
     <View style={styles.main} key={showItem.id}>
       <TouchableOpacity activeOpacity={1} onPress={handleNavigation}>
         {item.reblog ? (
-          <View style={styles.status}>
-            <Icon name="turn" size={20} color={Colors.commonToolBarText} />
-            <Text style={styles.turnText}>
-              {item.account.display_name || item.account.username} 转发了
-            </Text>
-          </View>
+          <ReplyName
+            displayName={item.account.display_name || item.account.username}
+            emojis={showItem.account.emojis}
+            type="转发了"
+          />
         ) : null}
         {item.in_reply_to_id ? (
-          <View style={styles.status}>
-            <Icon name="comment" size={20} color={Colors.commonToolBarText} />
-            <Text style={styles.commentText}>
-              {item.account.display_name || item.account.username} 转评了
-            </Text>
-          </View>
+          <ReplyName
+            displayName={item.account.display_name || item.account.username}
+            emojis={showItem.account.emojis}
+            type="转评了"
+          />
         ) : null}
         <View style={styles.content}>
           <View style={styles.title}>
@@ -73,17 +68,18 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
             </TouchableOpacity>
             <View style={styles.name}>
               <View style={styles.nameContainer}>
-                <View style={styles.nameView}>
-                  <Text numberOfLines={1} ellipsizeMode="tail">
-                    <LineItemName
-                      displayname={
-                        showItem.account.display_name ||
-                        showItem.account.username
-                      }
-                      emojis={showItem.account.emojis}
-                    />
-                  </Text>
-                </View>
+                <Text
+                  style={styles.nameView}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  <UserName
+                    displayname={
+                      showItem.account.display_name || showItem.account.username
+                    }
+                    emojis={showItem.account.emojis}
+                  />
+                </Text>
               </View>
               <View style={styles.sourceContainer}>
                 <View style={styles.sourceView}>
@@ -97,10 +93,15 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
               </View>
             </View>
           </View>
-          <HTMLContent html={replaceContentEmoji(showItem.content)} />
+
+          <HTMLContent
+            html={replaceContentEmoji(showItem.content, showItem.emojis)}
+          />
+
           <View style={{ paddingVertical: 8 }}>
             <NinePicture imageList={showItem.media_attachments} />
           </View>
+
           {showItem.media_attachments.length === 0 ? (
             <WebCard card={showItem.card} />
           ) : null}
@@ -123,6 +124,7 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
           ) : null}
 
           <SplitLine start={0} end={width - 30} />
+
           {needToolbar ? (
             <ToolBar
               id={showItem.id}
@@ -134,84 +136,9 @@ const TimeLineItem: React.FC<TimeLineItemProps> = (props) => {
           ) : null}
         </View>
       </TouchableOpacity>
-      <View style={styles.more}>
-        <Icon name="three_point" size={18} color="#bbb" />
-      </View>
+      <StatusOptions />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  status: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-    flexDirection: "row",
-    marginTop: 8,
-    alignItems: "flex-start",
-    marginLeft: 5,
-    marginRight: 50,
-  },
-  main: {
-    backgroundColor: Colors.defaultWhite,
-    marginBottom: 10,
-    width: useDeviceStore.getState().width,
-  },
-  title: {
-    flexDirection: "row",
-    paddingTop: 15,
-  },
-  avatar: {
-    paddingRight: 10,
-  },
-  name: {
-    justifyContent: "center",
-    flex: 1,
-  },
-  turnText: {
-    color: Colors.commonToolBarText,
-    marginLeft: 2,
-  },
-  commentText: {
-    color: Colors.commonToolBarText,
-    marginLeft: 2,
-  },
-  content: {
-    marginHorizontal: 15,
-  },
-  nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  nameView: {
-    flex: 1,
-  },
-  mentionText: {
-    color: Colors.commonToolBarText,
-    fontSize: 14,
-  },
-  sourceContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  sourceView: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  sourceText: {
-    fontSize: 12,
-    color: Colors.commonToolBarText,
-    marginLeft: 8,
-  },
-  nameText: {
-    fontSize: 12,
-    color: Colors.commonToolBarText,
-  },
-  more: {
-    position: "absolute",
-    right: 15,
-    top: 15,
-  },
-});
-
-export default TimeLineItem;
+export default StatusItem;

@@ -6,7 +6,7 @@ import { Avatar, SplitLine } from "../../components";
 import { Colors } from "../../config";
 import { Account } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
-import LineItemName from "../home/lineItemName";
+import UserName from "../home/userName";
 
 interface UserItemProps {
   item: Account;
@@ -34,7 +34,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
         </View>
         <View style={styles.content}>
           <View style={styles.nameContainer}>
-            <LineItemName
+            <UserName
               displayname={item?.display_name || item?.username}
               emojis={item?.emojis}
               fontSize={18}

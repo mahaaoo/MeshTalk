@@ -64,6 +64,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
       renderersProps={{
         a: {
           onPress: (_, href) => {
+            console.log("打开链接", href);
             openBrowserAsync(href);
             // console.log("123", href)
           },
