@@ -24,7 +24,7 @@ export const ImagePreviewUtil: UniqueModal = {
     );
   },
   hide: () => ModalUtil.remove(ImagePreviewUtil.key || ""),
-  isExist: () => ModalUtil.isExist(ImagePreviewUtil.key || ""),
+  isExist: () => ModalUtil.isExist(ImagePreviewUtil.key || "") || false,
 };
 
 const styles = StyleSheet.create({

@@ -100,7 +100,7 @@ const Publish: React.FC<PublishProps> = () => {
   }, []);
 
   return (
-    <Screen>
+    <Screen headerShown title="新嘟文">
       <View style={styles.main}>
         <View style={styles.container}>
           <View style={styles.avatarContainer}>

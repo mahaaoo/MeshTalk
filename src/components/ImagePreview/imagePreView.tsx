@@ -99,7 +99,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         const destY = snapPoint(translateY.value, velocityY, snapPointsY);
 
         if (Math.abs(destY) >= 0.25 * height) {
-          // TODO：可以关闭
+          runOnJS(ModalUtil.remove)("global-image-preview");
         }
         translateY.value = withTiming(0, { duration });
         childrenX.value = withTiming(0, { duration });

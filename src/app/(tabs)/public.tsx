@@ -7,6 +7,7 @@ import { View, StyleSheet } from "react-native";
 import { publicLine } from "../../server/timeline";
 import useDeviceStore from "../../store/useDeviceStore";
 import { useRefreshList } from "../../utils/hooks";
+import { Colors } from "../../config";
 
 interface PublicProps {
   tabLabel: string;
@@ -47,7 +48,7 @@ const Public: React.FC<PublicProps> = () => {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.pageDefaultBackground,
   },
 });
 

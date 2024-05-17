@@ -19,8 +19,8 @@ import Animated, {
 
 import { Colors } from "../../config";
 import useAccountStore from "../../store/useAccountStore";
-import { StringUtil, StorageUtil, replaceContentEmoji } from "../../utils";
 import useDeviceStore from "../../store/useDeviceStore";
+import { StringUtil, StorageUtil, replaceContentEmoji } from "../../utils";
 
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
@@ -50,6 +50,9 @@ const Setting: React.FC<object> = () => {
   useEffect(() => {
     if (currentAccount) {
       setRefreshing(false);
+    } else {
+      setRefreshing(true);
+      verifyToken();
     }
   }, [currentAccount]);
 
@@ -98,7 +101,7 @@ const Setting: React.FC<object> = () => {
         <StretchableImage
           isblur={refreshing}
           scrollY={scrollY}
-          url={currentAccount?.header}
+          url={currentAccount!.header}
           imageHeight={IMAGEHEIGHT}
         />
         <View style={styles.header}>
@@ -116,21 +119,21 @@ const Setting: React.FC<object> = () => {
             <View>
               <LineItemName
                 displayname={
-                  currentAccount?.display_name || currentAccount?.username
+                  currentAccount!.display_name || currentAccount!.username
                 }
                 fontSize={18}
-                emojis={currentAccount?.emojis}
+                emojis={currentAccount!.emojis}
               />
               <Text style={styles.acct}>
                 <Text>@</Text>
                 {currentAccount?.acct}
               </Text>
             </View>
-            <HTMLContent html={replaceContentEmoji(currentAccount?.note)} />
+            <HTMLContent html={replaceContentEmoji(currentAccount!.note)} />
             <View style={styles.act}>
               <View style={styles.actItem}>
                 <Text style={styles.msg_number}>
-                  {StringUtil.stringAddComma(currentAccount?.statuses_count)}
+                  {StringUtil.stringAddComma(currentAccount!.statuses_count)}
                 </Text>
                 <Text style={styles.msg}>嘟文</Text>
               </View>
@@ -139,7 +142,7 @@ const Setting: React.FC<object> = () => {
                 onPress={handleNavigateToFollowing}
               >
                 <Text style={styles.msg_number}>
-                  {StringUtil.stringAddComma(currentAccount?.following_count)}
+                  {StringUtil.stringAddComma(currentAccount!.following_count)}
                 </Text>
                 <Text style={styles.msg}>关注</Text>
               </TouchableOpacity>
@@ -148,7 +151,7 @@ const Setting: React.FC<object> = () => {
                 onPress={handleNavigateToFans}
               >
                 <Text style={styles.msg_number}>
-                  {StringUtil.stringAddComma(currentAccount?.followers_count)}
+                  {StringUtil.stringAddComma(currentAccount!.followers_count)}
                 </Text>
                 <Text style={styles.msg}>粉丝</Text>
               </TouchableOpacity>
