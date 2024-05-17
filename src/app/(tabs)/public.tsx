@@ -4,10 +4,10 @@ import HomeLineItem from "@ui/home/timeLineItem";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
+import { Colors } from "../../config";
 import { publicLine } from "../../server/timeline";
 import useDeviceStore from "../../store/useDeviceStore";
 import { useRefreshList } from "../../utils/hooks";
-import { Colors } from "../../config";
 
 interface PublicProps {
   tabLabel: string;
@@ -24,7 +24,8 @@ const Public: React.FC<PublicProps> = () => {
 
   return (
     <Screen headerShown={false}>
-      <View style={[styles.main, { paddingTop: insets.top }]}>
+      <View style={[styles.main]}>
+        <View style={{ backgroundColor: "#fff", height: insets.top }} />
         <RefreshList
           data={dataSource}
           renderItem={({ item }) => <HomeLineItem item={item} />}

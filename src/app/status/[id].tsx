@@ -28,16 +28,18 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
     fetchStatus(id);
   }, [id]);
 
-  if (!statusDetail) {
-    return null;
-  }
-
   return (
     <Screen headerShown title="详情">
-      <HomeLineItem item={statusDetail} needToolbar={false} />
-      <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
-        <ToolBar id={id} />
-      </View>
+      {!statusDetail ? (
+        <View />
+      ) : (
+        <>
+          <HomeLineItem item={statusDetail} needToolbar={false} />
+          <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
+            <ToolBar id={id} />
+          </View>
+        </>
+      )}
     </Screen>
   );
 };

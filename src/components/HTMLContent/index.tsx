@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { openBrowserAsync } from "expo-web-browser";
 import React from "react";
 import { useWindowDimensions } from "react-native";
 import HTML, {
@@ -29,7 +30,7 @@ const customHTMLElementModels = {
   }),
 };
 
-const ImageRenderer: CustomBlockRenderer = function ImageRenderer(props) {
+const ImageRenderer: CustomBlockRenderer = (props) => {
   const { rendererProps } = useInternalRenderer("img", props);
   const { source, style: imgStyle, width, height } = rendererProps;
   return (
@@ -51,7 +52,6 @@ interface HTMLContentProps {
 const HTMLContent: React.FC<HTMLContentProps> = (props) => {
   const { html, tagsStyles } = props;
   const { width } = useWindowDimensions();
-
   // TODO: 过长的内容，需要有一个max-height来省略过多的内容，类似于展开全文
   // 可以考虑自行拆解 目前有<a> <p> <img> <span> <br />
   return (
@@ -61,6 +61,14 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
       contentWidth={width}
       renderers={renderers}
       customHTMLElementModels={customHTMLElementModels}
+      renderersProps={{
+        a: {
+          onPress: (_, href) => {
+            openBrowserAsync(href);
+            // console.log("123", href)
+          },
+        },
+      }}
     />
   );
 };

@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { openBrowserAsync } from "expo-web-browser";
 import React, { useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 
@@ -14,9 +15,8 @@ const WebCard: React.FC<WebCardProps> = (props) => {
   const { card } = props;
 
   const handleNavigation = useCallback(() => {
-    // navigate("Link", {
-    //   url: card.url,
-    // });
+    console.log("handleNavigation");
+    openBrowserAsync(card.url);
   }, []);
 
   if (!card || !card.image) {

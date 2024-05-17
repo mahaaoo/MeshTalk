@@ -29,6 +29,20 @@
     "plugins": [
       "expo-router"
     ],
-    "scheme": "meshtalk"
+    "scheme": "meshtalk",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "90388b51-c330-41dd-88d3-879739927f96"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/90388b51-c330-41dd-88d3-879739927f96"
+    }
   }
 }
