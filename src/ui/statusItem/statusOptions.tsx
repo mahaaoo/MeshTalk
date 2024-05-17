@@ -5,31 +5,40 @@ import Animated, {
   useAnimatedRef,
   runOnUI,
   measure,
+  runOnJS,
 } from "react-native-reanimated";
 
 import { styles } from "./index.style";
+import { PopOptonsUtil } from "../../components/PopOptions";
 import useDeviceStore from "../../store/useDeviceStore";
 
 interface StatusOptionsProps {}
 
 const StatusOptions: React.FC<StatusOptionsProps> = (props) => {
   const aref = useAnimatedRef();
-  const { height } = useDeviceStore();
+  const { height, width } = useDeviceStore();
 
   // {"height": 38, "pageX": 350, "pageY": 410.3333333333335, "width": 38, "x": 350, "y": 0}
- 
+
   const handlePress = () => {
-    runOnUI(() => {
-      const measurement = measure(aref);
-      if (measurement === null) {
-      }
-      console.log(measurement);
-      if (measurement!.pageY > height / 2) {
-        // 向下弹出
-      } else {
-        // 向上弹出
-      }
-    })();
+    // runOnUI(() => {
+    //   const measurement = measure(aref);
+    //   if (measurement === null) {
+    //   }
+    //   if (measurement!.pageY > height / 2) {
+    //     // 向上弹出
+    //     runOnJS(PopOptonsUtil.show)(
+    //       measurement!.pageY - 200 + 20,
+    //       width - measurement!.pageX,
+    //     );
+    //   } else {
+    //     // 向下弹出
+    //     runOnJS(PopOptonsUtil.show)(
+    //       measurement!.pageY + 10,
+    //       width - measurement!.pageX,
+    //     );
+    //   }
+    // })();
   };
 
   return (

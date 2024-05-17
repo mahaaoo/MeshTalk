@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import {
   ModalUtil,
   OpacityContainer,
@@ -12,44 +12,59 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
   const {} = props;
 
   return (
-    <View style={{ width: 250, height: 4 * 50 }}>
-      <View style={{ height: 50, width: "100%" }}>
+    <View style={styles.container}>
+      <View style={styles.item}>
         <Text>屏蔽</Text>
       </View>
-      <View style={{ height: 50, width: "100%" }}>
+      <View style={styles.item}>
         <Text>提及</Text>
       </View>
-      <View style={{ height: 50, width: "100%" }}>
+      <View style={styles.item}>
         <Text>拉黑</Text>
       </View>
-      <View style={{ height: 50, width: "100%" }}>
+      <View style={styles.item}>
         <Text>举报</Text>
       </View>
     </View>
   );
 };
 
-export const ImagePreviewUtil: UniqueModal = {
-  key: "global-image-preview",
-  template: (imageList: string[], initialIndex: number) => {
+export const PopOptonsUtil: UniqueModal = {
+  key: "global-pop-options",
+  template: (top: number, right: number) => {
     return (
       <OpacityContainer
         mask={false}
-        modal
-        containerStyle={{ justifyContent: "center", alignItems: "center" }}
+        containerStyle={{
+          position: "absolute",
+          top,
+          right,
+        }}
       >
         <PopOptions />
       </OpacityContainer>
     );
   },
-  show: (imageList: string[], initialIndex: number) => {
-    ModalUtil.add(
-      ImagePreviewUtil.template(imageList, initialIndex),
-      ImagePreviewUtil.key,
-    );
+  show: (top: number, right: number) => {
+    ModalUtil.add(PopOptonsUtil.template(top, right), PopOptonsUtil.key);
   },
-  hide: () => ModalUtil.remove(ImagePreviewUtil.key || ""),
-  isExist: () => ModalUtil.isExist(ImagePreviewUtil.key || "") || false,
+  hide: () => ModalUtil.remove(PopOptonsUtil.key || ""),
+  isExist: () => ModalUtil.isExist(PopOptonsUtil.key || "") || false,
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: 180,
+    height: 4 * 50,
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+  },
+  item: {
+    height: 50,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
 
 export default PopOptions;
