@@ -1,9 +1,9 @@
+import { RefreshList, Screen } from "@components";
 import DefaultLineItem from "@ui/home/defaultLineItem";
 import TimeLineItem from "@ui/home/timeLineItem";
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 
-import { RefreshList, Screen } from "@components";
 import { Colors } from "../config";
 import { getFavouritesById } from "../server/account";
 import { useRefreshList } from "../utils/hooks";

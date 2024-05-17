@@ -11,7 +11,7 @@ import { useRefreshList } from "../../utils/hooks";
 interface UserFansProps {}
 
 const UserFans: React.FC<UserFansProps> = (props) => {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
     (params) => getFollowersById(id, params),
     "Link",

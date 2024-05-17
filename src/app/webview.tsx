@@ -9,7 +9,7 @@ import useLoginStore from "../store/useLoginStore";
 interface WebViewParams {}
 
 const WebView: React.FC<WebViewParams> = (props) => {
-  const { initUrl = "" } = useLocalSearchParams();
+  const { initUrl = "" } = useLocalSearchParams<{ initUrl: string }>();
   const navigation = useNavigation();
   const { webGetToken } = useLoginStore();
 

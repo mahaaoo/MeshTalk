@@ -13,7 +13,7 @@ import useDeviceStore from "../../store/useDeviceStore";
 interface StatusDetailProps {}
 
 const StatusDetail: React.FC<StatusDetailProps> = (props) => {
-  const { id } = useLocalSearchParams();
+  const { id = "" } = useLocalSearchParams<{ id: string }>();
   const { insets } = useDeviceStore();
   const [statusDetail, setStatusDetail] = useState<Timelines>();
 

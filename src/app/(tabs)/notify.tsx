@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 
 import { Colors } from "../../config";
+import { Relationship } from "../../config/interface";
 import { getRelationships } from "../../server/account";
 import { getNotifications } from "../../server/notifications";
 import FavouriteItem from "../../ui/notify/favouriteItem";
@@ -18,7 +19,7 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
     "Normal",
     40,
   );
-  const [relationships, setRelationships] = useState([]);
+  const [relationships, setRelationships] = useState<Relationship[]>([]);
 
   useEffect(() => {
     onRefresh();
