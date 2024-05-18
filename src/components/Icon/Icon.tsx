@@ -25,7 +25,7 @@ const Icon: React.FC<IconProps> = (props) => {
 
   return (
     <Svg width={size} height={size} viewBox="0 0 1024 1024">
-      <Path d={Library[name]} fill={color} />
+      <Path d={Library[name] as string} fill={color} />
     </Svg>
   );
 };

@@ -35,13 +35,14 @@ import DefaultLineItem from "../home/defaultLineItem";
 import StatusItem from "../statusItem";
 
 interface UserLineProps {
+  acct: string;
   index: number;
   fetchApi: (...args: any) => Response<Timelines[]>;
   onRefreshFinish: () => void;
 }
 
 const UserLine: React.FC<UserLineProps> = (props) => {
-  const { index, fetchApi } = props;
+  const { index, fetchApi, acct } = props;
   const {
     currentIndex,
     scrollY,
@@ -238,7 +239,9 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         style={{ height: height - HEADER_HEIGHT - 50 }}
         scrollEventThrottle={16}
         data={dataSource}
-        renderItem={({ item }) => <StatusItem item={item} />}
+        renderItem={({ item }) => (
+          <StatusItem item={item} sameUser={item.account.acct === acct} />
+        )}
         keyExtractor={(item, index) => item?.id || index.toString()}
         animatedProps={animatedProps}
         onEndReached={onLoadMore}

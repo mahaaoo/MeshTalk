@@ -1,52 +1,69 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import {
-  ModalUtil,
-  OpacityContainer,
-  UniqueModal,
-} from "react-native-ma-modal";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { ModalUtil, UniqueModal } from "react-native-ma-modal";
 
-interface PopOptionsProps {}
+import { PopOptionsContainer } from "./PopOptionsContainer";
+import { Icon } from "../Icon";
+import SpacingBox from "../SpacingBox";
+import SplitLine from "../SplitLine";
+
+interface PopOptionsProps {
+  acct: string;
+}
 
 const PopOptions: React.FC<PopOptionsProps> = (props) => {
-  const {} = props;
+  const { acct } = props;
+  const showAcct = ` @${acct}`;
 
   return (
     <View style={styles.container}>
-      <View style={styles.item}>
-        <Text>屏蔽</Text>
-      </View>
-      <View style={styles.item}>
-        <Text>提及</Text>
-      </View>
-      <View style={styles.item}>
-        <Text>拉黑</Text>
-      </View>
-      <View style={styles.item}>
-        <Text>举报</Text>
-      </View>
+      <TouchableOpacity style={styles.item}>
+        <Text style={styles.text}>关注{showAcct}</Text>
+        <Icon name="follow" color="#333" />
+      </TouchableOpacity>
+      <SpacingBox height={5} color="#e9e9e9" />
+      <TouchableOpacity style={styles.item}>
+        <Text style={styles.text}>提及{showAcct}</Text>
+        <Icon name="aite" color="#333" />
+      </TouchableOpacity>
+      <SplitLine start={10} end={210} />
+      <TouchableOpacity style={styles.item}>
+        <Text style={styles.text}>屏蔽{showAcct}</Text>
+        <Icon name="mute" size={22} color="#333" />
+      </TouchableOpacity>
+      <SplitLine start={10} end={210} />
+      <TouchableOpacity style={styles.item}>
+        <Text style={styles.text}>拉黑{showAcct}</Text>
+        <Icon name="block" size={20} color="#333" />
+      </TouchableOpacity>
+      <SplitLine start={10} end={210} />
+      <TouchableOpacity style={styles.item}>
+        <Text style={styles.text}>举报{showAcct}</Text>
+        <Icon name="report" size={20} color="#333" />
+      </TouchableOpacity>
     </View>
   );
 };
 
 export const PopOptonsUtil: UniqueModal = {
   key: "global-pop-options",
-  template: (top: number, right: number) => {
+  template: (pageY: number, pageX: number, acct: string) => {
     return (
-      <OpacityContainer
+      <PopOptionsContainer
+        duration={200}
         mask={false}
-        containerStyle={{
-          position: "absolute",
-          top,
-          right,
-        }}
+        pageY={pageY}
+        pageX={pageX}
       >
-        <PopOptions />
-      </OpacityContainer>
+        <PopOptions acct={acct} />
+      </PopOptionsContainer>
     );
   },
-  show: (top: number, right: number) => {
-    ModalUtil.add(PopOptonsUtil.template(top, right), PopOptonsUtil.key);
+  show: (pageY: number, pageX: number, acct: string) => {
+    ModalUtil.add(
+      PopOptonsUtil.template(pageY, pageX, acct),
+      PopOptonsUtil.key,
+    );
   },
   hide: () => ModalUtil.remove(PopOptonsUtil.key || ""),
   isExist: () => ModalUtil.isExist(PopOptonsUtil.key || "") || false,
@@ -54,16 +71,21 @@ export const PopOptonsUtil: UniqueModal = {
 
 const styles = StyleSheet.create({
   container: {
-    width: 180,
-    height: 4 * 50,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#f7f7f7",
     borderRadius: 10,
+    width: 230,
   },
   item: {
-    height: 50,
+    paddingVertical: 15,
     width: "100%",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 15,
+  },
+  text: {
+    fontSize: 16,
+    color: "#333",
   },
 });
 

@@ -10,35 +10,24 @@ import Animated, {
 
 import { styles } from "./index.style";
 import { PopOptonsUtil } from "../../components/PopOptions";
-import useDeviceStore from "../../store/useDeviceStore";
 
-interface StatusOptionsProps {}
+interface StatusOptionsProps {
+  acct: string;
+}
 
 const StatusOptions: React.FC<StatusOptionsProps> = (props) => {
+  const { acct } = props;
   const aref = useAnimatedRef();
-  const { height, width } = useDeviceStore();
-
-  // {"height": 38, "pageX": 350, "pageY": 410.3333333333335, "width": 38, "x": 350, "y": 0}
 
   const handlePress = () => {
-    // runOnUI(() => {
-    //   const measurement = measure(aref);
-    //   if (measurement === null) {
-    //   }
-    //   if (measurement!.pageY > height / 2) {
-    //     // 向上弹出
-    //     runOnJS(PopOptonsUtil.show)(
-    //       measurement!.pageY - 200 + 20,
-    //       width - measurement!.pageX,
-    //     );
-    //   } else {
-    //     // 向下弹出
-    //     runOnJS(PopOptonsUtil.show)(
-    //       measurement!.pageY + 10,
-    //       width - measurement!.pageX,
-    //     );
-    //   }
-    // })();
+    runOnUI(() => {
+      const measurement = measure(aref);
+      if (measurement !== null) {
+        const { pageY, pageX } = measurement;
+        console.log(measurement);
+        runOnJS(PopOptonsUtil.show)(pageY, pageX, acct);
+      }
+    })();
   };
 
   return (

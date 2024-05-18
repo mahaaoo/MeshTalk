@@ -38,6 +38,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   nameContainer: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },
@@ -49,6 +50,7 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   sourceContainer: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

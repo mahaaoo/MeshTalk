@@ -309,6 +309,7 @@ const User: React.FC<UserProps> = (props) => {
               <UserLine
                 key={tab.title}
                 index={index}
+                acct={userData.acct}
                 fetchApi={tab.fetchApi(id)}
                 onRefreshFinish={() => {
                   refreshing.value = false;

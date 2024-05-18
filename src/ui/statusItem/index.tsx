@@ -1,10 +1,11 @@
-import { Avatar, SplitLine, NinePicture, HTMLContent, Icon } from "@components";
+import { Avatar, SplitLine, NinePicture, HTMLContent } from "@components";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { styles } from "./index.style";
 import ReplyName from "./replyName";
+import StatusOptions from "./statusOptions";
 import ToolBar from "./toolBar";
 import WebCard from "./webCard";
 import { Colors } from "../../config";
@@ -12,19 +13,20 @@ import { Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import { replaceContentEmoji, DateUtil } from "../../utils";
 import UserName from "../home/userName";
-import StatusOptions from "./statusOptions";
 
 interface StatusItemProps {
   item: Timelines;
   needToolbar?: boolean; // 是否显示转发工具条
+  sameUser?: boolean; // 是否是同一个用户，在user中会用
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
-  const { item, needToolbar = true } = props;
+  const { item, needToolbar = true, sameUser = false } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
 
   const handleAvatar = useCallback(() => {
+    if (sameUser) return;
     router.push({
       pathname: "/user/[id]",
       params: {
@@ -136,7 +138,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           ) : null}
         </View>
       </TouchableOpacity>
-      <StatusOptions />
+      <StatusOptions acct={showItem.account.acct} />
     </View>
   );
 };
