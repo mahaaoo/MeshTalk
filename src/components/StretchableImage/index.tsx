@@ -3,7 +3,8 @@
  */
 
 import React, { useState, useCallback, useMemo } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, {
   SharedValue,
   useAnimatedStyle,
@@ -15,6 +16,7 @@ import Animated, {
 
 import Colors from "../../config/colors";
 import useDeviceStore from "../../store/useDeviceStore";
+import { ImagePreviewUtil } from "../ImagePreview";
 
 interface StretchableImageProps {
   imageHeight: number;
@@ -30,7 +32,7 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
   const [isShow, setShow] = useState(false);
   const imageOpcity = useSharedValue(0);
   const { width } = useDeviceStore();
-  
+
   const onImageLoad = useCallback(() => {
     setShow(true);
     imageOpcity.value = withTiming(1, { duration: 1000 });
@@ -67,6 +69,10 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
     };
   });
 
+  const handleImage = () => {
+    ImagePreviewUtil.show(url, 0);
+  };
+
   return (
     <>
       <Animated.View
@@ -93,7 +99,7 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
           }}
         />
       </Animated.View>
-      <View style={{ height: imageHeight }} />
+      <TouchableOpacity onPress={handleImage} style={{ height: imageHeight }} />
     </>
   );
 };

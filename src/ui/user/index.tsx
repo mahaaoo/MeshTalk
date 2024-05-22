@@ -1,8 +1,19 @@
+import {
+  Avatar,
+  StretchableImage,
+  SlideHeader,
+  FollowButton,
+  Icon,
+  HTMLContent,
+  TabView,
+  DefaultTabBar,
+  PullLoading,
+  ImagePreviewUtil,
+} from "@components";
 import { router } from "expo-router";
-import React, { useEffect, useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { Loading } from "react-native-ma-modal";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -23,17 +34,6 @@ import {
   NestedScrollStatus,
 } from "./type";
 import UserLine from "./userLine";
-import {
-  Avatar,
-  StretchableImage,
-  SlideHeader,
-  FollowButton,
-  Icon,
-  HTMLContent,
-  TabView,
-  DefaultTabBar,
-  PullLoading,
-} from "../../components";
 import { Colors } from "../../config";
 import { Account } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
@@ -66,19 +66,6 @@ const User: React.FC<UserProps> = (props) => {
   const nestedScrollStatus = useSharedValue(NestedScrollStatus.OutScrolling);
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     Loading.show();
-  //     const { data, ok } = await lookupAcct(acct);
-  //     if (ok && data) {
-  //       setUserData(data);
-  //     }
-  //     Loading.hide();
-  //   };
-
-  //   fetchUserData();
-  // }, []);
-
   // 返回上一页
   const handleBack = useCallback(router.back, []);
   // 由于个人简介内容高度不定，所以在请求获取到内容之后，重新的吸顶测量高度
@@ -104,6 +91,10 @@ const User: React.FC<UserProps> = (props) => {
       },
     });
   }, []);
+
+  const handleAvatar = (url: string) => {
+    ImagePreviewUtil.show(url, 0);
+  };
 
   const main = useAnimatedStyle(() => {
     return {
@@ -230,14 +221,17 @@ const User: React.FC<UserProps> = (props) => {
           <View style={styles.header} onLayout={handleOnLayout}>
             <View style={styles.avatarContainer}>
               <View style={styles.title}>
-                <View style={styles.avatar}>
+                <TouchableOpacity
+                  style={styles.avatar}
+                  onPress={() => handleAvatar(userData?.avatar)}
+                >
                   <Avatar
                     url={userData?.avatar}
                     size={65}
                     borderColor="#fff"
                     borderWidth={4}
                   />
-                </View>
+                </TouchableOpacity>
                 <FollowButton id={id} locked={userData?.locked} />
               </View>
               <View style={{ marginTop: 5, flexDirection: "row" }}>

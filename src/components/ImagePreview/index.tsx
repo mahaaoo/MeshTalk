@@ -18,9 +18,13 @@ export const ImagePreviewUtil: UniqueModal = {
       </OpacityContainer>
     );
   },
-  show: (imageList: string[], initialIndex: number) => {
+  show: (imageList: string[] | string, initialIndex: number) => {
+    let images = imageList;
+    if (!Array.isArray(imageList)) {
+      images = [imageList];
+    }
     ModalUtil.add(
-      ImagePreviewUtil.template(imageList, initialIndex),
+      ImagePreviewUtil.template(images, initialIndex),
       ImagePreviewUtil.key,
     );
   },
