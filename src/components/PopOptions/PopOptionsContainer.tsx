@@ -7,6 +7,7 @@ import {
 } from "react-native-ma-modal";
 import Animated, {
   Extrapolation,
+  MeasuredDimensions,
   interpolate,
   runOnJS,
   useAnimatedStyle,
@@ -21,8 +22,7 @@ export interface PopOptionsContainerRef {
 }
 
 export interface PopOptionsContainerProps extends AnimationContainerProps {
-  pageY: number;
-  pageX: number;
+  measurement: MeasuredDimensions;
 }
 
 export const PopOptionsContainer = forwardRef<
@@ -41,14 +41,14 @@ export const PopOptionsContainer = forwardRef<
     onDisappear,
     modal = false,
     innerKey,
-    pageY,
-    pageX,
+    measurement,
   } = props;
   const { remove, isExist } = useModal();
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.5);
   const childrenW = useSharedValue(0);
   const childrenH = useSharedValue(0);
+  const { pageX, pageY, height: popHeight } = measurement;
 
   const onLayout = ({
     nativeEvent: {
@@ -102,11 +102,14 @@ export const PopOptionsContainer = forwardRef<
           translateX: -childrenW.value / 2,
         },
         {
-          translateY: (-TopOrBottom * childrenH.value) / 2,
+          translateY: -(TopOrBottom * childrenH.value) / 2,
         },
+        {
+          translateY: popHeight / 2,
+        }
       ],
     };
-  }, [pageX, pageY]);
+  }, [pageX, pageY, popHeight]);
 
   const handleClickMask = useCallback(() => {
     if (pointerEvents === "none") return;

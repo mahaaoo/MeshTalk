@@ -3,6 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
 import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 
 import { Colors } from "../../config";
+import { ACTIONMODALID } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
 
 type ActionsSheetTyps = {
@@ -12,7 +13,7 @@ type ActionsSheetTyps = {
 };
 
 const ActionsSheet = {
-  key: "global-action-sheet",
+  key: ACTIONMODALID,
   template: ({ onSelect, onClose, bottom }: ActionsSheetTyps) => (
     <TranslateContainer onDisappear={onClose} gesture>
       <View style={[styles.scrollViewContainer, { paddingBottom: bottom }]}>
