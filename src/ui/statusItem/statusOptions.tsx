@@ -23,9 +23,7 @@ const StatusOptions: React.FC<StatusOptionsProps> = (props) => {
     runOnUI(() => {
       const measurement = measure(aref);
       if (measurement !== null) {
-        const { pageY, pageX } = measurement;
-        console.log(measurement);
-        runOnJS(PopOptonsUtil.show)(pageY, pageX, acct);
+        runOnJS(PopOptonsUtil.show)(measurement, acct);
       }
     })();
   };

@@ -1,8 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ModalUtil, UniqueModal } from "react-native-ma-modal";
+import { MeasuredDimensions } from "react-native-reanimated";
 
 import { PopOptionsContainer } from "./PopOptionsContainer";
+import { POPMODALID } from "../../config/constant";
 import { Icon } from "../Icon";
 import SpacingBox from "../SpacingBox";
 import SplitLine from "../SplitLine";
@@ -46,24 +48,20 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 };
 
 export const PopOptonsUtil: UniqueModal = {
-  key: "global-pop-options",
-  template: (pageY: number, pageX: number, acct: string) => {
+  key: POPMODALID,
+  template: (measurement: MeasuredDimensions, acct: string) => {
     return (
       <PopOptionsContainer
         duration={200}
         mask={false}
-        pageY={pageY}
-        pageX={pageX}
+        measurement={measurement}
       >
         <PopOptions acct={acct} />
       </PopOptionsContainer>
     );
   },
-  show: (pageY: number, pageX: number, acct: string) => {
-    ModalUtil.add(
-      PopOptonsUtil.template(pageY, pageX, acct),
-      PopOptonsUtil.key,
-    );
+  show: (measurement: MeasuredDimensions, acct: string) => {
+    ModalUtil.add(PopOptonsUtil.template(measurement, acct), PopOptonsUtil.key);
   },
   hide: () => ModalUtil.remove(PopOptonsUtil.key || ""),
   isExist: () => ModalUtil.isExist(PopOptonsUtil.key || "") || false,
@@ -88,5 +86,3 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 });
-
-export default PopOptions;

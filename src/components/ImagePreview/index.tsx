@@ -7,9 +7,10 @@ import {
 } from "react-native-ma-modal";
 
 import ImagePreview from "./imagePreView";
+import { IMAGEMODALID } from "../../config/constant";
 
 export const ImagePreviewUtil: UniqueModal = {
-  key: "global-image-preview",
+  key: IMAGEMODALID,
   template: (imageList: string[], initialIndex: number) => {
     return (
       <OpacityContainer mask={false} modal containerStyle={styles.container}>
