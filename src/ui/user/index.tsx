@@ -36,6 +36,7 @@ import {
 import UserLine from "./userLine";
 import { Colors } from "../../config";
 import { Account } from "../../config/interface";
+import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
 import { StringUtil, replaceContentEmoji } from "../../utils";
 import UserName from "../home/userName";
@@ -46,16 +47,13 @@ interface UserProps {
 }
 
 const User: React.FC<UserProps> = (props) => {
-  // const { account } = props?.route?.params;
-  // const { id, acct } = account;
   const { userData, id } = props;
 
   const { insets, width, height } = useDeviceStore();
-  const stickyHeight = useSharedValue(0);
-  // const [currentIndex, setCurrentIndex] = useState(0);
-  const currentIndex = useSharedValue(0);
+  const { currentAccount } = useAccountStore();
 
-  // const [userData, setUserData] = useState<Account>();
+  const stickyHeight = useSharedValue(0);
+  const currentIndex = useSharedValue(0);
 
   const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
   const offset = useSharedValue(0);
@@ -221,23 +219,41 @@ const User: React.FC<UserProps> = (props) => {
           <View style={styles.header} onLayout={handleOnLayout}>
             <View style={styles.avatarContainer}>
               <View style={styles.title}>
-                <TouchableOpacity
-                  style={styles.avatar}
-                  onPress={() => handleAvatar(userData?.avatar)}
-                >
-                  <Avatar
-                    url={userData?.avatar}
-                    size={65}
-                    borderColor="#fff"
-                    borderWidth={4}
-                  />
-                </TouchableOpacity>
-                <FollowButton id={id} locked={userData?.locked} />
+                <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                  <TouchableOpacity
+                    style={styles.avatar}
+                    onPress={() => handleAvatar(userData?.avatar)}
+                  >
+                    <Avatar
+                      url={userData?.avatar}
+                      size={65}
+                      borderColor="#fff"
+                      borderWidth={4}
+                    />
+                  </TouchableOpacity>
+                  {userData?.locked ? (
+                    <View style={{ margin: 3 }}>
+                      <Icon name="lock" size={20} color="#aaa" />
+                    </View>
+                  ) : null}
+                  {userData?.bot ? (
+                    <View style={{ margin: 3 }}>
+                      <Icon name="robot" size={22} color="#aaa" />
+                    </View>
+                  ) : null}
+                </View>
+                {currentAccount?.acct === userData.acct ? (
+                  <TouchableOpacity style={styles.editContainer}>
+                    <Text style={styles.edit}>编辑个人资料</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <FollowButton id={id} locked={userData?.locked} />
+                )}
               </View>
               <View style={{ marginTop: 5, flexDirection: "row" }}>
                 <Text numberOfLines={10}>
                   <UserName
-                    displayname={userData?.display_name}
+                    displayname={userData?.display_name || userData?.username}
                     emojis={userData?.emojis}
                     fontSize={18}
                   />
@@ -403,6 +419,16 @@ const styles = StyleSheet.create({
   },
   slider: {
     flexDirection: "row",
+  },
+  editContainer: {
+    borderWidth: 1,
+    borderColor: "#bbb",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  edit: {
+    fontSize: 14,
   },
 });
 

@@ -26,6 +26,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const { width } = useDeviceStore();
 
   const handleAvatar = useCallback(() => {
+    console.log(sameUser);
     if (sameUser) return;
     router.push({
       pathname: "/user/[id]",
@@ -34,7 +35,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         acct: item.account.acct,
       },
     });
-  }, [item]);
+  }, [item, sameUser]);
 
   const handleNavigation = useCallback(() => {
     needToolbar &&

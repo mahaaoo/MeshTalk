@@ -58,7 +58,7 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   const { width, height } = useDeviceStore();
 
   const scroll = useSharedValue(0);
-  const aref = useAnimatedRef();
+  const aref = useAnimatedRef<any>();
   const nativeRef = useRef();
 
   useAnimatedReaction(
@@ -239,9 +239,12 @@ const UserLine: React.FC<UserLineProps> = (props) => {
         style={{ height: height - HEADER_HEIGHT - 50 }}
         scrollEventThrottle={16}
         data={dataSource}
-        renderItem={({ item }) => (
-          <StatusItem item={item} sameUser={item.account.acct === acct} />
-        )}
+        renderItem={({ item }) => {
+          const showItem = item.reblog || item;
+          return (
+            <StatusItem item={item} sameUser={showItem.account.acct === acct} />
+          );
+        }}
         keyExtractor={(item, index) => item?.id || index.toString()}
         animatedProps={animatedProps}
         onEndReached={onLoadMore}

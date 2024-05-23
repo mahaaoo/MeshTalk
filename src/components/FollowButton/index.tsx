@@ -41,7 +41,6 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
   const [buttonStatus, setButtonStatus] = useState(
     FollowButtonStatus.Requesting,
   );
-  const [relationship, setRelationship] = useState<Relationship>();
 
   // 每次渲染都执行，由于useEffect在Render之后执行，所以当前的prevContentRef.current为上一次的状态
   useEffect(() => {
@@ -52,14 +51,14 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     const fetchRelation = async () => {
       const { data, ok } = await getRelationships(id);
       if (ok && data) {
-        setRelationship(data[0]);
+        handleRelate(data[0]);
       }
     };
 
     fetchRelation();
   }, [id]);
 
-  useEffect(() => {
+  const handleRelate = useCallback((relationship: Relationship) => {
     const followedBy = relationship?.followed_by;
     const following = relationship?.following;
     const requested = relationship?.requested; // 关注lock账号，显示请求中
@@ -83,7 +82,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       // 既关注 他、也被他关注、互关好友
       return setButtonStatus(FollowButtonStatus.BothFollow);
     }
-  }, [relationship, locked]);
+  }, []);
 
   const prevCount = prevContentRef.current;
 
@@ -170,9 +169,8 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       setButtonStatus(FollowButtonStatus.Requesting);
       const { data, ok } = await followById(id);
       if (ok && data) {
-        setRelationship(data);
+        handleRelate(data);
       }
-      // setRelationship(data);
     }
     if (
       buttonStatus === FollowButtonStatus.Following ||
@@ -181,16 +179,15 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       setButtonStatus(FollowButtonStatus.Requesting);
       const { data, ok } = await unfollowById(id);
       if (ok && data) {
-        setRelationship(data);
+        handleRelate(data);
       }
-      // setRelationship(data);
     }
     if (buttonStatus === FollowButtonStatus.LockFollowRequest) {
       setButtonStatus(FollowButtonStatus.Requesting);
       // TODO: 添加一个是否确认取消关注申请的alert
       const { data, ok } = await unfollowById(id);
       if (ok && data) {
-        setRelationship(data);
+        handleRelate(data);
       }
     }
   }, [buttonStatus, id]);
@@ -199,10 +196,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     <TouchableOpacity onPress={handleOnPress}>
       <View style={[styles.outView, content.buttonStyle, {}]}>
         {buttonStatus === FollowButtonStatus.Requesting ? (
-          <ActivityIndicator
-            animating={buttonStatus === FollowButtonStatus.Requesting}
-            color={content.indicatorColor}
-          />
+          <ActivityIndicator animating color={content.indicatorColor} />
         ) : (
           <Text style={[{ textAlignVertical: "center" }, content.textStyle]}>
             {content.buttonText}
