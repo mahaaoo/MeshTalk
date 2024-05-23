@@ -1,4 +1,5 @@
 import { create, ApiResponse } from "apisauce";
+import { AxiosRequestConfig } from "axios";
 
 import { Response } from "../config/interface";
 
@@ -28,7 +29,11 @@ api.addResponseTransform((response) => {
   console.log("============================================\n");
 });
 
-const get = <T>(url, params?, axiosConfig?): Response<T> => {
+const get = <T>(
+  url: string,
+  params?: object,
+  axiosConfig?: AxiosRequestConfig,
+): Response<T> => {
   return api
     .get(url, params, axiosConfig)
     .then((response: ApiResponse<T>) => {
@@ -45,7 +50,11 @@ const get = <T>(url, params?, axiosConfig?): Response<T> => {
     });
 };
 
-const post = <T>(url, data?, axiosConfig?): Response<T> => {
+const post = <T>(
+  url: string,
+  data?: object,
+  axiosConfig?: AxiosRequestConfig,
+): Response<T> => {
   return api
     .post(url, data, axiosConfig)
     .then((response: ApiResponse<T>) => {
@@ -62,4 +71,25 @@ const post = <T>(url, data?, axiosConfig?): Response<T> => {
     });
 };
 
-export { get, post, api };
+const patch = <T>(
+  url: string,
+  data?: object,
+  axiosConfig?: AxiosRequestConfig,
+): Response<T> => {
+  return api
+    .patch(url, data, axiosConfig)
+    .then((response: ApiResponse<T>) => {
+      console.log({
+        ok: response.ok,
+        status: response.status,
+        problem: response.problem,
+      }); // 假设response有这些属性
+      return response;
+    })
+    .catch((error: any) => {
+      console.log("catch", error);
+      throw error;
+    });
+};
+
+export { get, post, api, patch };

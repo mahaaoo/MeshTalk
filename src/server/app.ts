@@ -37,7 +37,7 @@ export const getToken = (host: string, param: object): Response<AppToken> => {
   return post<AppToken>(url, params);
 };
 
-// 校验token是否有效
+// 校验token是否有效 获取当前账户信息
 export const verifyToken = (): Response<Account> => {
   const url = "/api/v1/accounts/verify_credentials";
 

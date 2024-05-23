@@ -79,7 +79,7 @@ const User: React.FC<UserProps> = (props) => {
         id,
       },
     });
-  }, []);
+  }, [id]);
 
   const handleNavigateToFollowing = useCallback(() => {
     router.push({
@@ -87,6 +87,12 @@ const User: React.FC<UserProps> = (props) => {
       params: {
         id,
       },
+    });
+  }, [id]);
+
+  const handleEdit = useCallback(() => {
+    router.push({
+      pathname: "/user/editInfo",
     });
   }, []);
 
@@ -243,7 +249,7 @@ const User: React.FC<UserProps> = (props) => {
                   ) : null}
                 </View>
                 {currentAccount?.acct === userData.acct ? (
-                  <TouchableOpacity style={styles.editContainer}>
+                  <TouchableOpacity style={styles.editContainer} onPress={handleEdit}>
                     <Text style={styles.edit}>编辑个人资料</Text>
                   </TouchableOpacity>
                 ) : (

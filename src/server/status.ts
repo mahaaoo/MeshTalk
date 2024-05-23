@@ -1,5 +1,5 @@
-import { Timelines, Response } from "../config/interface";
-import { get, post } from "../utils/request";
+import { Timelines, Response, Account } from "../config/interface";
+import { get, patch, post } from "../utils/request";
 
 // https://mastodon.example/api/v1/statuses/:id
 // 根据id查询一个推文详情
@@ -29,4 +29,13 @@ export const unfavouriteStatuses = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/unfavourite`;
 
   return post<Timelines>(url);
+};
+
+export const updateCredentials = (params: object): Response<Account> => {
+  const url = "/api/v1/accounts/update_credentials";
+  const header = {
+    "content-type": "multipart/form-data",
+  };
+
+  return patch<Account>(url, params, header);
 };

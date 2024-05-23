@@ -25,6 +25,7 @@ const Login: React.FC<object> = () => {
           autoFocus
           onChangeText={onChangePath}
           value={path}
+          underlineColorAndroid="transparent"
         />
         <Button
           text="登录"
