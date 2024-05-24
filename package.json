@@ -44,7 +44,8 @@
     "expo-constants": "~16.0.1",
     "expo-updates": "~0.25.14",
     "expo-web-browser": "~13.0.3",
-    "expo-image-picker": "~15.0.5"
+    "expo-image-picker": "~15.0.5",
+    "expo-file-system": "~17.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

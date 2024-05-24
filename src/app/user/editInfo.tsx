@@ -1,4 +1,5 @@
 import { Avatar, Button, Screen, SplitLine } from "@components";
+import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { router, useNavigation } from "expo-router";
@@ -81,19 +82,34 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
 
       if (!result.canceled) {
         const localUri = result.assets[0].uri;
-        const filename = localUri.split("/").pop();
+        // const filename = localUri.split("/").pop();
 
-        // Infer the type of the image
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : `image`;
+        // // Infer the type of the image
+        // const match = /\.(\w+)$/.exec(filename);
+        // const type = match ? `image/${match[1]}` : `image`;
 
-        const formData = new FormData();
-        // Assume "photo" is the name of the form field the server expects
-        formData.append("avatar", {
-          uri: localUri.replace("file://", ""),
-          name: filename,
-          type,
+        // const formData = new FormData();
+        // // Assume "photo" is the name of the form field the server expects
+        // formData.append("avatar", {
+        //   uri: localUri.replace("file://", ""),
+        //   name: filename,
+        //   type,
+        // });
+        console.log({ localUri });
+        const fileBase64 = await FileSystem.readAsStringAsync(localUri, {
+          encoding: "utf8",
         });
+        const formData = new FormData();
+
+        // 创建文件对象
+        // const file = {
+        //   uri: localUri,
+        //   name: "image.jpg",
+        //   type: "image/jpeg",
+        // };
+
+        // 添加到 formData 中
+        formData.append("avatar", fileBase64);
 
         // console.log("binary", formData.get("file"));
         const { data, ok } = await updateCredentials(formData);
@@ -119,12 +135,14 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
             uri: account?.header,
           }}
         />
-        <TouchableOpacity
-          onPress={pickAvatar}
-          style={{ padding: 15, marginTop: -40 }}
-        >
-          <Avatar size={65} url={avatar || account?.avatar} />
-        </TouchableOpacity>
+        <View style={{ padding: 15, marginTop: -40 }}>
+          <TouchableOpacity
+            style={{ width: 65, height: 65 }}
+            onPress={pickAvatar}
+          >
+            <Avatar size={65} url={avatar || account?.avatar} />
+          </TouchableOpacity>
+        </View>
         <SplitLine start={0} end={width} />
         <View
           style={{
@@ -146,12 +164,13 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
             flexDirection: "row",
             paddingHorizontal: 15,
             paddingVertical: 15,
+            alignItems: "flex-start",
           }}
         >
           <Text style={styles.title}>简介</Text>
           <TextInput
             multiline
-            style={styles.nameInput}
+            style={[styles.nameInput, { height: 100, marginTop: -5 }]}
             placeholder="输入简介"
             underlineColorAndroid="transparent"
           />
@@ -179,6 +198,7 @@ const styles = StyleSheet.create({
   nameInput: {
     fontSize: 16,
     marginHorizontal: 20,
+    flex: 1,
   },
   title: {
     fontSize: 16,
