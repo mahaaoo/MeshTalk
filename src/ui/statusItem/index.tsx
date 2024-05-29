@@ -102,7 +102,13 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           />
 
           <View style={{ paddingVertical: 8 }}>
-            <NinePicture imageList={showItem.media_attachments} />
+            <NinePicture
+              sensitive={
+                // 如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
+                showItem.sensitive && showItem.spoiler_text.length === 0
+              }
+              imageList={showItem.media_attachments}
+            />
           </View>
 
           {showItem.media_attachments.length === 0 ? (

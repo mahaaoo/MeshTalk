@@ -86,7 +86,7 @@ const Setting: React.FC<object> = () => {
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event, context) => {
-      scrollY.value = event.contentOffset.y;
+      scrollY.value = -event.contentOffset.y;
     },
   });
 

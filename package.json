@@ -45,7 +45,9 @@
     "expo-updates": "~0.25.14",
     "expo-web-browser": "~13.0.3",
     "expo-image-picker": "~15.0.5",
-    "expo-file-system": "~17.0.1"
+    "expo-file-system": "~17.0.1",
+    "@shopify/react-native-skia": "1.2.3",
+    "expo-blur": "~13.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

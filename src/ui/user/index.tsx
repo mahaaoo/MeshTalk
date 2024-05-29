@@ -249,7 +249,10 @@ const User: React.FC<UserProps> = (props) => {
                   ) : null}
                 </View>
                 {currentAccount?.acct === userData.acct ? (
-                  <TouchableOpacity style={styles.editContainer} onPress={handleEdit}>
+                  <TouchableOpacity
+                    style={styles.editContainer}
+                    onPress={handleEdit}
+                  >
                     <Text style={styles.edit}>编辑个人资料</Text>
                   </TouchableOpacity>
                 ) : (
