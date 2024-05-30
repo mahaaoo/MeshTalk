@@ -1,33 +1,22 @@
-import { Image } from "expo-image";
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { snapPoint } from "@utils/math";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { ModalUtil } from "react-native-ma-modal";
+import { ModalUtil, useModalAnimated } from "react-native-ma-modal";
 import Animated, {
   useAnimatedStyle,
   withTiming,
   useSharedValue,
   clamp,
-  useAnimatedReaction,
   runOnJS,
   interpolate,
   Extrapolation,
+  useAnimatedReaction,
 } from "react-native-reanimated";
 
+import ImageContainer from "./imageContainer";
+import ImagePreviewHeader from "./imagePreviewHeader";
 import useDeviceStore from "../../store/useDeviceStore";
-import { Icon } from "../Icon";
-
-const snapPoint = (
-  value: number,
-  velocity: number,
-  points: readonly number[],
-): number => {
-  "worklet";
-  const point = value + 0.2 * velocity;
-  const deltas = points.map((p) => Math.abs(point - p));
-  const minDelta = Math.min.apply(null, deltas);
-  return points.filter((p) => Math.abs(point - p) === minDelta)[0];
-};
 
 interface ImagePreviewProps {
   imageList: string[];
@@ -41,6 +30,7 @@ const duration = 400;
 
 const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
   const { imageList, initialIndex = 0 } = props;
+  const { progress } = useModalAnimated();
   const { width, height } = useDeviceStore();
   const currentIndex = useSharedValue(initialIndex);
 
@@ -64,6 +54,13 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
 
   const scale = useSharedValue(1);
   const offsetScale = useSharedValue(0);
+
+  useAnimatedReaction(
+    () => progress.value,
+    (value) => {
+      // TODO:需要progress的值，做一个scale动画，但ma-modal有些问题需更新
+    },
+  );
 
   const panGestureY = Gesture.Pan()
     .onBegin(() => {
@@ -214,10 +211,10 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
             animationStyle,
           ]}
         >
-          {imageList.map((a, index) => (
+          {imageList.map((image, index) => (
             <ImageContainer
               key={index}
-              url={a}
+              url={image}
               {...{
                 translateY,
                 childrenX,
@@ -235,101 +232,6 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         currentIndex={currentIndex}
         total={imageList.length}
       />
-    </View>
-  );
-};
-
-const ImageContainer = (props) => {
-  const {
-    url,
-    translateY,
-    childrenX,
-    index,
-    currentIndex,
-    scale,
-    imageY,
-    imageX,
-  } = props;
-  const { width } = useDeviceStore();
-
-  const animationStyle = useAnimatedStyle<{ transform: any }>(() => {
-    if (scale.value > 1) {
-      return {
-        transform: [
-          {
-            scale: currentIndex.value === index ? scale.value : 1,
-          },
-          {
-            translateY: currentIndex.value === index ? imageY.value : 0,
-          },
-          {
-            translateX: currentIndex.value === index ? imageX.value : 0,
-          },
-        ],
-      };
-    }
-
-    return {
-      transform: [
-        {
-          scale: currentIndex.value === index ? scale.value : 1,
-        },
-        {
-          translateY: currentIndex.value === index ? translateY.value : 0,
-        },
-        {
-          translateX: currentIndex.value === index ? childrenX.value : 0,
-        },
-      ],
-    };
-  });
-
-  return (
-    <Animated.View style={[animationStyle]}>
-      <Image
-        source={url}
-        style={{ flex: 1, width, height: undefined }}
-        contentFit="contain"
-      />
-    </Animated.View>
-  );
-};
-
-const ImagePreviewHeader = (props) => {
-  const { currentIndex, total } = props;
-
-  const [index, setIndex] = useState(currentIndex.value);
-
-  useAnimatedReaction(
-    () => currentIndex.value,
-    (value) => {
-      runOnJS(setIndex)(value + 1);
-    },
-  );
-
-  return (
-    <View
-      style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        height: 88,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingTop: 55,
-        paddingHorizontal: 20,
-      }}
-    >
-      <View>
-        <Text style={{ color: "white", fontSize: 15 }}>
-          {index + "/" + total}
-        </Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => ModalUtil.remove("global-image-preview")}
-      >
-        <Icon name="close" color="white" />
-      </TouchableOpacity>
     </View>
   );
 };

@@ -11,14 +11,14 @@ import { IMAGEMODALID } from "../../config/constant";
 
 export const ImagePreviewUtil: UniqueModal = {
   key: IMAGEMODALID,
-  template: (imageList: string[], initialIndex: number) => {
+  template: (imageList: any[], initialIndex: number) => {
     return (
       <OpacityContainer mask={false} modal containerStyle={styles.container}>
         <ImagePreview {...{ imageList, initialIndex }} />
       </OpacityContainer>
     );
   },
-  show: (imageList: string[] | string, initialIndex: number) => {
+  show: (imageList: any[] | string, initialIndex: number) => {
     let images = imageList;
     if (!Array.isArray(imageList)) {
       images = [imageList];

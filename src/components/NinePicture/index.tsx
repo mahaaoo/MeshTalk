@@ -58,7 +58,6 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
   const [showBlur, setShowBlur] = useState(sensitive);
 
   const handleClick = useCallback((index: number) => {
-    // console.log("handleClick", index);
     ImagePreviewUtil.show(
       imageList.map((image) => image.url),
       index,
