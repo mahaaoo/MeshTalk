@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { ModalUtil, UniqueModal } from "react-native-ma-modal";
@@ -19,30 +20,32 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.item}>
-        <Text style={styles.text}>关注{showAcct}</Text>
-        <Icon name="follow" color="#333" />
-      </TouchableOpacity>
-      <SpacingBox height={5} color="#e9e9e9" />
-      <TouchableOpacity style={styles.item}>
-        <Text style={styles.text}>提及{showAcct}</Text>
-        <Icon name="aite" color="#333" />
-      </TouchableOpacity>
-      <SplitLine start={10} end={210} />
-      <TouchableOpacity style={styles.item}>
-        <Text style={styles.text}>屏蔽{showAcct}</Text>
-        <Icon name="mute" size={22} color="#333" />
-      </TouchableOpacity>
-      <SplitLine start={10} end={210} />
-      <TouchableOpacity style={styles.item}>
-        <Text style={styles.text}>拉黑{showAcct}</Text>
-        <Icon name="block" size={20} color="#333" />
-      </TouchableOpacity>
-      <SplitLine start={10} end={210} />
-      <TouchableOpacity style={styles.item}>
-        <Text style={styles.text}>举报{showAcct}</Text>
-        <Icon name="report" size={20} color="#333" />
-      </TouchableOpacity>
+      <BlurView intensity={98} tint="light">
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.text}>关注{showAcct}</Text>
+          <Icon name="follow" color="#333" />
+        </TouchableOpacity>
+        <SpacingBox height={5} color="#e9e9e9" />
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.text}>提及{showAcct}</Text>
+          <Icon name="aite" color="#333" />
+        </TouchableOpacity>
+        <SplitLine start={10} end={210} />
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.text}>屏蔽{showAcct}</Text>
+          <Icon name="mute" size={22} color="#333" />
+        </TouchableOpacity>
+        <SplitLine start={10} end={210} />
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.text}>拉黑{showAcct}</Text>
+          <Icon name="block" size={20} color="#333" />
+        </TouchableOpacity>
+        <SplitLine start={10} end={210} />
+        <TouchableOpacity style={styles.item}>
+          <Text style={styles.text}>举报{showAcct}</Text>
+          <Icon name="report" size={20} color="#333" />
+        </TouchableOpacity>
+      </BlurView>
     </View>
   );
 };
@@ -69,9 +72,9 @@ export const PopOptonsUtil: UniqueModal = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#f7f7f7",
     borderRadius: 10,
     width: 230,
+    overflow: "hidden",
   },
   item: {
     paddingVertical: 15,

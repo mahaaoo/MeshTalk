@@ -35,9 +35,11 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
         source={{
           uri: item.url,
         }}
+        placeholder={{ blurhash: item.blurhash }}
         contentFit="cover"
+        transition={500}
         onError={() => {
-          console.log("图片加载失败");
+          console.log("图片加载失败", item);
         }}
       />
     </TouchableOpacity>
