@@ -59,6 +59,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
     () => progress.value,
     (value) => {
       // TODO:需要progress的值，做一个scale动画，但ma-modal有些问题需更新
+      scale.value = interpolate(value, [0, 1], [0.5, 1], Extrapolation.CLAMP);
     },
   );
 

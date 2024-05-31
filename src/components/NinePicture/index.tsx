@@ -1,3 +1,4 @@
+import { Video, ResizeMode } from "expo-av";
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
@@ -23,6 +24,43 @@ interface MediaImageProps {
 
 const MediaImage: React.FC<MediaImageProps> = (props) => {
   const { item, handleClick, index } = props;
+
+  if (item.type === "video" || item.type === "audio") {
+    console.log("item.type", item.type);
+    return <Text>{item.type}</Text>;
+  }
+
+  if (item.type === "gifv") {
+    console.log(item);
+    return (
+      <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
+        <Video
+          style={styles.imageContainer}
+          source={{
+            uri: item.url,
+          }}
+          shouldPlay
+          useNativeControls
+          resizeMode={ResizeMode.CONTAIN}
+          isLooping
+          onPlaybackStatusUpdate={() => {}}
+          usePoster
+          PosterComponent={() => {
+            return (
+              <Image
+                style={styles.imageContainer}
+                source={{
+                  uri: item.blurhash,
+                }}
+                placeholder={{ blurhash: item.blurhash }}
+                contentFit="cover"
+              />
+            );
+          }}
+        />
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <TouchableOpacity
@@ -179,30 +217,43 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
             left: 0,
             right: 0,
             bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
           }}
         >
-          <Text style={{ fontSize: 18, color: "#fff" }}>可能涉及敏感内容</Text>
           <TouchableOpacity
+            activeOpacity={1}
             style={{
-              backgroundColor: "#333",
-              paddingHorizontal: 20,
-              paddingVertical: 10,
               position: "absolute",
-              right: 15,
-              bottom: 15,
-              borderRadius: 20,
-              opacity: 0.9,
-            }}
-            onPress={() => {
-              intensity.value = withTiming(0, { duration: 200 }, () => {
-                runOnJS(setShowBlur)(false);
-                runOnJS(addSensitive)(id);
-              });
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 18, color: "#fff" }}>显示</Text>
+            <Text style={{ fontSize: 18, color: "#fff" }}>
+              可能涉及敏感内容
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#333",
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                position: "absolute",
+                right: 15,
+                bottom: 15,
+                borderRadius: 20,
+                opacity: 0.9,
+              }}
+              onPress={() => {
+                intensity.value = withTiming(0, { duration: 200 }, () => {
+                  runOnJS(setShowBlur)(false);
+                  runOnJS(addSensitive)(id);
+                });
+              }}
+            >
+              <Text style={{ fontSize: 18, color: "#fff" }}>显示</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
         </AnimatedBlurView>
       ) : null}
