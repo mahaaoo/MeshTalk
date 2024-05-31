@@ -25,9 +25,39 @@ interface MediaImageProps {
 const MediaImage: React.FC<MediaImageProps> = (props) => {
   const { item, handleClick, index } = props;
 
-  if (item.type === "video" || item.type === "audio") {
+  if (item.type === "audio") {
     console.log("item.type", item.type);
     return <Text>{item.type}</Text>;
+  }
+
+  if (item.type === "video") {
+    console.log("item.type", item.type);
+    return (
+      <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
+        <Video
+          style={styles.imageContainer}
+          source={{
+            uri: item.url,
+          }}
+          shouldPlay
+          useNativeControls
+          resizeMode={ResizeMode.CONTAIN}
+          usePoster
+          PosterComponent={() => {
+            return (
+              <Image
+                style={styles.imageContainer}
+                source={{
+                  uri: item.blurhash,
+                }}
+                placeholder={{ blurhash: item.blurhash }}
+                contentFit="cover"
+              />
+            );
+          }}
+        />
+      </TouchableOpacity>
+    );
   }
 
   if (item.type === "gifv") {
@@ -40,10 +70,8 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
             uri: item.url,
           }}
           shouldPlay
-          useNativeControls
           resizeMode={ResizeMode.CONTAIN}
           isLooping
-          onPlaybackStatusUpdate={() => {}}
           usePoster
           PosterComponent={() => {
             return (

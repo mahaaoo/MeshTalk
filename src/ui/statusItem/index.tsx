@@ -31,8 +31,8 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
     router.push({
       pathname: "/user/[id]",
       params: {
-        id: item.account.id,
-        acct: item.account.acct,
+        id: showItem.account.id,
+        acct: showItem.account.acct,
       },
     });
   }, [item, sameUser]);
@@ -42,7 +42,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
       router.push({
         pathname: "/status/[id]",
         params: {
-          id: item.id,
+          id: showItem.id,
         },
       });
   }, [needToolbar, item]);
@@ -143,6 +143,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               id={showItem.id}
               favourited={showItem.favourited}
               favourites_count={showItem.favourites_count}
+              reblogged={showItem.reblogged}
               reblogs_count={showItem.reblogs_count}
               replies_count={showItem.replies_count}
             />

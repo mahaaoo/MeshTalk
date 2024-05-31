@@ -9,6 +9,7 @@ import { favouriteStatuses, unfavouriteStatuses } from "../../server/status";
 interface ToolBarProps {
   favourited?: boolean;
   favourites_count?: number;
+  reblogged?: boolean;
   reblogs_count?: number;
   replies_count?: number;
   id: string;
@@ -21,6 +22,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     reblogs_count = 0,
     replies_count = 0,
     id,
+    reblogged = false,
   } = props;
 
   const [isFavourited, setIsFavourited] = useState(favourited);
@@ -46,8 +48,17 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     <View style={styles.tool}>
       <View style={styles.toolItem}>
         <TouchableOpacity style={styles.toolItem}>
-          <Icon name="turn" size={20} color={Colors.commonToolBarText} />
-          <Text style={styles.toolTitle}>
+          <Icon
+            name="turn"
+            size={20}
+            color={reblogged ? "green" : Colors.commonToolBarText}
+          />
+          <Text
+            style={[
+              styles.toolTitle,
+              { color: reblogged ? "green" : Colors.commonToolBarText },
+            ]}
+          >
             {reblogs_count === 0 ? "转发" : reblogs_count}
           </Text>
         </TouchableOpacity>
@@ -67,7 +78,12 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
           ) : (
             <Icon name="likeFill" size={23} color="red" />
           )}
-          <Text style={styles.toolTitle}>
+          <Text
+            style={[
+              styles.toolTitle,
+              { color: !isFavourited ? Colors.commonToolBarText : "red" },
+            ]}
+          >
             {favouritesCount === 0 ? "赞" : favouritesCount}
           </Text>
         </TouchableOpacity>

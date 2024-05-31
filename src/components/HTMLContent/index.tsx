@@ -56,11 +56,11 @@ interface HTMLContentProps {
   tagsStyles?: any;
   blur?: boolean;
   spoilerText?: string;
-  id: string;
+  id?: string;
 }
 
 const HTMLContent: React.FC<HTMLContentProps> = (props) => {
-  const { html, tagsStyles, blur = false, spoilerText = "", id } = props;
+  const { html, tagsStyles, blur = false, spoilerText = "", id = "" } = props;
   const { width } = useWindowDimensions();
   const { checkSensitive, addSensitive } = useStatusStore();
   const [showBlur, setShowBlur] = useState(() => {
