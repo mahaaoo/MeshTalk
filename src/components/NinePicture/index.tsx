@@ -9,6 +9,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
+import useStatusStore from "../../store/useStatusStore";
 import { ImagePreviewUtil } from "../ImagePreview";
 import SpacingBox from "../SpacingBox";
 
@@ -50,12 +51,17 @@ interface NinePictureProps {
   imageList: any[];
   height?: number;
   sensitive: boolean;
+  id: string;
 }
 
 const NinePicture: React.FC<NinePictureProps> = (props) => {
-  const { imageList = [], height = 220, sensitive } = props;
+  const { imageList = [], height = 220, sensitive, id } = props;
   const intensity = useSharedValue(sensitive ? 95 : 0);
-  const [showBlur, setShowBlur] = useState(sensitive);
+  const { checkSensitive, addSensitive } = useStatusStore();
+  const [showBlur, setShowBlur] = useState(() => {
+    if (checkSensitive(id)) return false;
+    return sensitive;
+  });
 
   const handleClick = useCallback((index: number) => {
     ImagePreviewUtil.show(
@@ -192,6 +198,7 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
             onPress={() => {
               intensity.value = withTiming(0, { duration: 200 }, () => {
                 runOnJS(setShowBlur)(false);
+                runOnJS(addSensitive)(id);
               });
             }}
           >

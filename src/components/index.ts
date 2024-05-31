@@ -1,6 +1,7 @@
 import ActionsSheet from "./ActionsSheet";
 import Avatar from "./Avatar";
 import Button from "./Button";
+import Collapse from "./Collapse";
 import Error from "./Error";
 import FollowButton from "./FollowButton";
 import HTMLContent from "./HTMLContent";
@@ -44,4 +45,5 @@ export {
   DefaultTabBar,
   Error,
   Screen,
+  Collapse,
 };

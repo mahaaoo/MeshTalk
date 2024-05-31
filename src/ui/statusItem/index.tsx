@@ -98,6 +98,9 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           </View>
 
           <HTMLContent
+            id={item.id}
+            blur={showItem.sensitive && showItem.spoiler_text.length > 0}
+            spoilerText={showItem.spoiler_text}
             html={replaceContentEmoji(showItem.content, showItem.emojis)}
           />
 
@@ -107,6 +110,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 // 如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
                 showItem.sensitive && showItem.spoiler_text.length === 0
               }
+              id={item.id}
               imageList={showItem.media_attachments}
             />
           </View>
