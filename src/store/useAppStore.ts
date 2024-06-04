@@ -47,11 +47,12 @@ const useAppStore = create<AppStoreState>((set, get) => ({
   },
   initApp: async () => {
     console.log("initApp");
-    // const localHostUrl = await getItem(constant.HOSTURL);
-    // const localToken = await getItem(constant.ACCESSTOKEN);
+    const localHostUrl = await getItem(constant.HOSTURL);
+    const localToken = await getItem(constant.ACCESSTOKEN);
 
-    const localHostUrl = "https://m.cmx.im";
-    const localToken = "-dn3UARVqfxy7ZwHpCONzJkY_U-llZxdMVDyvWO0TYs";
+    // 如果只想体验一下app，可以使用以下token
+    // const localHostUrl = "https://m.cmx.im";
+    // const localToken = "-dn3UARVqfxy7ZwHpCONzJkY_U-llZxdMVDyvWO0TYs";
 
     console.log("initApp", {
       localHostUrl,

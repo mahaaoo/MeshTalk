@@ -59,7 +59,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
     () => progress.value,
     (value) => {
       // TODO:需要progress的值，做一个scale动画，但ma-modal有些问题需更新
-      scale.value = interpolate(value, [0, 1], [0.5, 1], Extrapolation.CLAMP);
+      // if (!didMount.value) {
+      //   return;
+      // }
+      // console.log("123", value);
+      // opacity.value = interpolate(value, [0, 0.8], [0, 1], Extrapolation.CLAMP);
+      // scale.value = interpolate(value, [0, 0.8], [0.5, 1], Extrapolation.CLAMP);
     },
   );
 
@@ -80,7 +85,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         opacity.value = interpolate(
           translateY.value,
           [-0.3 * height, 0, 0.3 * height],
-          [0.7, 1, 0.7],
+          [0.9, 1, 0.9],
           Extrapolation.CLAMP,
         );
         scale.value = interpolate(
@@ -97,8 +102,17 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         const destY = snapPoint(translateY.value, velocityY, snapPointsY);
 
         if (Math.abs(destY) >= 0.25 * height) {
-          runOnJS(ModalUtil.remove)("global-image-preview");
+          opacity.value = withTiming(0, { duration: 250 });
+          translateY.value = withTiming(
+            destY > 0 ? height : -height,
+            { duration: 250 },
+            () => {
+              runOnJS(ModalUtil.remove)("global-image-preview");
+            },
+          );
+          return;
         }
+
         translateY.value = withTiming(0, { duration });
         childrenX.value = withTiming(0, { duration });
         opacity.value = withTiming(1, { duration });
@@ -232,6 +246,8 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
       <ImagePreviewHeader
         currentIndex={currentIndex}
         total={imageList.length}
+        scale={scale}
+        opacity={opacity}
       />
     </View>
   );

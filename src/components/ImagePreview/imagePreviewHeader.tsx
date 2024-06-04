@@ -12,6 +12,8 @@ import { Icon } from "../Icon";
 interface ImagePreviewHeaderProps {
   currentIndex: SharedValue<number>;
   total: number;
+  scale: SharedValue<number>;
+  opacity: SharedValue<number>;
 }
 
 const ImagePreviewHeader: React.FC<ImagePreviewHeaderProps> = (props) => {
@@ -45,7 +47,9 @@ const ImagePreviewHeader: React.FC<ImagePreviewHeaderProps> = (props) => {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => ModalUtil.remove("global-image-preview")}
+        onPress={() => {
+          ModalUtil.remove("global-image-preview");
+        }}
       >
         <Icon name="close" color="white" />
       </TouchableOpacity>
