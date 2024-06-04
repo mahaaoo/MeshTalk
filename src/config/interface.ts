@@ -50,6 +50,12 @@ export interface Timelines {
   visibility: string;
 }
 
+export interface AccountFields {
+  name: string;
+  value: string;
+  verified_at: string;
+}
+
 export interface Account {
   acct: string;
   avatar: string;
@@ -59,7 +65,7 @@ export interface Account {
   discoverable: boolean;
   display_name: string;
   emojis: any[];
-  fields: any[];
+  fields: AccountFields[];
   followers_count: number;
   following_count: number;
   group: boolean;

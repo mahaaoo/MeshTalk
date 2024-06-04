@@ -10,6 +10,12 @@ import {
   PullLoading,
   ImagePreviewUtil,
 } from "@components";
+import {
+  StringUtil,
+  replaceContentEmoji,
+  replaceNameEmoji,
+} from "@utils/index";
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import React, { useCallback, useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -38,7 +44,6 @@ import { Colors } from "../../config";
 import { Account } from "../../config/interface";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
-import { StringUtil, replaceContentEmoji } from "@utils/index";
 import UserName from "../home/userName";
 
 interface UserProps {
@@ -238,16 +243,19 @@ const User: React.FC<UserProps> = (props) => {
                     />
                   </TouchableOpacity>
                   {userData?.locked ? (
+                    // 锁定
                     <View style={{ margin: 3 }}>
                       <Icon name="lock" size={20} color="#aaa" />
                     </View>
                   ) : null}
                   {userData?.bot ? (
+                    // 机器人
                     <View style={{ margin: 3 }}>
                       <Icon name="robot" size={22} color="#aaa" />
                     </View>
                   ) : null}
                 </View>
+
                 {currentAccount?.acct === userData.acct ? (
                   <TouchableOpacity
                     style={styles.editContainer}
@@ -271,11 +279,68 @@ const User: React.FC<UserProps> = (props) => {
               <Text style={styles.acct}>
                 {StringUtil.acctName(userData?.acct)}
               </Text>
-              <View style={{ marginVertical: 5 }}>
-                <HTMLContent
-                  html={replaceContentEmoji(userData?.note, userData?.emojis)}
-                />
-              </View>
+
+              <HTMLContent
+                html={replaceContentEmoji(userData?.note, userData?.emojis)}
+              />
+
+              {userData?.fields?.length > 0
+                ? userData?.fields?.map((field, index) => {
+                    const values = replaceNameEmoji(
+                      field.value,
+                      userData?.emojis,
+                    );
+                    return (
+                      <View
+                        key={`fields${index}`}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          marginVertical: 3,
+                        }}
+                      >
+                        <View style={{ width: 100 }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: Colors.grayTextColor,
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {field.name}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            marginHorizontal: 5,
+                            height: "100%",
+                            width: 1.5,
+                            backgroundColor: Colors.grayTextColor,
+                          }}
+                        />
+                        <Text>
+                          {values.map((item, index) => {
+                            return !item.image ? (
+                              <Text key={`filedvalue${index}`}>
+                                {item.text}
+                              </Text>
+                            ) : (
+                              <Image
+                                key={`filedvalue${index}`}
+                                style={{ width: 16, height: 16 }}
+                                source={{
+                                  uri: item.text,
+                                }}
+                                contentFit="cover"
+                              />
+                            );
+                          })}
+                        </Text>
+                      </View>
+                    );
+                  })
+                : null}
+
               <View style={styles.act}>
                 <Text style={styles.msgNumber}>
                   {StringUtil.stringAddComma(userData?.statuses_count)}
@@ -386,7 +451,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   avatarContainer: {
-    paddingHorizontal: 18,
+    marginHorizontal: 15,
   },
   avatar: {
     marginTop: -20,
@@ -398,7 +463,7 @@ const styles = StyleSheet.create({
   },
   act: {
     flexDirection: "row",
-    marginTop: 5,
+    marginTop: 8,
   },
   name: {
     fontSize: 20,
