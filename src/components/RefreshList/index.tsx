@@ -1,5 +1,10 @@
-import { FlashList, FlashListProps } from "@shopify/flash-list";
-import React, { useEffect, useState } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -9,9 +14,12 @@ import {
   StyleProp,
   TextStyle,
   ViewStyle,
+  FlatList,
+  FlatListProps,
 } from "react-native";
 import Animated, {
   runOnJS,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -25,12 +33,12 @@ export enum RefreshState {
   Failure = 4,
 }
 
-interface RefreshListProps extends FlashListProps<any> {
+interface RefreshListProps extends FlatListProps<any> {
   refreshState?: RefreshState;
   onHeaderRefresh?: () => void;
   onFooterRefresh?: () => void;
   data: any[];
-  
+
   footerContainerStyle?: StyleProp<ViewStyle>;
   footerTextStyle?: StyleProp<TextStyle>;
   emptyComponent?: React.ReactNode;
@@ -39,148 +47,179 @@ interface RefreshListProps extends FlashListProps<any> {
   footerFailureText?: string;
   footerNoMoreDataText?: string;
   canRefresh?: boolean;
-  ref?: any;
 }
 
-const RefreshList: React.FC<RefreshListProps> = (props) => {
-  const {
-    refreshState = RefreshState.Idle,
-    data = [0, 0, 0, 0, 0, 0],
-    onFooterRefresh,
-    onHeaderRefresh,
-    emptyComponent,
-    footerContainerStyle,
-    footerTextStyle,
-    footerRefreshingText = "数据加载中…",
-    footerFailureText = "点击重新加载",
-    footerNoMoreDataText = "已加载全部数据",
-    canRefresh = true,
-    ref,
-    ...options
-  } = props;
+export interface RefreshListRef {
+  srollToTop: () => void;
+  offset: () => number;
+}
 
-  const [load, setLoad] = useState(true);
-  const opcity = useSharedValue(1);
-  useEffect(() => {
-    if (data.length > 0 && opcity.value === 1) {
-      opcity.value = withTiming(0, { duration: 400 }, () => {
-        runOnJS(setLoad)(false);
-      });
-    }
-  }, [data]);
+const RefreshList = forwardRef<RefreshListRef, RefreshListProps>(
+  (props, ref) => {
+    const {
+      refreshState = RefreshState.Idle,
+      renderItem,
+      data = [0, 0, 0, 0, 0, 0],
+      onFooterRefresh,
+      onHeaderRefresh,
+      emptyComponent,
+      footerContainerStyle,
+      footerTextStyle,
+      footerRefreshingText = "数据加载中…",
+      footerFailureText = "点击重新加载",
+      footerNoMoreDataText = "已加载全部数据",
+      canRefresh = true,
+      ...options
+    } = props;
 
-  const endReached = () => {
-    if (shouldStartFooterRefreshing() && canRefresh) {
-      onFooterRefresh && onFooterRefresh();
-    }
-  };
+    const listRef = useRef<FlatList>(null);
+    const scrollOffset = useSharedValue(0);
 
-  const headerRefresh = () => {
-    if (shouldStartHeaderRefreshing() && canRefresh) {
-      onHeaderRefresh && onHeaderRefresh();
-    }
-  };
-
-  const shouldStartHeaderRefreshing = () => {
-    if (
-      refreshState === RefreshState.HeaderRefreshing ||
-      refreshState === RefreshState.FooterRefreshing
-    ) {
-      return false;
-    }
-
-    return true;
-  };
-
-  const shouldStartFooterRefreshing = () => {
-    if (data.length === 0) {
-      return false;
-    }
-
-    return refreshState === RefreshState.Idle;
-  };
-
-  const renderFooter = () => {
-    let footer = null;
-
-    const footerStyle = [styles.footerContainer, footerContainerStyle];
-    const textStyle = [styles.footerText, footerTextStyle];
-
-    switch (refreshState) {
-      case RefreshState.Idle:
-        footer = <View style={footerStyle} />;
-        break;
-      case RefreshState.Failure: {
-        footer = (
-          <TouchableOpacity
-            style={footerStyle}
-            onPress={() => {
-              onFooterRefresh && onFooterRefresh();
-            }}
-          >
-            <Text style={textStyle}>{footerFailureText}</Text>
-          </TouchableOpacity>
-        );
-        break;
+    const [load, setLoad] = useState(true);
+    const opcity = useSharedValue(1);
+    useEffect(() => {
+      if (data.length > 0 && opcity.value === 1) {
+        opcity.value = withTiming(0, { duration: 400 }, () => {
+          runOnJS(setLoad)(false);
+        });
       }
-      case RefreshState.FooterRefreshing: {
-        footer = (
-          <View style={footerStyle}>
-            <ActivityIndicator size="small" color="#888888" />
-            <Text style={[textStyle, styles.footer]}>
-              {footerRefreshingText}
-            </Text>
-          </View>
-        );
-        break;
+    }, [data]);
+
+    const endReached = () => {
+      if (shouldStartFooterRefreshing() && canRefresh) {
+        onFooterRefresh && onFooterRefresh();
       }
-      case RefreshState.NoMoreData: {
-        if (data === null || data.length === 0) {
-          footer = <View />;
-        } else {
+    };
+
+    const headerRefresh = () => {
+      if (shouldStartHeaderRefreshing() && canRefresh) {
+        onHeaderRefresh && onHeaderRefresh();
+      }
+    };
+
+    const shouldStartHeaderRefreshing = () => {
+      if (
+        refreshState === RefreshState.HeaderRefreshing ||
+        refreshState === RefreshState.FooterRefreshing
+      ) {
+        return false;
+      }
+
+      return true;
+    };
+
+    const shouldStartFooterRefreshing = () => {
+      if (data.length === 0) {
+        return false;
+      }
+
+      return refreshState === RefreshState.Idle;
+    };
+
+    const renderFooter = () => {
+      let footer = null;
+
+      const footerStyle = [styles.footerContainer, footerContainerStyle];
+      const textStyle = [styles.footerText, footerTextStyle];
+
+      switch (refreshState) {
+        case RefreshState.Idle:
+          footer = <View style={footerStyle} />;
+          break;
+        case RefreshState.Failure: {
+          footer = (
+            <TouchableOpacity
+              style={footerStyle}
+              onPress={() => {
+                onFooterRefresh && onFooterRefresh();
+              }}
+            >
+              <Text style={textStyle}>{footerFailureText}</Text>
+            </TouchableOpacity>
+          );
+          break;
+        }
+        case RefreshState.FooterRefreshing: {
           footer = (
             <View style={footerStyle}>
-              <Text style={textStyle}>{footerNoMoreDataText}</Text>
+              <ActivityIndicator size="small" color="#888888" />
+              <Text style={[textStyle, styles.footer]}>
+                {footerRefreshingText}
+              </Text>
             </View>
           );
+          break;
         }
-        break;
+        case RefreshState.NoMoreData: {
+          if (data === null || data.length === 0) {
+            footer = <View />;
+          } else {
+            footer = (
+              <View style={footerStyle}>
+                <Text style={textStyle}>{footerNoMoreDataText}</Text>
+              </View>
+            );
+          }
+          break;
+        }
+        default:
+          break;
       }
-      default:
-        break;
-    }
 
-    return footer;
-  };
-
-  const loadViewStyle = useAnimatedStyle(() => {
-    return {
-      opacity: opcity.value,
+      return footer;
     };
-  });
 
-  return (
-    <>
-      <FlashList
-        ref={ref}
-        data={data}
-        onEndReached={endReached}
-        onRefresh={headerRefresh}
-        estimatedItemSize={200}
-        refreshing={refreshState === RefreshState.HeaderRefreshing}
-        ListFooterComponent={renderFooter}
-        onEndReachedThreshold={0.1}
-        keyExtractor={(item, index) => index.toString()}
-        {...options}
-      />
-      {load ? (
-        <Animated.View style={[styles.emptyComponentView, loadViewStyle]}>
-          {emptyComponent}
-        </Animated.View>
-      ) : null}
-    </>
-  );
-};
+    const loadViewStyle = useAnimatedStyle(() => {
+      return {
+        opacity: opcity.value,
+      };
+    });
+
+    const onScroll = useAnimatedScrollHandler({
+      onScroll(event) {
+        scrollOffset.value = event.contentOffset.y;
+      },
+    });
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        srollToTop: () => {
+          listRef.current &&
+            listRef.current?.scrollToOffset({ offset: 0, animated: true });
+        },
+        offset: () => {
+          return scrollOffset.value;
+        },
+      }),
+      [listRef],
+    );
+
+    return (
+      <>
+        <Animated.FlatList
+          ref={listRef}
+          data={data}
+          onScroll={onScroll}
+          renderItem={renderItem}
+          onEndReached={endReached}
+          onRefresh={headerRefresh}
+          refreshing={refreshState === RefreshState.HeaderRefreshing}
+          ListFooterComponent={renderFooter}
+          onEndReachedThreshold={0.1}
+          scrollEventThrottle={16}
+          keyExtractor={(item, index) => index.toString()}
+          {...options}
+        />
+        {load ? (
+          <Animated.View style={[styles.emptyComponentView, loadViewStyle]}>
+            {emptyComponent}
+          </Animated.View>
+        ) : null}
+      </>
+    );
+  },
+);
 
 const styles = StyleSheet.create({
   emptyContainer: {

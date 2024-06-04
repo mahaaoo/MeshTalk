@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import { useNavigation } from "expo-router";
+import React, { useEffect, useRef } from "react";
 
 import DefaultLineItem from "./defaultLineItem";
-import StatusItem from "../statusItem";
-import { RefreshList } from "../../components";
+import { RefreshList, RefreshListRef } from "../../components";
 import { homeLine } from "../../server/timeline";
 import { useRefreshList } from "../../utils/hooks";
+import StatusItem from "../statusItem";
 
 interface HomeLineProps {
   index: number;
@@ -15,6 +16,22 @@ const HomeLine: React.FC<HomeLineProps> = (props) => {
   const { dataSource, onLoadMore, onRefresh, listStatus, fetchData } =
     useRefreshList(homeLine, "Normal", 20);
   const { index, currentIndex } = props;
+  const navigation = useNavigation();
+  const ref = useRef<RefreshListRef>(null);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener<any>("tabPress", () => {
+      if (currentIndex === index) {
+        if (ref.current && ref.current?.offset() > 0) {
+          ref.current && ref.current?.srollToTop();
+        } else {
+          // onRefresh();
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, currentIndex, index, ref]);
 
   useEffect(() => {
     if (dataSource.length === 0 && index === currentIndex) {
@@ -24,6 +41,7 @@ const HomeLine: React.FC<HomeLineProps> = (props) => {
 
   return (
     <RefreshList
+      ref={ref}
       data={dataSource}
       renderItem={({ item }) => <StatusItem item={item} />}
       onHeaderRefresh={onRefresh}

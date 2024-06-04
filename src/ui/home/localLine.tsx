@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import { useNavigation } from "expo-router";
+import React, { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 
 import DefaultLineItem from "./defaultLineItem";
-import StatusItem from "../statusItem";
-import { RefreshList } from "../../components";
+import { RefreshList, RefreshListRef } from "../../components";
 import { Colors } from "../../config";
 import { localLine } from "../../server/timeline";
 import { useRefreshList } from "../../utils/hooks";
+import StatusItem from "../statusItem";
 
 interface LocalProps {
   index: number;
@@ -19,6 +20,23 @@ const Local: React.FC<LocalProps> = (props) => {
 
   const { index, currentIndex } = props;
 
+  const navigation = useNavigation();
+  const ref = useRef<RefreshListRef>(null);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener<any>("tabPress", () => {
+      if (currentIndex === index) {
+        if (ref.current && ref.current?.offset() > 0) {
+          ref.current && ref.current?.srollToTop();
+        } else {
+          // onRefresh();
+        }
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation, currentIndex, index, ref]);
+
   useEffect(() => {
     if (dataSource.length === 0 && index === currentIndex) {
       fetchData();
@@ -28,6 +46,7 @@ const Local: React.FC<LocalProps> = (props) => {
   return (
     <View style={styles.main}>
       <RefreshList
+        ref={ref}
         data={dataSource}
         renderItem={({ item }) => <StatusItem item={item} />}
         onHeaderRefresh={onRefresh}
