@@ -53,7 +53,7 @@ const useRequest = <T>(
       getData()
         .catch((error) => {
           console.error("useRequest", error.message);
-          Toast.show(error.message);
+          // Toast.show(error.message);
           setError(error);
         })
         .finally(() => {
@@ -101,7 +101,7 @@ const useSetTimeout = (
 
 // 下拉刷新和上拉加载列表
 const useRefreshList = <T extends { id: string }>(
-  fetchApi: (...args) => Response<T[]>, // 请求接口
+  fetchApi: (...args: any) => Response<T[]>, // 请求接口
   loadType: "Normal" | "Link",
   limit: number = 20,
 ) => {
@@ -125,12 +125,11 @@ const useRefreshList = <T extends { id: string }>(
           setListStatus(RefreshState.Idle);
         }
         if (loadType === "Link") {
-          setLink(headers.link);
+          setLink(headers?.link);
         }
         setErr(false);
       } else {
-        Toast.show("暂时没有数据");
-        console.log("啊？", err);
+        // Toast.show("暂时没有数据");
         setErr(true);
         setListStatus(RefreshState.Idle);
       }
@@ -152,7 +151,7 @@ const useRefreshList = <T extends { id: string }>(
       }
       if (loadType === "Link") {
         const regex = /max_id=(\d+)/;
-        const match = link.match(regex);
+        const match = link?.match(regex);
         if (match && match.length > 1) {
           maxId = match[1]; // 提取 max_id 的值
         }

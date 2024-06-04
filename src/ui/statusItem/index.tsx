@@ -151,7 +151,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           ) : null}
         </View>
       </TouchableOpacity>
-      <StatusOptions acct={showItem.account.acct} />
+      <StatusOptions account={showItem.account} />
     </View>
   );
 };

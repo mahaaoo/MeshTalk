@@ -10,20 +10,21 @@ import Animated, {
 
 import { styles } from "./index.style";
 import { PopOptonsUtil } from "../../components/PopOptions";
+import { Account } from "../../config/interface";
 
 interface StatusOptionsProps {
-  acct: string;
+  account: Account;
 }
 
 const StatusOptions: React.FC<StatusOptionsProps> = (props) => {
-  const { acct } = props;
+  const { account } = props;
   const aref = useAnimatedRef();
 
   const handlePress = () => {
     runOnUI(() => {
       const measurement = measure(aref);
       if (measurement !== null) {
-        runOnJS(PopOptonsUtil.show)(measurement, acct);
+        runOnJS(PopOptonsUtil.show)(measurement, account.acct, account.id);
       }
     })();
   };
