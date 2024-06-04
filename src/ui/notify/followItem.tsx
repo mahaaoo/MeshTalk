@@ -1,3 +1,4 @@
+import { acctName } from "@utils/string";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
@@ -48,7 +49,7 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
             <Text style={styles.displayName}>
               {item.account?.display_name || item.account?.username}
             </Text>
-            <Text style={styles.acct}>@{item.account?.acct}</Text>
+            <Text style={styles.acct}>{acctName(item.account?.acct)}</Text>
           </View>
         </View>
       </View>

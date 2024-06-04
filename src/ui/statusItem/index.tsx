@@ -1,4 +1,5 @@
 import { Avatar, SplitLine, NinePicture, HTMLContent } from "@components";
+import { replaceContentEmoji, DateUtil, StringUtil } from "@utils/index";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
@@ -11,7 +12,6 @@ import WebCard from "./webCard";
 import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
-import { replaceContentEmoji, DateUtil } from "../../utils";
 import UserName from "../home/userName";
 
 interface StatusItemProps {
@@ -87,7 +87,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               <View style={styles.sourceContainer}>
                 <View style={styles.sourceView}>
                   <Text style={styles.mentionText}>
-                    {`@${showItem.account.acct}`}
+                    {StringUtil.acctName(showItem.account.acct)}
                   </Text>
                 </View>
                 <Text style={styles.sourceText}>
@@ -99,7 +99,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <HTMLContent
             id={item.id}
-            blur={showItem.sensitive && showItem.spoiler_text.length > 0}
+            blur={showItem.sensitive}
             spoilerText={showItem.spoiler_text}
             html={replaceContentEmoji(showItem.content, showItem.emojis)}
           />
@@ -107,8 +107,9 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           <View style={{ paddingVertical: 8 }}>
             <NinePicture
               sensitive={
-                // 如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
-                showItem.sensitive && showItem.spoiler_text.length === 0
+                // D：如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
+                // 只要设置了敏感信息，则隐藏
+                showItem.sensitive
               }
               id={item.id}
               imageList={showItem.media_attachments}

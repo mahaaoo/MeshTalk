@@ -1,3 +1,4 @@
+import { acctName } from "@utils/string";
 import { BlurView } from "expo-blur";
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -16,7 +17,7 @@ interface PopOptionsProps {
 
 const PopOptions: React.FC<PopOptionsProps> = (props) => {
   const { acct } = props;
-  const showAcct = ` @${acct}`;
+  const showAcct = acctName(acct);
 
   return (
     <View style={styles.container}>

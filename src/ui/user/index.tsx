@@ -38,7 +38,7 @@ import { Colors } from "../../config";
 import { Account } from "../../config/interface";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
-import { StringUtil, replaceContentEmoji } from "../../utils";
+import { StringUtil, replaceContentEmoji } from "@utils/index";
 import UserName from "../home/userName";
 
 interface UserProps {
@@ -269,8 +269,7 @@ const User: React.FC<UserProps> = (props) => {
                 </Text>
               </View>
               <Text style={styles.acct}>
-                <Text>@</Text>
-                {userData?.acct}
+                {StringUtil.acctName(userData?.acct)}
               </Text>
               <View style={{ marginVertical: 5 }}>
                 <HTMLContent

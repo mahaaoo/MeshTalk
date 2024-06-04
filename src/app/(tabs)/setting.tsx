@@ -9,6 +9,7 @@ import {
   Screen,
 } from "@components";
 import UserName from "@ui/home/userName";
+import { StringUtil, StorageUtil, replaceContentEmoji } from "@utils/index";
 import { router } from "expo-router";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -20,7 +21,6 @@ import Animated, {
 import { Colors } from "../../config";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
-import { StringUtil, StorageUtil, replaceContentEmoji } from "../../utils";
 
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
@@ -90,6 +90,8 @@ const Setting: React.FC<object> = () => {
     },
   });
 
+  console.log("current", currentAccount);
+
   return (
     <Screen>
       <Animated.ScrollView
@@ -125,8 +127,7 @@ const Setting: React.FC<object> = () => {
                 emojis={currentAccount!.emojis}
               />
               <Text style={styles.acct}>
-                <Text>@</Text>
-                {currentAccount?.acct}
+                {StringUtil.acctName(currentAccount?.acct)}
               </Text>
             </View>
             <HTMLContent

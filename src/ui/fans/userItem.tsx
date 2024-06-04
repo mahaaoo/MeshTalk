@@ -1,3 +1,4 @@
+import { acctName } from "@utils/string";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -40,10 +41,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
               fontSize={18}
             />
           </View>
-          <Text style={styles.acct}>
-            <Text>@</Text>
-            {item?.acct}
-          </Text>
+          <Text style={styles.acct}>{acctName(item?.acct)}</Text>
         </View>
       </View>
       <SplitLine start={0} end={width} />
