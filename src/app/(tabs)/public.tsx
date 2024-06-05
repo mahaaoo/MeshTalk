@@ -24,7 +24,7 @@ const Public: React.FC<PublicProps> = () => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener<any>("tabPress", () => {
-      if (ref.current && ref.current?.offset() > 0) {
+      if (navigation.isFocused() && ref.current && ref.current?.offset() > 0) {
         ref.current && ref.current?.srollToTop();
       } else {
         // onRefresh();

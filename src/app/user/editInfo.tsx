@@ -1,4 +1,5 @@
 import { Avatar, Button, Screen, SplitLine } from "@components";
+import { StringUtil } from "@utils/index";
 import * as FileSystem from "expo-file-system";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
@@ -10,6 +11,7 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  Platform,
 } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -37,9 +39,9 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
     };
 
     const submit = async () => {
-      const { data, ok } = await updateCredentials({
-        avatar,
-      });
+      // const { data, ok } = await updateCredentials({
+      //   avatar,
+      // });
     };
 
     navigation.setOptions({
@@ -65,7 +67,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
     });
 
     fetchAccount();
-  }, [avatar]);
+  }, []);
 
   const pickAvatar = async () => {
     const permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -78,43 +80,28 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
         quality: 1,
       });
 
-      console.log(result);
-
       if (!result.canceled) {
-        const localUri = result.assets[0].uri;
-        // const filename = localUri.split("/").pop();
+        const uri = result.assets[0].uri!;
+        const uriParts = uri.split(".");
+        const fileType = uriParts[uriParts.length - 1];
 
-        // // Infer the type of the image
-        // const match = /\.(\w+)$/.exec(filename);
-        // const type = match ? `image/${match[1]}` : `image`;
-
-        // const formData = new FormData();
-        // // Assume "photo" is the name of the form field the server expects
-        // formData.append("avatar", {
-        //   uri: localUri.replace("file://", ""),
-        //   name: filename,
-        //   type,
-        // });
-        console.log({ localUri });
-        const fileBase64 = await FileSystem.readAsStringAsync(localUri, {
-          encoding: "utf8",
-        });
         const formData = new FormData();
 
+        console.log({
+          uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
+          fileType,
+        });
         // 创建文件对象
-        // const file = {
-        //   uri: localUri,
-        //   name: "image.jpg",
-        //   type: "image/jpeg",
-        // };
+        formData.append("avatar", {
+          uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        } as unknown as Blob);
 
-        // 添加到 formData 中
-        formData.append("avatar", fileBase64);
+        formData.append("display_name", "haha123");
 
-        // console.log("binary", formData.get("file"));
         const { data, ok } = await updateCredentials(formData);
-
-        setAvatar(result.assets[0].uri);
+        // setAvatar(result.assets[0].uri);
       }
     }
 

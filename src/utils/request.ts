@@ -4,7 +4,7 @@ import { AxiosRequestConfig } from "axios";
 import { Response } from "../config/interface";
 
 const api = create({
-  timeout: 3000,
+  timeout: 3000000,
   baseURL: "",
 });
 
@@ -17,6 +17,7 @@ api.addRequestTransform((request) => {
   console.log("请求参数：");
   console.log(request.data);
   console.log(request.params);
+  console.log(request.headers);
   console.log("============================================\n");
 });
 
@@ -74,10 +75,12 @@ const post = <T>(
 const patch = <T>(
   url: string,
   data?: object,
-  axiosConfig?: AxiosRequestConfig,
+  header?: AxiosRequestConfig,
 ): Response<T> => {
+  api.setHeader("Content-Type", "multipart/form-data");
+
   return api
-    .patch(url, data, axiosConfig)
+    .patch(url, data, header)
     .then((response: ApiResponse<T>) => {
       console.log({
         ok: response.ok,
@@ -89,6 +92,9 @@ const patch = <T>(
     .catch((error: any) => {
       console.log("catch", error);
       throw error;
+    })
+    .finally(() => {
+      api.setHeader("Content-Type", "application/json");
     });
 };
 

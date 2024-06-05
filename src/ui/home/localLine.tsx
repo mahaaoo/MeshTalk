@@ -25,7 +25,7 @@ const Local: React.FC<LocalProps> = (props) => {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener<any>("tabPress", () => {
-      if (currentIndex === index) {
+      if (navigation.isFocused() && currentIndex === index) {
         if (ref.current && ref.current?.offset() > 0) {
           ref.current && ref.current?.srollToTop();
         } else {

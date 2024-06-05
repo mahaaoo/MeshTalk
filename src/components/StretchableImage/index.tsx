@@ -86,7 +86,6 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
       >
         <Animated.Image
           onLoad={onImageLoad}
-          blurRadius={radius}
           style={[
             {
               height: imageHeight,

@@ -31,7 +31,6 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
   }
 
   if (item.type === "video") {
-    console.log("item.type", item.type);
     return (
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
         <Video
@@ -39,7 +38,6 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
           source={{
             uri: item.url,
           }}
-          shouldPlay
           useNativeControls
           resizeMode={ResizeMode.CONTAIN}
           usePoster
@@ -61,7 +59,6 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
   }
 
   if (item.type === "gifv") {
-    console.log(item);
     return (
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
         <Video
@@ -106,7 +103,7 @@ const MediaImage: React.FC<MediaImageProps> = (props) => {
         contentFit="cover"
         transition={500}
         onError={() => {
-          console.log("图片加载失败", item);
+          console.log("图片加载失败");
         }}
       />
     </TouchableOpacity>
