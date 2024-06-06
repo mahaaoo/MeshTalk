@@ -78,6 +78,15 @@ export interface Account {
   statuses_count: number;
   url: string;
   username: string;
+  source: AccountSource;
+}
+
+export interface AccountSource {
+  privacy: string;
+  sensitive: boolean;
+  language: string;
+  note: string;
+  fields: AccountFields[];
 }
 
 export interface Card {
