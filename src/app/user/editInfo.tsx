@@ -11,7 +11,9 @@ import {
   Switch,
   SafeAreaView,
   TextInput,
+  Alert,
 } from "react-native";
+import { Loading, Toast } from "react-native-ma-modal";
 import Animated, {
   FadeIn,
   FadeOut,
@@ -29,6 +31,7 @@ import {
 } from "../../reducer/editInfoReducer";
 import { verifyToken } from "../../server/app";
 import { updateCredentials } from "../../server/status";
+import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
 
 interface EditInfoProps {}
@@ -38,6 +41,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { width } = useDeviceStore();
   const offset = useSharedValue(0);
+  const { setCurrentAccount } = useAccountStore();
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -53,34 +57,41 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   }, []);
 
   navigation.setOptions({
-    headerLeft: () => (
-      <TouchableOpacity
-        onPress={() => {
-          router.back();
-        }}
-      >
-        <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
-          取消
-        </Text>
-      </TouchableOpacity>
-    ),
     headerRight: () => (
       <Button
         style={styles.header}
-        textStyle={styles.header_text}
-        text="保存"
-        onPress={submit}
+        textStyle={styles.headerText}
+        text="重置"
+        onPress={() => {
+          Alert.alert("提示", "确定要重置内容？", [
+            {
+              text: "取消",
+            },
+            {
+              text: "确定",
+              onPress: () => {
+                dispatch({
+                  type: "init",
+                  payload: state.account,
+                });
+              },
+            },
+          ]);
+        }}
       />
     ),
   });
 
   const submit = async () => {
+    Loading.show();
     const formData = getRequestBody(state);
-    console.log(formData);
     const { data, ok } = await updateCredentials(formData);
     if (ok && data) {
-      // setAccount(data);
+      Toast.show("保存成功");
+      router.back();
+      setCurrentAccount(data);
     }
+    Loading.hide();
   };
 
   const pickAvatar = async () => {
@@ -218,7 +229,12 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <Text style={styles.title}>机器人</Text>
+            <View>
+              <Text style={styles.title}>机器人</Text>
+              <Text style={styles.biref}>
+                这个账户大多数操作时自动的，并且可能无人监控
+              </Text>
+            </View>
             <Switch
               value={state.robot}
               onValueChange={(value) => {
@@ -235,7 +251,10 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <Text style={styles.title}>锁定</Text>
+            <View>
+              <Text style={styles.title}>锁定</Text>
+              <Text style={styles.biref}>你需要手动审核所有的关注请求</Text>
+            </View>
             <Switch
               value={state.lock}
               onValueChange={(value) => {
@@ -252,7 +271,12 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <Text style={styles.title}>附加信息</Text>
+            <View>
+              <Text style={styles.title}>附加信息</Text>
+              <Text style={styles.biref}>
+                将会在个人资料页上展示，最多4个内容
+              </Text>
+            </View>
             <TouchableOpacity
               onPress={() => {
                 const oldFields = state.fields;
@@ -331,6 +355,12 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                 </Animated.View>
               );
             })}
+          <Button
+            style={styles.saveButton}
+            textStyle={styles.headerText}
+            text="保存"
+            onPress={submit}
+          />
         </Animated.ScrollView>
       </SafeAreaView>
     </Screen>
@@ -346,9 +376,9 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     height: 34,
     borderRadius: 17,
-    marginRight: 10,
+    backgroundColor: "red",
   },
-  header_text: {
+  headerText: {
     fontSize: 16,
     fontWeight: "bold",
   },
@@ -360,6 +390,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  biref: {
+    marginTop: 3,
+    fontSize: 12,
+    color: Colors.grayTextColor,
   },
   itemContainer: {
     flexDirection: "row",
@@ -383,6 +418,13 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: "#bbb",
+  },
+  saveButton: {
+    paddingVertical: 0,
+    height: 50,
+    borderRadius: 25,
+    marginHorizontal: 15,
+    marginTop: 20,
   },
 });
 

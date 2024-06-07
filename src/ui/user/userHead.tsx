@@ -71,7 +71,6 @@ const UserHead: React.FC<UserHeadProps> = (props) => {
 
       {userData?.fields?.length > 0
         ? userData?.fields?.map((field, index) => {
-            const values = replaceNameEmoji(field.value, userData?.emojis);
             return (
               <View
                 key={`fields${index}`}
@@ -100,22 +99,11 @@ const UserHead: React.FC<UserHeadProps> = (props) => {
                     backgroundColor: Colors.grayTextColor,
                   }}
                 />
-                <Text>
-                  {values.map((item, index) => {
-                    return !item.image ? (
-                      <Text key={`filedvalue${index}`}>{item.text}</Text>
-                    ) : (
-                      <Image
-                        key={`filedvalue${index}`}
-                        style={{ width: 16, height: 16 }}
-                        source={{
-                          uri: item.text,
-                        }}
-                        contentFit="cover"
-                      />
-                    );
-                  })}
-                </Text>
+                <View style={{ flex: 1 }}>
+                  <HTMLContent
+                    html={replaceContentEmoji(field.value, userData?.emojis)}
+                  />
+                </View>
               </View>
             );
           })

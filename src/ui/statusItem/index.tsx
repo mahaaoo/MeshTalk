@@ -26,7 +26,6 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const { width } = useDeviceStore();
 
   const handleAvatar = useCallback(() => {
-    console.log(sameUser);
     if (sameUser) return;
     router.push({
       pathname: "/user/[id]",
@@ -99,7 +98,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           <HTMLContent
             id={item.id}
-            blur={showItem.sensitive}
+            blur={showItem.sensitive && showItem.media_attachments.length === 0}
             spoilerText={showItem.spoiler_text}
             html={replaceContentEmoji(showItem.content, showItem.emojis)}
           />

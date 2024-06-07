@@ -25,7 +25,11 @@ const App: React.FC<object> = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ModalProvider ref={modalRef}>
-        <Stack screenOptions={{ headerBackTitle: "返回" }}>
+        <Stack
+          screenOptions={{
+            headerBackTitle: "返回",
+          }}
+        >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
