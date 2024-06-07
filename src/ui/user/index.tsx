@@ -1,21 +1,13 @@
 import {
-  Avatar,
   StretchableImage,
   SlideHeader,
-  FollowButton,
   Icon,
-  HTMLContent,
   TabView,
   DefaultTabBar,
   PullLoading,
   ImagePreviewUtil,
 } from "@components";
-import {
-  StringUtil,
-  replaceContentEmoji,
-  replaceNameEmoji,
-} from "@utils/index";
-import { Image } from "expo-image";
+import { StringUtil } from "@utils/index";
 import { router } from "expo-router";
 import React, { useCallback, useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -39,6 +31,7 @@ import {
   tabViewConfig,
   NestedScrollStatus,
 } from "./type";
+import UserHead from "./userHead";
 import UserLine from "./userLine";
 import { Colors } from "../../config";
 import { Account } from "../../config/interface";
@@ -47,8 +40,8 @@ import useDeviceStore from "../../store/useDeviceStore";
 import UserName from "../home/userName";
 
 interface UserProps {
-  id: string;
-  userData: Account;
+  id: string; // 该账号id
+  userData: Account; // 要展示的用户账号内容
 }
 
 const User: React.FC<UserProps> = (props) => {
@@ -94,12 +87,6 @@ const User: React.FC<UserProps> = (props) => {
       },
     });
   }, [id]);
-
-  const handleEdit = useCallback(() => {
-    router.push({
-      pathname: "/user/editInfo",
-    });
-  }, []);
 
   const handleAvatar = (url: string) => {
     ImagePreviewUtil.show(url, 0);
@@ -229,118 +216,11 @@ const User: React.FC<UserProps> = (props) => {
           />
           <View style={styles.header} onLayout={handleOnLayout}>
             <View style={styles.avatarContainer}>
-              <View style={styles.title}>
-                <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-                  <TouchableOpacity
-                    style={styles.avatar}
-                    onPress={() => handleAvatar(userData?.avatar)}
-                  >
-                    <Avatar
-                      url={userData?.avatar}
-                      size={65}
-                      borderColor="#fff"
-                      borderWidth={4}
-                    />
-                  </TouchableOpacity>
-                  {userData?.locked ? (
-                    // 锁定
-                    <View style={{ margin: 3 }}>
-                      <Icon name="lock" size={20} color="#aaa" />
-                    </View>
-                  ) : null}
-                  {userData?.bot ? (
-                    // 机器人
-                    <View style={{ margin: 3 }}>
-                      <Icon name="robot" size={22} color="#aaa" />
-                    </View>
-                  ) : null}
-                </View>
-
-                {currentAccount?.acct === userData.acct ? (
-                  <TouchableOpacity
-                    style={styles.editContainer}
-                    onPress={handleEdit}
-                  >
-                    <Text style={styles.edit}>编辑个人资料</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <FollowButton id={id} locked={userData?.locked} />
-                )}
-              </View>
-              <View style={{ marginTop: 5, flexDirection: "row" }}>
-                <Text numberOfLines={10}>
-                  <UserName
-                    displayname={userData?.display_name || userData?.username}
-                    emojis={userData?.emojis}
-                    fontSize={18}
-                  />
-                </Text>
-              </View>
-              <Text style={styles.acct}>
-                {StringUtil.acctName(userData?.acct)}
-              </Text>
-
-              <HTMLContent
-                html={replaceContentEmoji(userData?.note, userData?.emojis)}
+              <UserHead
+                userData={userData}
+                isSelf={userData?.acct === currentAccount?.acct}
+                onAvatarPress={handleAvatar}
               />
-
-              {userData?.fields?.length > 0
-                ? userData?.fields?.map((field, index) => {
-                    const values = replaceNameEmoji(
-                      field.value,
-                      userData?.emojis,
-                    );
-                    return (
-                      <View
-                        key={`fields${index}`}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          marginVertical: 3,
-                        }}
-                      >
-                        <View style={{ width: 100 }}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: Colors.grayTextColor,
-                              fontWeight: "bold",
-                            }}
-                          >
-                            {field.name}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            marginHorizontal: 5,
-                            height: "100%",
-                            width: 1.5,
-                            backgroundColor: Colors.grayTextColor,
-                          }}
-                        />
-                        <Text>
-                          {values.map((item, index) => {
-                            return !item.image ? (
-                              <Text key={`filedvalue${index}`}>
-                                {item.text}
-                              </Text>
-                            ) : (
-                              <Image
-                                key={`filedvalue${index}`}
-                                style={{ width: 16, height: 16 }}
-                                source={{
-                                  uri: item.text,
-                                }}
-                                contentFit="cover"
-                              />
-                            );
-                          })}
-                        </Text>
-                      </View>
-                    );
-                  })
-                : null}
-
               <View style={styles.act}>
                 <Text style={styles.msgNumber}>
                   {StringUtil.stringAddComma(userData?.statuses_count)}
@@ -453,14 +333,6 @@ const styles = StyleSheet.create({
   avatarContainer: {
     marginHorizontal: 15,
   },
-  avatar: {
-    marginTop: -20,
-  },
-  title: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
   act: {
     flexDirection: "row",
     marginTop: 8,
@@ -468,11 +340,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  acct: {
-    fontSize: 14,
-    color: Colors.grayTextColor,
-    marginTop: 5,
   },
   msgNumber: {
     fontWeight: "bold",
@@ -492,16 +359,6 @@ const styles = StyleSheet.create({
   },
   slider: {
     flexDirection: "row",
-  },
-  editContainer: {
-    borderWidth: 1,
-    borderColor: "#bbb",
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderRadius: 20,
-  },
-  edit: {
-    fontSize: 14,
   },
 });
 

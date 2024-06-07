@@ -1,21 +1,18 @@
 import {
-  Avatar,
   StretchableImage,
   PullLoading,
-  HTMLContent,
   ListRow,
   SpacingBox,
   Icon,
   Screen,
 } from "@components";
-import UserName from "@ui/home/userName";
-import { StringUtil, StorageUtil, replaceContentEmoji } from "@utils/index";
+import UserHead from "@ui/user/userHead";
+import { StringUtil, StorageUtil } from "@utils/index";
 import { router } from "expo-router";
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, {
-  scrollTo,
-  useAnimatedRef,
+  runOnJS,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
@@ -28,35 +25,22 @@ const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
 
 const Setting: React.FC<object> = () => {
-  // const scrollY: any = useRef(new Animated.Value(0)).current; //最外层ScrollView的滑动距离
   const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
-  const { width } = useDeviceStore();
+  const { width, insets } = useDeviceStore();
 
-  const [refreshing, setRefreshing] = useState(false); // 是否处于下拉加载的状态
+  const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
-  const handleListener = (e: any) => {
-    const offsetY = e.nativeEvent.contentOffset.y;
-    if (offsetY <= -PULLOFFSETY && !refreshing) {
-      setRefreshing(true);
-    }
-    return null;
+  const handleEdit = useCallback(() => {
+    router.push({
+      pathname: "/user/editInfo",
+    });
+  }, []);
+
+  const onRefresh = async () => {
+    await verifyToken();
+    refreshing.value = false;
   };
-
-  useEffect(() => {
-    if (refreshing) {
-      verifyToken();
-    }
-  }, [refreshing]);
-
-  useEffect(() => {
-    if (currentAccount) {
-      setRefreshing(false);
-    } else {
-      setRefreshing(true);
-      verifyToken();
-    }
-  }, [currentAccount]);
 
   const handleNavigateToFans = useCallback(() => {
     router.push({
@@ -87,9 +71,15 @@ const Setting: React.FC<object> = () => {
   }, []);
 
   const onScroll = useAnimatedScrollHandler({
-    onScroll: (event, context) => {
+    onScroll: (event) => {
       scrollY.value = -event.contentOffset.y;
     },
+    onEndDrag: () => {
+      if (scrollY.value >= 100 && !refreshing.value) {
+        refreshing.value = true;
+        runOnJS(onRefresh)();
+      }
+    }
   });
 
   return (
@@ -101,41 +91,19 @@ const Setting: React.FC<object> = () => {
         scrollEventThrottle={1}
       >
         <StretchableImage
-          isblur={refreshing}
+          isblur={refreshing.value}
           scrollY={scrollY}
           url={currentAccount!.header}
           imageHeight={IMAGEHEIGHT}
         />
         <View style={styles.header}>
           <View style={styles.avatarContainer}>
-            <View style={styles.title}>
-              <TouchableOpacity onPress={handleToTest} style={styles.avatar}>
-                <Avatar
-                  url={currentAccount?.avatar}
-                  size={65}
-                  borderColor="#fff"
-                  borderWidth={4}
-                />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <UserName
-                displayname={
-                  currentAccount!.display_name || currentAccount!.username
-                }
-                fontSize={18}
-                emojis={currentAccount!.emojis}
-              />
-              <Text style={styles.acct}>
-                {StringUtil.acctName(currentAccount?.acct)}
-              </Text>
-            </View>
-            <HTMLContent
-              html={replaceContentEmoji(
-                currentAccount!.note,
-                currentAccount!.emojis,
-              )}
+            <UserHead
+              userData={currentAccount!}
+              isSelf
+              onAvatarPress={handleToTest}
             />
+
             <View style={styles.act}>
               <View style={styles.actItem}>
                 <Text style={styles.msg_number}>
@@ -187,13 +155,19 @@ const Setting: React.FC<object> = () => {
             StorageUtil.clear();
           }}
         />
-        {/* <PullLoading
+        <PullLoading
           scrollY={scrollY}
           refreshing={refreshing}
           top={IMAGEHEIGHT / 2}
-          left={Screen.width / 2}
+          left={width / 2}
           offsetY={PULLOFFSETY}
-        /> */}
+        />
+        <TouchableOpacity
+          onPress={handleEdit}
+          style={{ position: "absolute", right: 20, top: insets.top }}
+        >
+          <Icon name="setting" size={25} color="#333" />
+        </TouchableOpacity>
       </Animated.ScrollView>
     </Screen>
   );
@@ -210,14 +184,6 @@ const styles = StyleSheet.create({
   avatarContainer: {
     paddingHorizontal: 18,
   },
-  avatar: {
-    marginTop: -20,
-  },
-  title: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-  },
   act: {
     flexDirection: "row",
     marginVertical: 10,
@@ -226,11 +192,6 @@ const styles = StyleSheet.create({
   actItem: {
     justifyContent: "center",
     alignItems: "center",
-  },
-  acct: {
-    fontSize: 14,
-    color: Colors.grayTextColor,
-    marginTop: 5,
   },
   msg_number: {
     fontWeight: "bold",
