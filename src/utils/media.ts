@@ -1,4 +1,5 @@
 import * as FileSystem from "expo-file-system";
+import { FileInfo } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import { Platform } from "react-native";
 
@@ -15,7 +16,7 @@ export const imagePick = async () => {
 
     if (!result.canceled) {
       const uri = result.assets[0].uri!;
-      const fileInfo = await FileSystem.getInfoAsync(uri);
+      const fileInfo: FileInfo = await FileSystem.getInfoAsync(uri);
       return {
         ok: true,
         uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,

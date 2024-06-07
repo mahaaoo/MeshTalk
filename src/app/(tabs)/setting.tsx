@@ -14,6 +14,8 @@ import { router } from "expo-router";
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Animated, {
+  scrollTo,
+  useAnimatedRef,
   useAnimatedScrollHandler,
   useSharedValue,
 } from "react-native-reanimated";
@@ -89,8 +91,6 @@ const Setting: React.FC<object> = () => {
       scrollY.value = -event.contentOffset.y;
     },
   });
-
-  console.log("current", currentAccount);
 
   return (
     <Screen>

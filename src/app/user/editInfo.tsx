@@ -8,67 +8,28 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
-  ScrollView,
   Switch,
   SafeAreaView,
+  TextInput,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { Colors } from "../../config";
-import { Account, AccountFields } from "../../config/interface";
+import { AccountFields } from "../../config/interface";
+import {
+  reducer,
+  initialState,
+  getRequestBody,
+} from "../../reducer/editInfoReducer";
 import { verifyToken } from "../../server/app";
 import { updateCredentials } from "../../server/status";
 import useDeviceStore from "../../store/useDeviceStore";
-
-function reducer(state: EditInfoState, action: EditInfoAction) {
-  switch (action.type) {
-    case "init": {
-      const account = action.payload as Account;
-      return {
-        account,
-        avatar: account.avatar,
-        displayName: account.display_name,
-        header: account.header,
-        note: account.source.note,
-        robot: account.bot,
-        lock: account.locked,
-        fields: account.source.fields,
-      };
-    }
-    case "setItem":
-      return { ...state, ...action.payload };
-    default:
-      throw new Error();
-  }
-}
-
-interface EditInfoState {
-  avatar: string;
-  displayName: string;
-  account: Account;
-  header: string;
-  note: string;
-  robot: boolean;
-  lock: boolean;
-  fields: AccountFields[];
-}
-
-interface EditInfoAction {
-  type: string;
-  payload: any;
-}
-
-const initialState = {
-  avatar: "",
-  displayName: "",
-  account: undefined,
-  header: "",
-  note: "",
-  robot: false,
-  lock: false,
-  fields: [],
-};
 
 interface EditInfoProps {}
 
@@ -76,6 +37,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   const navigation = useNavigation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { width } = useDeviceStore();
+  const offset = useSharedValue(0);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -87,50 +49,39 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
         });
       }
     };
-
-    const submit = async () => {
-      // const { data, ok } = await updateCredentials({
-      //   avatar,
-      // });
-      // const uriParts = uri.split(".");
-      // const fileType = uriParts[uriParts.length - 1];
-      // const { data, ok } = await updateCredentials(formData);
-      // if (ok && data) {
-      //   // setAccount(data);
-      // }
-      // const formData = new FormData();
-      // // 创建文件对象
-      // formData.append("avatar", {
-      //   uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
-      //   name: `photo.${fileType}123`,
-      //   type: `image/${fileType}`,
-      // } as unknown as Blob);
-    };
-
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity
-          onPress={() => {
-            router.back();
-          }}
-        >
-          <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
-            取消
-          </Text>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <Button
-          style={styles.header}
-          textStyle={styles.header_text}
-          text="保存"
-          onPress={submit}
-        />
-      ),
-    });
-
     fetchAccount();
   }, []);
+
+  navigation.setOptions({
+    headerLeft: () => (
+      <TouchableOpacity
+        onPress={() => {
+          router.back();
+        }}
+      >
+        <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
+          取消
+        </Text>
+      </TouchableOpacity>
+    ),
+    headerRight: () => (
+      <Button
+        style={styles.header}
+        textStyle={styles.header_text}
+        text="保存"
+        onPress={submit}
+      />
+    ),
+  });
+
+  const submit = async () => {
+    const formData = getRequestBody(state);
+    console.log(formData);
+    const { data, ok } = await updateCredentials(formData);
+    if (ok && data) {
+      // setAccount(data);
+    }
+  };
 
   const pickAvatar = async () => {
     const { ok, uri, fileInfo } = await imagePick();
@@ -162,10 +113,17 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
     }
   };
 
+  const animatedStyles = useAnimatedStyle(() => ({
+    transform: [{ translateY: -offset.value }],
+  }));
+
   return (
     <Screen headerShown title="编辑个人资料">
       <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={styles.main}>
+        <Animated.ScrollView
+          scrollEventThrottle={16}
+          style={[styles.main, animatedStyles]}
+        >
           <TouchableOpacity onPress={pickHeader}>
             <Image
               style={[
@@ -220,7 +178,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
               placeholder="输入昵称"
               underlineColorAndroid="transparent"
               value={state.displayName}
-              onTextInput={(text) => {
+              onChangeText={(text) => {
                 dispatch({
                   type: "setItem",
                   payload: {
@@ -239,13 +197,20 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
               placeholder="输入简介"
               value={state.note}
               underlineColorAndroid="transparent"
-              onTextInput={(text) => {
+              onChangeText={(text) => {
                 dispatch({
                   type: "setItem",
                   payload: {
                     note: text,
                   },
                 });
+              }}
+              onFocus={() => {
+                // TODO：需要修改为react-native-keyboard-controller
+                offset.value = withTiming(100, { duration: 250 });
+              }}
+              onEndEditing={() => {
+                offset.value = withTiming(0, { duration: 250 });
               }}
             />
           </View>
@@ -321,19 +286,52 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                     placeholder="描述"
                     underlineColorAndroid="transparent"
                     value={field?.name}
-                    onTextInput={(text) => {}}
+                    onChangeText={(text) => {
+                      dispatch({
+                        type: "setField",
+                        payload: {
+                          index,
+                          name: text,
+                          value: field?.value,
+                        },
+                      });
+                    }}
+                    onFocus={() => {
+                      // TODO：需要修改为react-native-keyboard-controller
+                      offset.value = withTiming(350 + index * 30, {
+                        duration: 250,
+                      });
+                    }}
+                    onEndEditing={() => {
+                      offset.value = withTiming(0, { duration: 250 });
+                    }}
                   />
                   <TextInput
                     style={styles.filedValue}
                     placeholder="内容"
                     underlineColorAndroid="transparent"
                     value={field?.value}
-                    onTextInput={(text) => {}}
+                    onChangeText={(text) => {
+                      dispatch({
+                        type: "setField",
+                        payload: {
+                          index,
+                          name: field?.name,
+                          value: text,
+                        },
+                      });
+                    }}
+                    onFocus={() => {
+                      offset.value = withTiming(350, { duration: 250 });
+                    }}
+                    onEndEditing={() => {
+                      offset.value = withTiming(0, { duration: 250 });
+                    }}
                   />
                 </Animated.View>
               );
             })}
-        </ScrollView>
+        </Animated.ScrollView>
       </SafeAreaView>
     </Screen>
   );
