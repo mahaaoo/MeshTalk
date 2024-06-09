@@ -1,20 +1,22 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity } from "react-native";
 import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 
 import { Colors } from "../../config";
 import { ACTIONMODALIDREPLY } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
+import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
 
 type ActionsSheetTyps = {
-  onSelect: (reply: string) => void;
+  onSave: () => void;
   onClose: () => void;
+  onShare: () => void;
 };
 
 const PicMore = {
   key: ACTIONMODALIDREPLY,
-  template: ({ onSelect, onClose }: ActionsSheetTyps) => (
+  template: ({ onSave, onClose, onShare }: ActionsSheetTyps) => (
     <TranslateContainer onDisappear={onClose} gesture>
       <View
         style={[
@@ -24,17 +26,24 @@ const PicMore = {
       >
         <View style={styles.titleContainer} />
         <View style={styles.item}>
-          <View style={styles.itemContainer}>
+          <TouchableOpacity onPress={onSave} style={styles.itemContainer}>
             <Text style={styles.itemTitle}>保存图片</Text>
-          </View>
+            <Icon name="download" />
+          </TouchableOpacity>
           <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-          <View style={styles.itemContainer}>
+          <TouchableOpacity onPress={onShare} style={styles.itemContainer}>
             <Text style={styles.itemTitle}>分享内容</Text>
-          </View>
+            <Icon name="share" />
+          </TouchableOpacity>
         </View>
-        <View style={[styles.item, styles.cacelButton]}>
+        <TouchableOpacity
+          onPress={() => {
+            PicMore.hide();
+          }}
+          style={[styles.item, styles.cacelButton]}
+        >
           <Text style={styles.itemTitle}>取消</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </TranslateContainer>
   ),
@@ -70,6 +79,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 15,
+    justifyContent: "space-between",
   },
   itemTitle: {
     fontSize: 16,

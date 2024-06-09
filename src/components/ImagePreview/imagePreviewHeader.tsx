@@ -1,14 +1,15 @@
+import { systemShare, fileSave } from "@utils/media";
 import React, { useState } from "react";
-import { TouchableOpacity, View, Text, Share } from "react-native";
-import { Loading, ModalUtil } from "react-native-ma-modal";
+import { TouchableOpacity, View, Text } from "react-native";
+import { ModalUtil } from "react-native-ma-modal";
 import {
   useAnimatedReaction,
   runOnJS,
   SharedValue,
 } from "react-native-reanimated";
 
-import { Icon } from "../Icon";
 import ActionsSheet from "../ActionsSheet";
+import { Icon } from "../Icon";
 
 interface ImagePreviewHeaderProps {
   currentIndex: SharedValue<number>;
@@ -30,28 +31,18 @@ const ImagePreviewHeader: React.FC<ImagePreviewHeaderProps> = (props) => {
     },
   );
 
-  const onShare = async () => {
+  const onShare = () => {
     ActionsSheet.PicMore.show({
       onClose: () => {},
-      onSelect: () => {},
+      onSave: () => {
+        ActionsSheet.PicMore.hide();
+        fileSave(url);
+      },
+      onShare: () => {
+        ActionsSheet.PicMore.hide();
+        systemShare(url);
+      },
     });
-    // try {
-    //   const result = await Share.share({
-    //     url,
-    //   });
-    //   if (result.action === Share.sharedAction) {
-    //     if (result.activityType) {
-    //       // shared with activity type of result.activityType
-    //     } else {
-    //       // shared
-    //     }
-    //   } else if (result.action === Share.dismissedAction) {
-    //     // dismissed
-    //   }
-    // } catch (error: any) {
-    //   // Alert.alert(error.message);
-    //   console.log(error.message);
-    // }
   };
 
   return (

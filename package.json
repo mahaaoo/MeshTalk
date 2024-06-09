@@ -48,7 +48,8 @@
     "expo-file-system": "~17.0.1",
     "@shopify/react-native-skia": "1.2.3",
     "expo-blur": "~13.0.2",
-    "expo-av": "~14.0.5"
+    "expo-av": "~14.0.5",
+    "expo-media-library": "~16.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
