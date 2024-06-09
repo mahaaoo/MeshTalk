@@ -137,3 +137,39 @@ export const lookupAcct = (id: string): Response<Account> => {
 
   return get<Account>(url, defaultParams);
 };
+
+// 获取所有的屏蔽列表
+export const blocks = (params: object): Response<Account[]> => {
+  const url = "/api/v1/blocks";
+  return get<Account[]>(url, params);
+};
+
+// 屏蔽（block）某人
+export const block = (id: string): Response<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/block";
+  return post<Relationship>(url);
+};
+
+// 解除屏蔽（block）某人
+export const unblock = (id: string): Response<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/unblock";
+  return post<Relationship>(url);
+};
+
+// 获取所有的静音列表
+export const mutes = (params: object): Response<Account[]> => {
+  const url = "/api/v1/mutes";
+  return get<Account[]>(url, params);
+};
+
+// 静音（block）某人
+export const mute = (id: string): Response<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/mute";
+  return post<Relationship>(url);
+};
+
+// 解除静音（block）某人
+export const unmute = (id: string): Response<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/unmute";
+  return post<Relationship>(url);
+};

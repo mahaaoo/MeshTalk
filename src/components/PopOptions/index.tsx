@@ -1,4 +1,3 @@
-import { acctName } from "@utils/string";
 import { BlurView } from "expo-blur";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,7 +13,11 @@ import { MeasuredDimensions } from "react-native-reanimated";
 import { PopOptionsContainer } from "./PopOptionsContainer";
 import { POPMODALID } from "../../config/constant";
 import { Relationship } from "../../config/interface";
-import { getRelationships } from "../../server/account";
+import {
+  followById,
+  getRelationships,
+  unfollowById,
+} from "../../server/account";
 import { Icon } from "../Icon";
 import SpacingBox from "../SpacingBox";
 import SplitLine from "../SplitLine";
@@ -39,24 +42,42 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
     fetchRelation();
   }, [id]);
 
+  const unfollow = async () => {
+    setRelation(undefined);
+    const { data, ok } = await unfollowById(id);
+    if (ok && data) {
+      setRelation(data);
+    }
+  };
+
+  const follow = async () => {
+    setRelation(undefined);
+    const { data, ok } = await followById(id);
+    if (ok && data) {
+      setRelation(data);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <BlurView intensity={98} tint="light">
-        <TouchableOpacity style={styles.item}>
+        <View>
           {!relation ? (
-            <ActivityIndicator />
+            <View style={styles.item}>
+              <ActivityIndicator />
+            </View>
           ) : relation?.following ? (
-            <>
+            <TouchableOpacity style={styles.item} onPress={unfollow}>
               <Text style={styles.text}>取消关注该用户</Text>
               <Icon name="unfollow" color="#333" />
-            </>
+            </TouchableOpacity>
           ) : (
-            <>
+            <TouchableOpacity style={styles.item} onPress={follow}>
               <Text style={styles.text}>关注该用户</Text>
               <Icon name="follow" color="#333" />
-            </>
+            </TouchableOpacity>
           )}
-        </TouchableOpacity>
+        </View>
         <SpacingBox height={5} color="#e9e9e9" />
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>提及</Text>
