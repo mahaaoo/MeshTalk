@@ -248,6 +248,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         total={imageList.length}
         scale={scale}
         opacity={opacity}
+        url={imageList[currentIndex.value]}
       />
     </View>
   );

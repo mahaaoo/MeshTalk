@@ -126,10 +126,10 @@ const Publish: React.FC<PublishProps> = () => {
                 style={styles.power}
                 onPress={() => {
                   handleClickEmojis();
-                  ActionsSheet.show({
+                  ActionsSheet.Reply.show({
                     onSelect: (text: string) => {
                       setReply(text);
-                      ActionsSheet.hide();
+                      ActionsSheet.Reply.hide();
                     },
                     onClose: () => {
                       handleClickPic();

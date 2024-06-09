@@ -4,7 +4,7 @@ import { AxiosRequestConfig } from "axios";
 import { Response } from "../config/interface";
 
 const api = create({
-  timeout: 3000000,
+  timeout: 30000,
   baseURL: "",
 });
 
