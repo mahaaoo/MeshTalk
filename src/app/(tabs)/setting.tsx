@@ -60,7 +60,7 @@ const Setting: React.FC<object> = () => {
     });
   }, []);
 
-  const handleToTest = useCallback(() => {
+  const handleToDetail = useCallback(() => {
     router.push({
       pathname: "/user/[id]",
       params: {
@@ -69,6 +69,14 @@ const Setting: React.FC<object> = () => {
       },
     });
   }, []);
+
+  const handleToMute = () => {
+    router.push("/mutes");
+  };
+
+  const handleToBlock = () => {
+    router.push("/blocks");
+  };
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -79,7 +87,7 @@ const Setting: React.FC<object> = () => {
         refreshing.value = true;
         runOnJS(onRefresh)();
       }
-    }
+    },
   });
 
   return (
@@ -101,7 +109,7 @@ const Setting: React.FC<object> = () => {
             <UserHead
               userData={currentAccount!}
               isSelf
-              onAvatarPress={handleToTest}
+              onAvatarPress={handleToDetail}
             />
 
             <View style={styles.act}>
@@ -138,19 +146,25 @@ const Setting: React.FC<object> = () => {
           color={Colors.pageDefaultBackground}
         />
         <ListRow
-          leftIcon={
-            <Icon name="like" size={23} color={Colors.commonToolBarText} />
-          }
+          leftIcon={<Icon name="like" size={24} color="#333" />}
           title="喜欢"
           onPress={() => {
             router.push("/favourites");
           }}
         />
         <ListRow
-          leftIcon={
-            <Icon name="like" size={23} color={Colors.commonToolBarText} />
-          }
-          title="退出"
+          leftIcon={<Icon name="mute" size={23} color="#333" />}
+          title="屏蔽"
+          onPress={handleToMute}
+        />
+        <ListRow
+          leftIcon={<Icon name="block" size={21} color="#333" />}
+          title="拉黑"
+          onPress={handleToBlock}
+        />
+        <ListRow
+          leftIcon={<Icon name="logout" size={22} color="#333" />}
+          title="退出当前账号"
           onPress={() => {
             StorageUtil.clear();
           }}

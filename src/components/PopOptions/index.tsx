@@ -16,7 +16,11 @@ import { Relationship } from "../../config/interface";
 import {
   followById,
   getRelationships,
+  mute,
   unfollowById,
+  unmute,
+  block,
+  unblock,
 } from "../../server/account";
 import { Icon } from "../Icon";
 import SpacingBox from "../SpacingBox";
@@ -58,6 +62,36 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
     }
   };
 
+  const handleMute = async () => {
+    setRelation(undefined);
+    if (relation?.muting) {
+      const { data, ok } = await unmute(id);
+      if (ok && data) {
+        setRelation(data);
+      }
+    } else {
+      const { data, ok } = await mute(id);
+      if (ok && data) {
+        setRelation(data);
+      }
+    }
+  };
+
+  const handleBlock = async () => {
+    setRelation(undefined);
+    if (relation?.blocking) {
+      const { data, ok } = await unblock(id);
+      if (ok && data) {
+        setRelation(data);
+      }
+    } else {
+      const { data, ok } = await block(id);
+      if (ok && data) {
+        setRelation(data);
+      }
+    }
+  };
+
   return (
     <View style={styles.container}>
       <BlurView intensity={98} tint="light">
@@ -84,13 +118,17 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
           <Icon name="aite" color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
-        <TouchableOpacity style={styles.item}>
-          <Text style={styles.text}>屏蔽(mute)</Text>
+        <TouchableOpacity style={styles.item} onPress={handleMute}>
+          <Text style={styles.text}>
+            {relation?.muting ? "取消屏蔽" : "屏蔽"}
+          </Text>
           <Icon name="mute" size={22} color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
-        <TouchableOpacity style={styles.item}>
-          <Text style={[styles.text, { color: "red" }]}>拉黑(block)</Text>
+        <TouchableOpacity style={styles.item} onPress={handleBlock}>
+          <Text style={[styles.text, { color: "red" }]}>
+            {relation?.blocking ? "取消拉黑" : "拉黑"}
+          </Text>
           <Icon name="block" size={20} color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
