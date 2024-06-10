@@ -173,3 +173,9 @@ export const unmute = (id: string): Response<Relationship> => {
   const url = "/api/v1/accounts/" + id + "/unmute";
   return post<Relationship>(url);
 };
+
+// 移除粉丝
+export const removeFollowers = (id: string): Response<Relationship> => {
+  const url = "/api/v1/accounts/" + id + "/remove_from_followers";
+  return post<Relationship>(url);
+};

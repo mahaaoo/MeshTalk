@@ -1,17 +1,21 @@
-import { RefreshList, Screen } from "@components";
+import { RefreshList, Screen, Error } from "@components";
 import UserItem from "@ui/fans/userItem";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 
-import { getFollowingById } from "../../server/account";
+import { Colors } from "../../config";
+import { getFollowingById, unfollowById } from "../../server/account";
+import useAccountStore from "../../store/useAccountStore";
 import { useRefreshList } from "../../utils/hooks";
 
 interface UserFollowProps {}
 
 const UserFollow: React.FC<UserFollowProps> = (props) => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { dataSource, listStatus, onLoadMore, onRefresh } = useRefreshList(
+  const { currentAccount } = useAccountStore();
+
+  const { dataSource, listStatus, onLoadMore, onRefresh, err } = useRefreshList(
     (params) => getFollowingById(id, params),
     "Link",
     40,
@@ -21,19 +25,54 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
     onRefresh();
   }, []);
 
+  const handleUnFollow = async (userId: string) => {
+    if (currentAccount?.id === id) {
+      const { data, ok } = await unfollowById(userId);
+      if (data && ok) {
+        console.log("取消关注成功");
+      }
+    }
+  };
+
   return (
-    <Screen headerShown title="关注">
-      <View style={styles.main}>
-        <RefreshList
-          showsVerticalScrollIndicator={false}
-          data={dataSource}
-          renderItem={({ item }) => <UserItem item={item} />}
-          onHeaderRefresh={onRefresh}
-          onFooterRefresh={onLoadMore}
-          scrollEventThrottle={1}
-          refreshState={listStatus}
-        />
-      </View>
+    <Screen
+      headerShown
+      title={`${currentAccount?.id === id ? "你" : "他/她"}的关注`}
+    >
+      {err ? (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: Colors.defaultWhite,
+            alignItems: "center",
+          }}
+        >
+          <Error type="NoData" style={{ marginTop: 200 }} />
+          <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
+            {currentAccount?.id === id ? "你" : "他/她"}没有关注任何人
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.main}>
+          <RefreshList
+            data={dataSource}
+            renderItem={({ item }) => (
+              <UserItem
+                item={item}
+                showButton={currentAccount?.id === id}
+                buttonOption={{
+                  onPress: () => handleUnFollow(item.id),
+                  title: "取消关注",
+                }}
+              />
+            )}
+            scrollEventThrottle={1}
+            refreshState={listStatus}
+            onRefresh={onRefresh}
+            onFooterRefresh={onLoadMore}
+          />
+        </View>
+      )}
     </Screen>
   );
 };
