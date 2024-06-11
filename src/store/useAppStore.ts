@@ -3,10 +3,9 @@ import { create } from "zustand";
 
 import useAccountStore from "./useAccountStore";
 import useEmojiStore from "./useEmojiStore";
-import useLoginStore from "./useLoginStore";
 import * as constant from "../config/constant";
 import { api } from "../utils/request";
-import { setItem, getItem } from "../utils/storage";
+import { setItem, getItem, clear } from "../utils/storage";
 
 interface AppStoreState {
   hostURL: string | undefined;
@@ -16,6 +15,7 @@ interface AppStoreState {
   setToken: (token: string) => void;
   afterToken: (localToken: string, localHostUrl: string) => void;
   initApp: () => void;
+  exitCurrentAccount: () => void;
 }
 
 const useAppStore = create<AppStoreState>((set, get) => ({
@@ -85,6 +85,10 @@ const useAppStore = create<AppStoreState>((set, get) => ({
       hostURL: localHostUrl as string,
       isReady: true,
     });
+  },
+  exitCurrentAccount: () => {
+    // TODO:退出当前账号，自动切换到下一个账号，如果没有则退出到登录页面
+    clear();
   },
 }));
 

@@ -1,6 +1,7 @@
 import { Tabs, Redirect, router } from "expo-router";
 import React from "react";
 
+import ActionsSheet from "../../components/ActionsSheet";
 import { Icon } from "../../components/Icon";
 import useAccountStore from "../../store/useAccountStore";
 
@@ -26,6 +27,11 @@ const TabRouter: React.FC<object> = () => {
             <Icon name="elephant" size={33} color={color} />
           ),
         }}
+        listeners={() => ({
+          tabLongPress: () => {
+            ActionsSheet.Logout.show();
+          },
+        })}
       />
       <Tabs.Screen
         name="public"

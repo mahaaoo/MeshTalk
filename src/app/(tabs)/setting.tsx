@@ -5,9 +5,10 @@ import {
   SpacingBox,
   Icon,
   Screen,
+  ActionsSheet,
 } from "@components";
 import UserHead from "@ui/user/userHead";
-import { StringUtil, StorageUtil } from "@utils/index";
+import { StringUtil } from "@utils/index";
 import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
@@ -27,7 +28,7 @@ const PULLOFFSETY = 100; // 下拉刷新的触发距离
 const Setting: React.FC<object> = () => {
   const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
-  const { width, insets } = useDeviceStore();
+  const { width } = useDeviceStore();
 
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
@@ -166,7 +167,7 @@ const Setting: React.FC<object> = () => {
           leftIcon={<Icon name="logout" size={22} color="#333" />}
           title="退出当前账号"
           onPress={() => {
-            StorageUtil.clear();
+            ActionsSheet.Logout.show();
           }}
         />
         <PullLoading
@@ -176,11 +177,8 @@ const Setting: React.FC<object> = () => {
           left={width / 2}
           offsetY={PULLOFFSETY}
         />
-        <TouchableOpacity
-          onPress={handleEdit}
-          style={{ position: "absolute", right: 20, top: insets.top }}
-        >
-          <Icon name="setting" size={25} color="#333" />
+        <TouchableOpacity onPress={handleEdit} style={styles.settingContainer}>
+          <Icon name="setting" size={25} color="#fff" />
         </TouchableOpacity>
       </Animated.ScrollView>
     </Screen>
@@ -215,6 +213,18 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     color: Colors.grayTextColor,
     marginTop: 5,
+  },
+  settingContainer: {
+    position: "absolute",
+    right: 20,
+    top: useDeviceStore.getState().insets.top,
+    backgroundColor: "#333",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    opacity: 0.8,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 export default Setting;
