@@ -1,4 +1,9 @@
-import { Timelines, Response, Account } from "../config/interface";
+import {
+  Timelines,
+  Response,
+  Account,
+  MediaAttachments,
+} from "../config/interface";
 import { get, patch, post, api } from "../utils/request";
 
 // https://mastodon.example/api/v1/statuses/:id
@@ -31,7 +36,16 @@ export const unfavouriteStatuses = (id: string): Response<Timelines> => {
   return post<Timelines>(url);
 };
 
+// 更新用户信息
 export const updateCredentials = (params: object): Response<Account> => {
   const url = "/api/v1/accounts/update_credentials";
   return patch<Account>(url, params);
+};
+
+// 上传媒体文件
+export const media = (param: object): Response<MediaAttachments> => {
+  const url = "/api/v2/media";
+  api.setHeader("Content-Type", "multipart/form-data");
+
+  return post<MediaAttachments>(url, param);
 };

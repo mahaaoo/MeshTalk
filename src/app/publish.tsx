@@ -6,25 +6,30 @@ import {
   Icon,
   Screen,
 } from "@components";
+import EmojiDisplay from "@ui/publish/emojiDisplay";
+import MediaDisplay from "@ui/publish/mediaDisplay";
+import { imageOriginPick } from "@utils/media";
 import { Image } from "expo-image";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
   Text,
   TextInput,
-  Animated,
   Keyboard,
-  Easing,
   View,
   TouchableOpacity,
-  FlatList,
   StyleSheet,
+  ScrollView,
 } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 import { Colors } from "../config";
 import useAccountStore from "../store/useAccountStore";
 import useDeviceStore from "../store/useDeviceStore";
-import useEmojiStore from "../store/useEmojiStore";
 import usePublishStore from "../store/usePublishStore";
 
 interface PublishProps {}
@@ -32,19 +37,27 @@ interface PublishProps {}
 const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
-  const { emojis, initEmoji } = useEmojiStore();
-  const { postNewStatuses, statusContent, inputContent } = usePublishStore();
+  const {
+    postNewStatuses,
+    statusContent,
+    inputContent,
+    mediaList,
+    addMedia,
+    deleteMedia,
+  } = usePublishStore();
 
   const [reply, setReply] = useState("任何人可以回复");
   const { insets, width } = useDeviceStore();
+  const offsetY = useSharedValue(insets.bottom);
 
-  const offsetY: any = useRef(new Animated.Value(insets.bottom)).current;
+  const pressEmoji = useSharedValue(false);
+
   const InputRef: any = useRef();
-
-  const [scrollHeight, setScrollHeight] = useState(0);
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillShow", keyboardWillShow);
+    Keyboard.addListener("keyboardWillHide", keyboardWillHide);
+
     return () => {
       Keyboard.removeAllListeners("keyboardWillShow");
     };
@@ -80,64 +93,92 @@ const Publish: React.FC<PublishProps> = () => {
   }, [statusContent]);
 
   const keyboardWillShow = useCallback((e: any) => {
-    Animated.timing(offsetY, {
-      toValue: e.endCoordinates.height,
-      duration: 200,
-      useNativeDriver: false,
-      easing: Easing.linear,
-    }).start(() => {
-      setScrollHeight(e.endCoordinates.height - insets.bottom);
-    });
+    offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
+  }, []);
+
+  const keyboardWillHide = useCallback(() => {
+    if (!pressEmoji.value) {
+      offsetY.value = withTiming(insets.bottom, { duration: 250 });
+    }
   }, []);
 
   const handleClickEmojis = useCallback(() => {
-    initEmoji();
+    pressEmoji.value = !pressEmoji.value;
     Keyboard.dismiss();
+    const offset = pressEmoji.value ? insets.bottom : 280;
+    offsetY.value = withTiming(offset, { duration: 250 });
   }, []);
 
-  const handleClickPic = useCallback(() => {
-    InputRef && InputRef?.current?.focus();
-  }, []);
+  const handleClickPic = useCallback(async () => {
+    const { ok, fileInfo } = await imageOriginPick();
+    if (ok) {
+      addMedia(fileInfo!);
+    }
+  }, [mediaList]);
+
+  const handleReply = () => {
+    Keyboard.dismiss();
+    ActionsSheet.Reply.show({
+      onSelect: (text: string) => {
+        setReply(text);
+        ActionsSheet.Reply.hide();
+      },
+      onClose: () => {
+        InputRef && InputRef?.current?.focus();
+      },
+      bottom: insets.bottom,
+    });
+  };
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      bottom: offsetY.value,
+    };
+  });
 
   return (
     <Screen headerShown title="新嘟文">
       <View style={styles.main}>
-        <View style={styles.container}>
-          <View style={styles.avatarContainer}>
-            <Avatar url={accountStore.currentAccount?.avatar} />
+        <ScrollView>
+          <View style={{ flexDirection: "row" }}>
+            <View style={styles.avatarContainer}>
+              <Avatar url={accountStore.currentAccount?.avatar} />
+            </View>
+            <TextInput
+              ref={InputRef}
+              autoFocus
+              style={styles.input}
+              textAlignVertical="top"
+              multiline
+              numberOfLines={4}
+              placeholder="有什么新鲜事"
+              underlineColorAndroid="transparent"
+              value={statusContent}
+              onChangeText={inputContent}
+            />
           </View>
-          <TextInput
-            ref={InputRef}
-            autoFocus
-            style={styles.input}
-            textAlignVertical="top"
-            multiline
-            numberOfLines={4}
-            placeholder="有什么新鲜事"
-            underlineColorAndroid="transparent"
-            value={statusContent}
-            onChangeText={inputContent}
-          />
-        </View>
+          <ScrollView
+            contentContainerStyle={{ paddingLeft: 65 }}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          >
+            {mediaList.length >= 0
+              ? mediaList.map((media, index) => {
+                  return (
+                    <MediaDisplay
+                      deleMedia={() => deleteMedia(index)}
+                      media={media}
+                      key={`${media.assetId}_${index}`}
+                    />
+                  );
+                })
+              : null}
+          </ScrollView>
+        </ScrollView>
         <View style={styles.contentContainer}>
-          <Animated.View style={[styles.tool, { bottom: offsetY }]}>
+          <Animated.View style={[styles.tool, animatedStyle]}>
             <View style={styles.toolBar}>
-              <TouchableOpacity
-                style={styles.power}
-                onPress={() => {
-                  handleClickEmojis();
-                  ActionsSheet.Reply.show({
-                    onSelect: (text: string) => {
-                      setReply(text);
-                      ActionsSheet.Reply.hide();
-                    },
-                    onClose: () => {
-                      handleClickPic();
-                    },
-                    bottom: insets.bottom,
-                  });
-                }}
-              >
+              <TouchableOpacity style={styles.power} onPress={handleReply}>
                 <Image
                   source={require("../images/erath.png")}
                   style={styles.iconErath}
@@ -176,42 +217,12 @@ const Publish: React.FC<PublishProps> = () => {
               </View>
             </View>
           </Animated.View>
-          <View
-            style={[
-              styles.flatlist,
-              { height: scrollHeight, bottom: insets.bottom },
-            ]}
-          >
-            <FlatList
-              horizontal={false}
-              numColumns={7}
-              data={emojis}
-              renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      inputContent(statusContent + `:${item.shortcode}:`);
-                    }}
-                  >
-                    <Image
-                      key={item.shortcode}
-                      style={[
-                        {
-                          width: (width - 80) / 7,
-                          height: (width - 80) / 7,
-                        },
-                        styles.emojiItem,
-                      ]}
-                      source={{
-                        uri: item.url,
-                      }}
-                      contentFit="cover"
-                    />
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          </View>
+          <EmojiDisplay
+            onPressEmoji={(emoji) => {
+              inputContent(statusContent + emoji);
+            }}
+            emojiHeight={offsetY}
+          />
         </View>
       </View>
     </Screen>
@@ -255,19 +266,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#fff",
   },
-  flatlist: {
-    position: "absolute",
-    width: useDeviceStore.getState().width,
-    overflow: "hidden",
-  },
   power: {
     marginLeft: 20,
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
-  },
-  container: {
-    flexDirection: "row",
   },
   avatarContainer: {
     marginLeft: 10,
@@ -320,9 +323,5 @@ const styles = StyleSheet.create({
   },
   emojiTouch: {
     marginRight: 15,
-  },
-  emojiItem: {
-    marginHorizontal: 5,
-    marginVertical: 5,
   },
 });

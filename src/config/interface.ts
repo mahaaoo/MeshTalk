@@ -19,6 +19,18 @@ export interface AppToken {
   create_at: number;
 }
 
+// 媒体文件类型
+export interface MediaAttachments {
+  id: string;
+  type: string;
+  url: string;
+  preview_url: string;
+  remote_url: string;
+  meta: string;
+  description: string;
+  blurhash: string;
+}
+
 // 就是官网的Status对象
 export interface Timelines {
   account: Account;
@@ -34,7 +46,7 @@ export interface Timelines {
   in_reply_to_account_id: string;
   in_reply_to_id: string;
   language: string;
-  media_attachments: any[];
+  media_attachments: MediaAttachments[];
   mentions: any[];
   muted: boolean;
   poll: string;

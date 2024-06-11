@@ -95,9 +95,9 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   };
 
   const pickAvatar = async () => {
-    const { ok, uri, fileInfo } = await imagePick();
+    const { ok, uri, fileSize } = await imagePick();
     if (ok) {
-      const isSizeOk = fileInfo?.size / 1024 / 1024 < 2;
+      const isSizeOk = fileSize! / 1024 / 1024 < 2;
       if (!isSizeOk) {
         console.log("Avatar Image Size Must Under 2MB");
         return;

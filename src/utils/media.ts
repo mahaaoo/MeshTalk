@@ -18,11 +18,36 @@ export const imagePick = async () => {
 
     if (!result.canceled) {
       const uri = result.assets[0].uri!;
-      const fileInfo: FileInfo = await FileSystem.getInfoAsync(uri);
+      const fileSize = result.assets[0].fileSize;
       return {
         ok: true,
         uri: Platform.OS === "ios" ? uri.replace("file://", "") : uri,
-        fileInfo,
+        fileSize,
+      };
+    }
+  } else {
+    Toast.show("无相册相关权限");
+  }
+  return {
+    ok: false,
+  };
+};
+
+export const imageOriginPick = async () => {
+  const permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (permissions.granted) {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri!;
+      return {
+        ok: true,
+        uri,
+        fileInfo: result.assets[0],
       };
     }
   } else {
