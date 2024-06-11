@@ -1,5 +1,6 @@
 import UserName from "@ui/home/userName";
 import { acctName } from "@utils/string";
+import { router } from "expo-router";
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
 import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
@@ -12,7 +13,6 @@ import useDeviceStore from "../../store/useDeviceStore";
 import Avatar from "../Avatar";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
-import { router } from "expo-router";
 
 type ActionsSheetTyps = {
   onExitCurrentAccount: () => void;

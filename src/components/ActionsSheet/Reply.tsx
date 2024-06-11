@@ -5,62 +5,73 @@ import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 import { Colors } from "../../config";
 import { ACTIONMODALIDREPLY } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
+import { Icon } from "../Icon";
+import SplitLine from "../SplitLine";
 
 type ActionsSheetTyps = {
   onSelect: (reply: string) => void;
   onClose: () => void;
-  bottom: number;
 };
 
+// TODO: 在replyObj中获取
 const Reply = {
   key: ACTIONMODALIDREPLY,
-  template: ({ onSelect, onClose, bottom }: ActionsSheetTyps) => (
-    <TranslateContainer onDisappear={onClose} gesture>
-      <View style={[styles.scrollViewContainer, { paddingBottom: bottom }]}>
-        <View style={styles.titleContainer} />
-        <Text style={styles.title}>谁可以回复？</Text>
-        <Text style={styles.decContainer}>
-          选择谁可以回复这条嘟文，任何提及的人始终都能回复。
-        </Text>
-        <TouchableOpacity
-          style={styles.actionitem}
-          onPress={() => onSelect("任何人可以回复")}
+  template: ({ onSelect, onClose }: ActionsSheetTyps) => {
+    return (
+      <TranslateContainer onDisappear={onClose} gesture>
+        <View
+          style={[
+            styles.scrollViewContainer,
+            { paddingBottom: useDeviceStore.getState().insets.bottom },
+          ]}
         >
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../images/earth_white.png")}
-              style={styles.iconEarthWhite}
-            />
+          <View style={styles.titleContainer} />
+          <Text style={styles.title}>谁可以回复？</Text>
+          <View style={[styles.item, { marginTop: 10 }]}>
+            <TouchableOpacity
+              onPress={() => onSelect("公开")}
+              style={styles.itemContainer}
+            >
+              <Text style={styles.itemTitle}>公开</Text>
+              <Icon name="unlock" color="#333" />
+            </TouchableOpacity>
+            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+            <TouchableOpacity
+              onPress={() => onSelect("不出现在公共时间线上")}
+              style={styles.functionContainer}
+            >
+              <Text style={styles.itemTitle}>不出现在公共时间线上</Text>
+              <Icon name="replyLock" color="#333" />
+            </TouchableOpacity>
+            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+            <TouchableOpacity
+              onPress={() => onSelect("仅关注者可见")}
+              style={styles.functionContainer}
+            >
+              <Text style={styles.itemTitle}>仅关注者可见</Text>
+              <Icon name="replyFollow" color="#333" />
+            </TouchableOpacity>
+            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+            <TouchableOpacity
+              onPress={() => onSelect("仅提及的人可见")}
+              style={styles.functionContainer}
+            >
+              <Text style={styles.itemTitle}>仅提及的人可见</Text>
+              <Icon name="replyAite" color="#333" />
+            </TouchableOpacity>
           </View>
-          <Text style={styles.actionReplyText}>任何人可以回复</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.actionitem}
-          onPress={() => onSelect("关注的人可以回复")}
-        >
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../images/on_white.png")}
-              style={styles.iconOnWhite}
-            />
-          </View>
-          <Text style={styles.actionReplyText}>关注的人可以回复</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.actionitem}
-          onPress={() => onSelect("提及的人才可以回复")}
-        >
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../images/mention_white.png")}
-              style={styles.iconMentionWhite}
-            />
-          </View>
-          <Text style={styles.actionReplyText}>提及的人才可以回复</Text>
-        </TouchableOpacity>
-      </View>
-    </TranslateContainer>
-  ),
+          <TouchableOpacity
+            onPress={() => {
+              Reply.hide();
+            }}
+            style={[styles.item, styles.cacelButton]}
+          >
+            <Text style={styles.itemTitle}>取消</Text>
+          </TouchableOpacity>
+        </View>
+      </TranslateContainer>
+    );
+  },
   show: (params: ActionsSheetTyps) => {
     ModalUtil.add(Reply.template(params), Reply.key);
   },
@@ -73,8 +84,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContainer: {
+    flex: 1,
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f7f7f7",
+    width: useDeviceStore.getState().width,
   },
   titleContainer: {
     width: 80,
@@ -86,43 +99,39 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    marginTop: 10,
   },
-  decContainer: {
-    fontSize: 14,
-    color: Colors.grayTextColor,
-    textAlign: "center",
-    marginVertical: 10,
+  item: {
+    width: useDeviceStore.getState().width - 40,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#fff",
   },
-  actionitem: {
-    width: useDeviceStore.getState().width,
-    height: 70,
+  itemContainer: {
+    paddingVertical: 15,
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 15,
+    justifyContent: "space-between",
   },
-  imageContainer: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: Colors.theme,
+  functionContainer: {
+    paddingVertical: 15,
+    flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 15,
+    justifyContent: "space-between",
+  },
+  itemTitle: {
+    fontSize: 16,
+  },
+  acct: {
+    fontSize: 13,
+    color: Colors.grayTextColor,
+  },
+  cacelButton: {
+    marginTop: 15,
+    height: 50,
     justifyContent: "center",
-    marginHorizontal: 15,
-  },
-  iconEarthWhite: {
-    width: 25,
-    height: 25,
-  },
-  actionReplyText: {
-    fontSize: 18,
-  },
-  iconOnWhite: {
-    width: 25,
-    height: 25,
-  },
-  iconMentionWhite: {
-    width: 25,
-    height: 25,
+    alignItems: "center",
   },
 });
 

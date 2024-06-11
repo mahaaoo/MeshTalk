@@ -7,6 +7,25 @@ import { create } from "zustand";
 
 import { postNewStatuses, media } from "../server/status";
 
+const replyObj = [
+  {
+    key: "公开",
+    value: "public",
+  },
+  {
+    key: "不出现在公共时间线上",
+    value: "unlisted",
+  },
+  {
+    key: "仅关注者可见",
+    value: "private",
+  },
+  {
+    key: "仅提及的人可见",
+    value: "direct",
+  },
+];
+
 interface PublishStoreState {
   statusContent: string;
   mediaList: ImagePickerAsset[];
@@ -15,7 +34,7 @@ interface PublishStoreState {
   warningInput: (input: string) => void;
   addMedia: (media: ImagePickerAsset) => void;
   deleteMedia: (index: number) => void;
-  postNewStatuses: (sensitive: boolean) => void;
+  postNewStatuses: (sensitive: boolean, visibility: string) => void;
 }
 
 const usePublishStore = create<PublishStoreState>((set, get) => ({
@@ -34,10 +53,16 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
     newMediaList.splice(index, 1);
     set({ mediaList: newMediaList });
   },
-  postNewStatuses: async (sensitive: boolean) => {
+  postNewStatuses: async (sensitive: boolean, visibility: string) => {
+    // 设置嘟文可见范围
+    const visibilityValue = replyObj.filter(
+      (reply) => reply.key === visibility,
+    )[0];
+
     let params: any = {
       sensitive,
       status: get().statusContent,
+      visibility: visibilityValue.value,
     };
 
     // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容

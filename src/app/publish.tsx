@@ -48,7 +48,7 @@ const Publish: React.FC<PublishProps> = () => {
     warningInput,
   } = usePublishStore();
 
-  const [reply, setReply] = useState("任何人可以回复");
+  const [reply, setReply] = useState("公开");
   const [isWarn, setIsWarn] = useState(false);
 
   const { insets, width } = useDeviceStore();
@@ -87,7 +87,7 @@ const Publish: React.FC<PublishProps> = () => {
           textStyle={styles.header_text}
           text="发送"
           onPress={() => {
-            postNewStatuses(isWarn);
+            postNewStatuses(isWarn, reply);
           }}
         />
       ),
@@ -128,7 +128,6 @@ const Publish: React.FC<PublishProps> = () => {
       onClose: () => {
         InputRef && InputRef?.current?.focus();
       },
-      bottom: insets.bottom,
     });
   };
 
@@ -192,10 +191,6 @@ const Publish: React.FC<PublishProps> = () => {
           <Animated.View style={[styles.tool, animatedStyle]}>
             <View style={styles.toolBar}>
               <TouchableOpacity style={styles.power} onPress={handleReply}>
-                <Image
-                  source={require("../images/erath.png")}
-                  style={styles.iconErath}
-                />
                 <Text style={styles.replayText}>{reply}</Text>
               </TouchableOpacity>
               <SplitLine start={0} end={width} />
