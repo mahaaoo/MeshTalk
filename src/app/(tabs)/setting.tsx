@@ -165,7 +165,7 @@ const Setting: React.FC<object> = () => {
         />
         <ListRow
           leftIcon={<Icon name="logout" size={22} color="#333" />}
-          title="退出当前账号"
+          title="退出/切换账号"
           onPress={() => {
             ActionsSheet.Logout.show();
           }}

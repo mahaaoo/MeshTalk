@@ -179,9 +179,9 @@ export interface MastodonServers {
 }
 
 export interface MastodonServersPrams {
-  language: string; // 从 https://api.joinmastodon.org/languages 获取
-  category: string; // 从 https://api.joinmastodon.org/categories 接口获取
-  region:
+  language?: string; // 从 https://api.joinmastodon.org/languages 获取
+  category?: string; // 从 https://api.joinmastodon.org/categories 接口获取
+  region?:
     | "All regions"
     | "Europe"
     | "North America"
@@ -189,8 +189,8 @@ export interface MastodonServersPrams {
     | "Africa"
     | "Asia"
     | "Oceania";
-  ownership: "All" | "Public oranization" | "Private individual";
-  registrations: "All" | "Instand" | "Manual review";
+  ownership?: "All" | "Public oranization" | "Private individual";
+  registrations?: "All" | "Instand" | "Manual review";
 }
 
 // 定义一些可选的请求属性

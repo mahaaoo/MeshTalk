@@ -12,6 +12,7 @@ import useDeviceStore from "../../store/useDeviceStore";
 import Avatar from "../Avatar";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
+import { router } from "expo-router";
 
 type ActionsSheetTyps = {
   onExitCurrentAccount: () => void;
@@ -88,7 +89,12 @@ const Logout = {
   show: () => {
     const { exitCurrentAccount } = useAppStore.getState();
     const params = {
-      onAddNewAccount: () => {},
+      onAddNewAccount: () => {
+        Logout.hide();
+        // router.push("/login");
+
+        router.push("/welcome");
+      },
       onSwitchAccount: () => {},
       onExitCurrentAccount: () => {
         Alert.alert("提示", "确定要退出当前账号，下次需要重新登录", [

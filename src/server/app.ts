@@ -54,13 +54,13 @@ export const getInstanceEmojis = (): Response<Emoji[]> => {
 // 服务器支持语言
 export const getServersLanguage = (): Response<ServersLanguage[]> => {
   const url = "https://api.joinmastodon.org/languages";
-  return get(url);
+  return get<ServersLanguage[]>(url);
 };
 
 // 服务器支持地区
 export const getServersCategory = (): Response<ServersCategory[]> => {
   const url = "https://api.joinmastodon.org/categories";
-  return get(url);
+  return get<ServersCategory[]>(url);
 };
 
 // 实例服务器列表
@@ -69,5 +69,5 @@ export const getMastodonServers = (
 ): Response<MastodonServers[]> => {
   const url = "https://api.joinmastodon.org/servers";
 
-  return get(url, params);
+  return get<MastodonServers[]>(url, params);
 };

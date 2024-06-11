@@ -1,6 +1,6 @@
 import { Button, Screen } from "@components";
-import { router } from "expo-router";
-import React from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, SafeAreaView } from "react-native";
 
 import { Colors } from "../config";
@@ -8,7 +8,14 @@ import useDeviceStore from "../store/useDeviceStore";
 import useLoginStore from "../store/useLoginStore";
 
 const Login: React.FC<object> = () => {
+  const { domain = "" } = useLocalSearchParams<{ domain: string }>();
   const { path, onPressLogin, onChangePath } = useLoginStore();
+
+  useEffect(() => {
+    if (domain.length > 0) {
+      onChangePath(domain);
+    }
+  }, [domain]);
 
   return (
     <Screen>

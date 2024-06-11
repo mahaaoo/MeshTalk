@@ -17,7 +17,7 @@ interface LoginStoreState {
 }
 
 const useLoginStore = create<LoginStoreState>((set, get) => ({
-  path: "m.cmx.im",
+  path: "",
   loginData: undefined,
   onChangePath: (text: string) => {
     set({ path: text });
