@@ -1,21 +1,17 @@
-import { Button, Icon, Screen } from "@components";
+import { Icon, Screen } from "@components";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, View, Text, TouchableOpacity } from "react-native";
-import { server } from "typescript";
 
 import { Colors } from "../../config";
 import { MastodonServers } from "../../config/interface";
 import { getMastodonServers } from "../../server/app";
-import useDeviceStore from "../../store/useDeviceStore";
-import { router } from "expo-router";
 
 interface MoreServersProps {}
 
 const MoreServers: React.FC<MoreServersProps> = (props) => {
-  const {} = props;
   const [recommend, setRecommend] = useState<MastodonServers[]>([]);
-  const { width } = useDeviceStore();
 
   useEffect(() => {
     const fetch = async () => {
