@@ -10,16 +10,20 @@ import { postNewStatuses, media } from "../server/status";
 interface PublishStoreState {
   statusContent: string;
   mediaList: ImagePickerAsset[];
+  warning: string;
   inputContent: (input: string) => void;
+  warningInput: (input: string) => void;
   addMedia: (media: ImagePickerAsset) => void;
   deleteMedia: (index: number) => void;
-  postNewStatuses: (param: object) => void;
+  postNewStatuses: (sensitive: boolean) => void;
 }
 
 const usePublishStore = create<PublishStoreState>((set, get) => ({
   statusContent: "",
+  warning: "",
   mediaList: [],
   inputContent: (input: string) => set({ statusContent: input }),
+  warningInput: (input: string) => set({ warning: input }),
   addMedia: (media: ImagePickerAsset) => {
     const newMediaList = [...get().mediaList];
     newMediaList.push(media);
@@ -30,14 +34,21 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
     newMediaList.splice(index, 1);
     set({ mediaList: newMediaList });
   },
-  postNewStatuses: async (param: object) => {
-    let params = param;
+  postNewStatuses: async (sensitive: boolean) => {
+    let params: any = {
+      sensitive,
+      status: get().statusContent,
+    };
+
+    // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容
     if (get().mediaList.length === 0 && get().statusContent.length === 0) {
       return Toast.show("请输入内容");
     }
 
+    Loading.show();
+
+    // 多媒体信息请求队列
     if (get().mediaList.length > 0) {
-      Loading.show();
       const fecthQueue = get().mediaList;
       const mediaResult = [];
       while (fecthQueue.length > 0) {
@@ -63,7 +74,17 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
       };
     }
 
+    // 如果有警告内容，添加隐私提醒到参数中
+    if (sensitive) {
+      params = {
+        ...params,
+        spoiler_text: get().warning,
+      };
+    }
+
+    // 在media借口中设置了请求头信息，这个修改回来
     api.setHeader("Content-Type", "application/json");
+
     const { data, ok } = await postNewStatuses(params);
     Loading.hide();
     if (data && ok) {

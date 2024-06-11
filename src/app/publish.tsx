@@ -44,9 +44,13 @@ const Publish: React.FC<PublishProps> = () => {
     mediaList,
     addMedia,
     deleteMedia,
+    warning,
+    warningInput,
   } = usePublishStore();
 
   const [reply, setReply] = useState("任何人可以回复");
+  const [isWarn, setIsWarn] = useState(false);
+
   const { insets, width } = useDeviceStore();
   const offsetY = useSharedValue(insets.bottom);
 
@@ -83,14 +87,12 @@ const Publish: React.FC<PublishProps> = () => {
           textStyle={styles.header_text}
           text="发送"
           onPress={() => {
-            postNewStatuses({
-              status: statusContent,
-            });
+            postNewStatuses(isWarn);
           }}
         />
       ),
     });
-  }, [statusContent]);
+  }, [statusContent, isWarn]);
 
   const keyboardWillShow = useCallback((e: any) => {
     offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
@@ -144,18 +146,29 @@ const Publish: React.FC<PublishProps> = () => {
             <View style={styles.avatarContainer}>
               <Avatar url={accountStore.currentAccount?.avatar} />
             </View>
-            <TextInput
-              ref={InputRef}
-              autoFocus
-              style={styles.input}
-              textAlignVertical="top"
-              multiline
-              numberOfLines={4}
-              placeholder="有什么新鲜事"
-              underlineColorAndroid="transparent"
-              value={statusContent}
-              onChangeText={inputContent}
-            />
+            <View style={{ flex: 1, paddingRight: 20 }}>
+              {isWarn ? (
+                <TextInput
+                  style={styles.warnInput}
+                  placeholder="折叠部分的警告信息"
+                  underlineColorAndroid="transparent"
+                  value={warning}
+                  onChangeText={warningInput}
+                />
+              ) : null}
+              <TextInput
+                ref={InputRef}
+                autoFocus
+                style={styles.input}
+                textAlignVertical="top"
+                multiline
+                numberOfLines={4}
+                placeholder="有什么新鲜事"
+                underlineColorAndroid="transparent"
+                value={statusContent}
+                onChangeText={inputContent}
+              />
+            </View>
           </View>
           <ScrollView
             contentContainerStyle={{ paddingLeft: 65 }}
@@ -198,8 +211,17 @@ const Publish: React.FC<PublishProps> = () => {
                 <TouchableOpacity style={styles.iconTouch}>
                   <Icon name="chart" size={33} color={Colors.theme} />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconTouch}>
-                  <Icon name="warning" size={33} color={Colors.theme} />
+                <TouchableOpacity
+                  style={styles.iconTouch}
+                  onPress={() => {
+                    setIsWarn((warn) => !warn);
+                  }}
+                >
+                  <Icon
+                    name="warning"
+                    size={33}
+                    color={isWarn ? "orange" : Colors.theme}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconTouch}>
                   <Icon name="time" size={30} color={Colors.theme} />
@@ -265,6 +287,16 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginTop: 10,
     backgroundColor: "#fff",
+  },
+  warnInput: {
+    width: "100%",
+    fontSize: 18,
+    marginHorizontal: 10,
+    marginTop: 10,
+    padding: 5,
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: Colors.defaultLineGreyColor,
   },
   power: {
     marginLeft: 20,

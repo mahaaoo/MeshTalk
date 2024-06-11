@@ -16,7 +16,7 @@ const App: React.FC<object> = () => {
   useEffect(() => {
     initApp();
     setInset(insets);
-  }, []);
+  }, [insets]);
 
   if (!isReady) {
     return <View style={{ flex: 1 }} />;

@@ -38,13 +38,6 @@ const StretchableImage: React.FC<StretchableImageProps> = (props) => {
     imageOpcity.value = withTiming(1, { duration: 1000 });
   }, []);
 
-  const radius = useMemo(() => {
-    if (!isblur) {
-      return 0;
-    }
-    return blurRadius;
-  }, [isblur, blurRadius]);
-
   const imageStyle = useAnimatedStyle<{ transform: any }>(() => {
     return {
       opacity: imageOpcity.value,

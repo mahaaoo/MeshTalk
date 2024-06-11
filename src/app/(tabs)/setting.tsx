@@ -28,7 +28,7 @@ const PULLOFFSETY = 100; // 下拉刷新的触发距离
 const Setting: React.FC<object> = () => {
   const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
-  const { width } = useDeviceStore();
+  const { width, insets } = useDeviceStore();
 
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
@@ -177,7 +177,10 @@ const Setting: React.FC<object> = () => {
           left={width / 2}
           offsetY={PULLOFFSETY}
         />
-        <TouchableOpacity onPress={handleEdit} style={styles.settingContainer}>
+        <TouchableOpacity
+          onPress={handleEdit}
+          style={[styles.settingContainer, { top: insets.top }]}
+        >
           <Icon name="setting" size={25} color="#fff" />
         </TouchableOpacity>
       </Animated.ScrollView>
@@ -217,7 +220,6 @@ const styles = StyleSheet.create({
   settingContainer: {
     position: "absolute",
     right: 20,
-    top: useDeviceStore.getState().insets.top,
     backgroundColor: "#333",
     width: 40,
     height: 40,
