@@ -6,7 +6,6 @@ import { create } from "zustand";
 import useAccountStore from "./useAccountStore";
 import useEmojiStore from "./useEmojiStore";
 import * as constant from "../config/constant";
-import { Account } from "../config/interface";
 import { getInstanceEmojis, verifyToken } from "../server/app";
 import { api } from "../utils/request";
 import { setItem, getItem, clear } from "../utils/storage";
@@ -31,9 +30,9 @@ interface AppStoreState {
     isEmoji: boolean,
     isNewUser: boolean,
   ) => void;
-  addNewUser: (token: string, domain: string, account: Account) => void;
   switchUser: (user: MultipleUserProsp, sort: boolean) => void;
   initApp: () => void;
+  // updateMultipleUser: () => void;
   exitCurrentAccount: () => void;
 }
 
@@ -70,27 +69,34 @@ const useAppStore = create<AppStoreState>((set, get) => ({
       const { data: emoji } = await getInstanceEmojis();
       useEmojiStore.getState().setEmoji(emoji);
     }
-    if (isNewUser) {
-      get().addNewUser(token, domain, account!);
-    }
-  },
-  addNewUser: async (token: string, domain: string, account: Account) => {
+
     const emoji = useEmojiStore.getState().emojis;
+
+    const multipleUser = get().multipleUser;
+
     const user: MultipleUserProsp = {
       domain,
       token,
       acct: `@${account?.acct}@${domain}`,
-      displayName: account.display_name,
-      avatar: account.avatar,
+      displayName: account?.display_name || "",
+      avatar: account!.avatar,
       emoji: JSON.stringify(emoji) || "",
     };
 
-    const newUser = [...get().multipleUser];
-    newUser.unshift(user);
+    if (isNewUser) {
+      // 新增用户则添加到用户列表
+      multipleUser.unshift(user);
+      // 保存到localstorage
+      setItem(constant.MULTIPLEUSER, JSON.stringify(multipleUser));
+    } else {
+      // 更新当前用户信息
+      const index = multipleUser.map((m) => m.token).indexOf(token);
+      if (index > -1) {
+        multipleUser[index] = user;
+      }
+    }
 
-    set({ multipleUser: newUser });
-    // 保存到localstorage
-    setItem(constant.MULTIPLEUSER, JSON.stringify(newUser));
+    set({ multipleUser });
   },
   switchUser: (user: MultipleUserProsp, sort: boolean) => {
     const multipleUser = get().multipleUser;
