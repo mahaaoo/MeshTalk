@@ -1,39 +1,34 @@
 import { create } from "zustand";
 
-import * as constant from "../config/constant";
 import { Emoji } from "../config/interface";
 import { getInstanceEmojis } from "../server/app";
-import { setItem, getItem } from "../utils/storage";
 
 interface EmojiStoreState {
   emojis: Emoji[];
   emojisHash: Map<string, Emoji>;
   initEmoji: () => void;
+  setEmoji: (enmoji: Emoji[] | undefined) => void;
 }
 
 const useEmojiStore = create<EmojiStoreState>((set, get) => ({
   emojis: [],
   emojisHash: new Map(),
-  initEmoji: async () => {
-    const emojiStorage = await getItem(constant.EMOJI);
-    if (!emojiStorage || emojiStorage === undefined) {
-      const { data } = await getInstanceEmojis();
-      if (data) {
-        setItem(constant.EMOJI, JSON.stringify(data));
-        const hash = new Map();
-        const emojis = data;
-        for (const emoji of emojis) {
-          hash.set(emoji.shortcode, emoji);
-        }
-        set({ emojis: data, emojisHash: hash });
-      }
-    } else {
-      const emojis = JSON.parse(emojiStorage);
+  setEmoji: (enmoji: Emoji[] | undefined) => {
+    if (enmoji) {
       const hash = new Map();
+      const emojis = enmoji;
       for (const emoji of emojis) {
         hash.set(emoji.shortcode, emoji);
       }
       set({ emojis, emojisHash: hash });
+    }
+  },
+  initEmoji: async () => {
+    if (!get().emojis || get().emojis.length === 0) {
+      const { data, ok } = await getInstanceEmojis();
+      if (data && ok) {
+        get().setEmoji(data);
+      }
     }
   },
 }));

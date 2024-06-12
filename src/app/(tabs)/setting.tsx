@@ -179,7 +179,7 @@ const Setting: React.FC<object> = () => {
         />
         <TouchableOpacity
           onPress={handleEdit}
-          style={[styles.settingContainer, { top: insets.top }]}
+          style={[styles.settingContainer, { top: insets.top + 20 }]}
         >
           <Icon name="setting" size={25} color="#fff" />
         </TouchableOpacity>

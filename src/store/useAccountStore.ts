@@ -16,9 +16,8 @@ const useAccountStore = create<AccountStoreState>((set, get) => ({
   },
   verifyToken: async () => {
     // 验证token是否有效，并返回当前账户信息
-    const { data } = await verifyToken();
-    console.log("验证token是否有效，并返回当前账户信息");
-    if (data) {
+    const { data, ok } = await verifyToken();
+    if (data && ok) {
       set({
         currentAccount: data,
       });

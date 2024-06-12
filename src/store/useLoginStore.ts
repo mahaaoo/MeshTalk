@@ -3,7 +3,6 @@ import { Platform } from "react-native";
 import { Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
-import useAccountStore from "./useAccountStore";
 import { AppInterface } from "../config/interface";
 import { getAppConfig, getToken } from "../server/app";
 import useAppStore from "../store/useAppStore";
@@ -51,14 +50,11 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
       client_secret: get().loginData?.client_secret,
       code,
     };
-    const { data } = await getToken("https://" + get().path, params);
-    if (data) {
-      useAppStore.getState().setHostURL("https://" + get().path);
-      useAppStore.getState().setToken(data.access_token);
-      useAppStore
+    const { data, ok } = await getToken("https://" + get().path, params);
+    if (data && ok) {
+      await useAppStore
         .getState()
-        .afterToken(data.access_token, "https://" + get().path);
-      await useAccountStore.getState().verifyToken();
+        .checkTokenAndDomin(data.access_token, get().path, true, true);
       router.replace("/");
     }
   },
