@@ -41,6 +41,13 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
+      ],
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "mahaaoo-oran-y3",
+          "project": "meshtalk"
+        }
       ]
     ],
     "scheme": "meshtalk",

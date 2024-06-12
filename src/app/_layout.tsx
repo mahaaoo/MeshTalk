@@ -1,4 +1,6 @@
-import { Stack } from "expo-router";
+import * as Sentry from "@sentry/react-native";
+import { isRunningInExpoGo } from "expo";
+import { Stack, useNavigationContainerRef } from "expo-router";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -8,10 +10,34 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import useAppStore from "../store/useAppStore";
 import useDeviceStore from "../store/useDeviceStore";
 
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+// SENTRY_AUTH_TOKEN 已存入eas环境变量中
+// eas secret:list查看
+Sentry.init({
+  dsn: "https://ce3fd62d9888701f518d5e619bab9ae1@o4507417812992000.ingest.us.sentry.io/4507417816334336",
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      enableNativeFramesTracking: !isRunningInExpoGo(),
+      // ...
+    }),
+  ],
+});
+
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
   const { setInset } = useDeviceStore();
   const insets = useSafeAreaInsets();
+
+  const ref = useNavigationContainerRef();
+
+  useEffect(() => {
+    if (ref) {
+      routingInstrumentation.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   useEffect(() => {
     initApp();
@@ -38,4 +64,4 @@ const App: React.FC<object> = () => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);
