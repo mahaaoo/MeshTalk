@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 import { Response } from "../config/interface";
 
 const api = create({
-  timeout: 30000,
+  timeout: 15000,
   baseURL: "",
 });
 
@@ -13,20 +13,20 @@ api.addRequestTransform((request) => {
   // console.log(Stores.appStore.token);
 
   console.log("\n===================请求拦截器=================");
-  console.log(`请求地址：${request.url}`);
-  console.log(`请求方式：${request.method}`);
+  console.log(`请求地址：${request?.url}`);
+  console.log(`请求方式：${request?.method}`);
   console.log("请求参数：");
-  console.log(request.data);
-  console.log(request.params);
-  console.log(request.headers);
+  console.log(request?.data);
+  console.log(request?.params);
+  console.log(request?.headers);
   console.log("============================================\n");
 });
 
 api.addResponseTransform((response) => {
   console.log("\n===================响应拦截器=================");
   console.log(`返回`);
-  console.dir(response);
-  console.log(`返回状态：${response.status}`);
+  console.log(response);
+  console.log(`返回状态：${response?.status}`);
   // console.log('返回数据：', response.data);
   console.log("============================================\n");
 });
@@ -50,7 +50,7 @@ const get = <T>(
             url,
             data: params,
           },
-          message: "request fail" + response.originalError,
+          message: "request fail" + response?.originalError,
         });
       }
       return response;
@@ -80,7 +80,7 @@ const post = <T>(
             url,
             data,
           },
-          message: "request fail" + response.originalError,
+          message: "request fail" + response?.originalError,
         });
       }
       return response;

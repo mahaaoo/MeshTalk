@@ -2,13 +2,14 @@ import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
 import { Stack, useNavigationContainerRef } from "expo-router";
 import React, { useEffect } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ModalProvider, modalRef } from "react-native-ma-modal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import useAppStore from "../store/useAppStore";
 import useDeviceStore from "../store/useDeviceStore";
+import { Colors } from "../config";
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 // SENTRY_AUTH_TOKEN 已存入eas环境变量中
@@ -45,7 +46,11 @@ const App: React.FC<object> = () => {
   }, [insets]);
 
   if (!isReady) {
-    return <View style={{ flex: 1 }} />;
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator animating color={Colors.theme} />
+      </View>
+    );
   }
 
   return (

@@ -1,9 +1,10 @@
-import { ErrorBoundary, Error } from "@components";
 import { Stack, router } from "expo-router";
 import React from "react";
 import { View, Text } from "react-native";
 
 import { Colors } from "../../config";
+import Error from "../Error";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 interface ScreenProps {
   headerShown?: boolean;

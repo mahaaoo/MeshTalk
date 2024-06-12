@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { Platform } from "react-native";
-import { Toast } from "react-native-ma-modal";
+import { Loading, Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
 import { AppInterface } from "../config/interface";
@@ -23,6 +23,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
   },
   onPressLogin: async () => {
     if (get().path.length > 0) {
+      Loading.show();
       const { data, ok } = await getAppConfig("https://" + get().path);
       if (data && ok) {
         set({ loginData: data });
@@ -42,6 +43,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
       } else {
         Toast.show("请检查网络设置");
       }
+      Loading.hide();
     } else {
       Toast.show("请输入应用实例地址");
     }

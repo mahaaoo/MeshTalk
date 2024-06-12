@@ -40,14 +40,16 @@ const Guide: React.FC<object> = () => {
         <ScrollView contentContainerStyle={styles.guide_main}>
           <Text style={styles.guide_title}>欢迎来到MeshTalk</Text>
           <View style={{ height: 450, marginVertical: 25 }}>
-            <FlatList
-              data={recommend}
-              showsHorizontalScrollIndicator={false}
-              horizontal
-              renderItem={({ item }) => {
-                return <ServerCard server={item} />;
-              }}
-            />
+            {recommend.length > 0 ? (
+              <FlatList
+                data={recommend}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                renderItem={({ item }) => {
+                  return <ServerCard server={item} />;
+                }}
+              />
+            ) : null}
           </View>
           <Button
             text="寻找更多的实例"
