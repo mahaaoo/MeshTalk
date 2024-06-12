@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react-native";
 import { create, ApiResponse } from "apisauce";
 import { AxiosRequestConfig } from "axios";
 
@@ -43,6 +44,15 @@ const get = <T>(
         status: response.status,
         problem: response.problem,
       }); // 假设response有这些属性
+      if (!response.ok) {
+        Sentry.captureEvent({
+          request: {
+            url,
+            data: params,
+          },
+          message: "request fail" + response.originalError,
+        });
+      }
       return response;
     })
     .catch((error: any) => {
@@ -64,6 +74,15 @@ const post = <T>(
         status: response.status,
         problem: response.problem,
       }); // 假设response有这些属性
+      if (!response.ok) {
+        Sentry.captureEvent({
+          request: {
+            url,
+            data,
+          },
+          message: "request fail" + response.originalError,
+        });
+      }
       return response;
     })
     .catch((error: any) => {
@@ -87,6 +106,15 @@ const patch = <T>(
         status: response.status,
         problem: response.problem,
       }); // 假设response有这些属性
+      if (!response.ok) {
+        Sentry.captureEvent({
+          request: {
+            url,
+            data,
+          },
+          message: "request fail" + response.originalError,
+        });
+      }
       return response;
     })
     .catch((error: any) => {

@@ -23,8 +23,8 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
   },
   onPressLogin: async () => {
     if (get().path.length > 0) {
-      const { data } = await getAppConfig("https://" + get().path);
-      if (data) {
+      const { data, ok } = await getAppConfig("https://" + get().path);
+      if (data && ok) {
         set({ loginData: data });
 
         const url = `https://${get().path}/oauth/authorize?scope=read%20write%20follow%20push&response_type=code&redirect_uri=${get().loginData?.redirect_uri}&client_id=${get().loginData?.client_id}`;
@@ -39,6 +39,8 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
             },
           });
         }
+      } else {
+        Toast.show("请检查网络设置");
       }
     } else {
       Toast.show("请输入应用实例地址");
