@@ -145,35 +145,4 @@ class ErrorBoundary extends React.Component<
     return this.props.children;
   }
 }
-
-function withErrorBoundary<P>(
-  Component: React.ComponentType<P>,
-  errorBoundaryProps: ErrorBoundaryProps,
-): React.ComponentType<P> {
-  const Wrapped: React.ComponentType<P> = (props) => {
-    return (
-      <ErrorBoundary {...errorBoundaryProps}>
-        <Component {...props} />
-      </ErrorBoundary>
-    );
-  };
-
-  // Format for display in DevTools
-  const name = Component.displayName || Component.name || "Unknown";
-  Wrapped.displayName = `withErrorBoundary(${name})`;
-
-  return Wrapped;
-}
-
-function useErrorHandler(givenError?: unknown): (error: unknown) => void {
-  const [error, setError] = React.useState<unknown>(null);
-  if (givenError != null) {
-    throw givenError;
-  }
-  if (error != null) {
-    throw error;
-  }
-  return setError;
-}
-
-export { ErrorBoundary, withErrorBoundary, useErrorHandler };
+export { ErrorBoundary };

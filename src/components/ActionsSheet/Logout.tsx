@@ -41,9 +41,8 @@ const Logout = {
           <View style={styles.item}>
             {multipleUser.map((user) => {
               return (
-                <>
+                <View key={user.acct}>
                   <TouchableOpacity
-                    key={user.acct}
                     onPress={() => {
                       if (user.acct !== acctName(currentAccount?.acct)) {
                         // 切换账号
@@ -79,7 +78,7 @@ const Logout = {
                     start={0}
                     end={useDeviceStore.getState().width - 40}
                   />
-                </>
+                </View>
               );
             })}
             <TouchableOpacity
