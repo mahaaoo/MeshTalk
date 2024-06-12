@@ -13,6 +13,8 @@ import { setItem, getItem, clear } from "../utils/storage";
 
 interface MultipleUserProsp {
   acct: string;
+  avatar: string;
+  displayName: string;
   domain: string;
   token: string;
   emoji: string;
@@ -30,6 +32,7 @@ interface AppStoreState {
     isNewUser: boolean,
   ) => void;
   addNewUser: (token: string, domain: string, account: Account) => void;
+  switchUser: (user: MultipleUserProsp, sort: boolean) => void;
   initApp: () => void;
   exitCurrentAccount: () => void;
 }
@@ -73,21 +76,43 @@ const useAppStore = create<AppStoreState>((set, get) => ({
   },
   addNewUser: async (token: string, domain: string, account: Account) => {
     const emoji = useEmojiStore.getState().emojis;
-    const user = {
+    const user: MultipleUserProsp = {
       domain,
       token,
       acct: `@${account?.acct}@${domain}`,
+      displayName: account.display_name,
+      avatar: account.avatar,
       emoji: JSON.stringify(emoji) || "",
     };
 
     const newUser = [...get().multipleUser];
-    newUser.push(user);
+    newUser.unshift(user);
 
     set({ multipleUser: newUser });
     // 保存到localstorage
     setItem(constant.MULTIPLEUSER, JSON.stringify(newUser));
   },
+  switchUser: (user: MultipleUserProsp, sort: boolean) => {
+    const multipleUser = get().multipleUser;
+    // 当前选中的用户排序到数组首位
+    if (multipleUser.length > 1 && sort) {
+      const index = multipleUser.map((m) => m.acct).indexOf(user.acct);
+      if (index > -1) {
+        const removed = multipleUser.splice(index, 1); // 删除元素并返回它
+        multipleUser.unshift(...removed); // 将元素添加到数组开头
+      }
+      set({ multipleUser });
+      setItem(constant.MULTIPLEUSER, JSON.stringify(multipleUser));
+    }
 
+    const emojiJSON = user.emoji;
+    if (!emojiJSON) {
+      get().checkTokenAndDomin(user.token, user.domain, true, false);
+    } else {
+      useEmojiStore.getState().setEmoji(JSON.parse(emojiJSON));
+      get().checkTokenAndDomin(user.token, user.domain, false, false);
+    }
+  },
   initApp: async () => {
     console.log("initApp");
     const multipleUserJSON = await getItem(constant.MULTIPLEUSER);
@@ -116,13 +141,7 @@ const useAppStore = create<AppStoreState>((set, get) => ({
         set({ multipleUser });
         // 默认数组第一个用户为登录用户
         const user = multipleUser[0];
-        const emojiJSON = user.emoji;
-        if (!emojiJSON) {
-          get().checkTokenAndDomin(user.token, user.domain, true, false);
-        } else {
-          useEmojiStore.getState().setEmoji(JSON.parse(emojiJSON));
-          get().checkTokenAndDomin(user.token, user.domain, false, false);
-        }
+        get().switchUser(user, false);
       } else {
         set({
           isReady: true,

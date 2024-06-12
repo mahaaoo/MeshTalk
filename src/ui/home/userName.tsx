@@ -3,21 +3,24 @@ import React, { useMemo } from "react";
 import { Text, StyleSheet, TextStyle } from "react-native";
 
 import { Emoji } from "../../config/interface";
+import useEmojiStore from "../../store/useEmojiStore";
 import { replaceNameEmoji } from "../../utils";
 
 interface UserNameProps {
   displayname: string;
   fontSize?: number;
-  emojis: Emoji[];
+  emojis?: Emoji[];
   style?: TextStyle;
 }
 
 const UserName: React.FC<UserNameProps> = (props) => {
   const { displayname, fontSize = 16, emojis, style } = props;
+  const { emojis: systemEmojis } = useEmojiStore();
 
   const name = useMemo(() => {
-    return replaceNameEmoji(displayname, emojis);
-  }, [displayname, emojis]);
+    const replaceEmoji = emojis || systemEmojis;
+    return replaceNameEmoji(displayname, replaceEmoji);
+  }, [displayname, emojis, systemEmojis]);
 
   return (
     <>

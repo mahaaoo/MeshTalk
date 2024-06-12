@@ -1,8 +1,9 @@
 import { useRef, useEffect, useCallback, useState } from "react";
-import { Loading, Toast } from "react-native-ma-modal";
+import { Loading } from "react-native-ma-modal";
 
 import { RefreshState } from "../components/RefreshList";
 import { Response } from "../config/interface";
+import useAppStore from "../store/useAppStore";
 
 // 防抖hooks
 const useDebounce = <T extends () => void>(
@@ -105,11 +106,18 @@ const useRefreshList = <T extends { id: string }>(
   loadType: "Normal" | "Link",
   limit: number = 20,
 ) => {
+  const { token } = useAppStore();
+
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [link, setLink] = useState<string>();
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
   const end = useRef(false);
   const [err, setErr] = useState(false);
+
+  useEffect(() => {
+    // 处理切换账户列表重新请求
+    fetchData();
+  }, [token]);
 
   // 直接使用fetchData，如果首页数据不够一屏，会触发loadMore方法，多发一次请求，直接使用onRefresh则没问题
   const fetchData = async () => {
@@ -134,6 +142,7 @@ const useRefreshList = <T extends { id: string }>(
         setListStatus(RefreshState.Idle);
       }
     }
+    Loading.hide();
   };
 
   const onRefresh = async () => {

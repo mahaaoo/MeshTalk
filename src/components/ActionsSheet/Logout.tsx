@@ -3,7 +3,7 @@ import { acctName } from "@utils/string";
 import { router } from "expo-router";
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
-import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
+import { TranslateContainer, ModalUtil, Loading } from "react-native-ma-modal";
 
 import { Colors } from "../../config";
 import { ACTIONMODALIDLOGOUT } from "../../config/constant";
@@ -28,6 +28,7 @@ const Logout = {
     onSwitchAccount,
   }: ActionsSheetTyps) => {
     const { currentAccount } = useAccountStore.getState();
+    const { multipleUser, switchUser } = useAppStore.getState();
     return (
       <TranslateContainer onDisappear={() => {}} gesture>
         <View
@@ -38,28 +39,49 @@ const Logout = {
         >
           <View style={styles.titleContainer} />
           <View style={styles.item}>
-            <TouchableOpacity
-              onPress={onSwitchAccount}
-              style={styles.itemContainer}
-            >
-              <View style={{ flexDirection: "row", flex: 1 }}>
-                <Avatar url={currentAccount?.avatar} />
-                <View style={{ marginHorizontal: 10, flex: 1 }}>
-                  <UserName
-                    displayname={
-                      currentAccount?.display_name! || currentAccount?.username!
-                    }
-                    emojis={currentAccount?.emojis!}
-                    fontSize={16}
+            {multipleUser.map((user) => {
+              return (
+                <>
+                  <TouchableOpacity
+                    key={user.acct}
+                    onPress={() => {
+                      if (user.acct !== acctName(currentAccount?.acct)) {
+                        // 切换账号
+                        Loading.show();
+                        Logout.hide();
+                        switchUser(user, true);
+                        router.replace("/");
+                      }
+                    }}
+                    style={styles.itemContainer}
+                  >
+                    <View style={{ flexDirection: "row", flex: 1 }}>
+                      <Avatar url={user.avatar} />
+                      <View
+                        style={{
+                          marginHorizontal: 10,
+                          flex: 1,
+                          justifyContent: "center",
+                        }}
+                      >
+                        <UserName
+                          displayname={user.displayName}
+                          fontSize={16}
+                        />
+                        <Text style={styles.acct}>{user.acct}</Text>
+                      </View>
+                    </View>
+                    {user.acct === acctName(currentAccount?.acct) ? (
+                      <Icon name="check" color={Colors.theme} />
+                    ) : null}
+                  </TouchableOpacity>
+                  <SplitLine
+                    start={0}
+                    end={useDeviceStore.getState().width - 40}
                   />
-                  <Text style={styles.acct}>
-                    {acctName(currentAccount?.acct)}
-                  </Text>
-                </View>
-              </View>
-              <Icon name="check" color={Colors.theme} />
-            </TouchableOpacity>
-            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+                </>
+              );
+            })}
             <TouchableOpacity
               onPress={onAddNewAccount}
               style={styles.functionContainer}
