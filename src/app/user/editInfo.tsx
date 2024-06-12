@@ -56,31 +56,33 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
     fetchAccount();
   }, []);
 
-  navigation.setOptions({
-    headerRight: () => (
-      <Button
-        style={styles.header}
-        textStyle={styles.headerText}
-        text="重置"
-        onPress={() => {
-          Alert.alert("提示", "确定要重置内容？", [
-            {
-              text: "取消",
-            },
-            {
-              text: "确定",
-              onPress: () => {
-                dispatch({
-                  type: "init",
-                  payload: state.account,
-                });
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          style={styles.header}
+          textStyle={styles.headerText}
+          text="重置"
+          onPress={() => {
+            Alert.alert("提示", "确定要重置内容？", [
+              {
+                text: "取消",
               },
-            },
-          ]);
-        }}
-      />
-    ),
-  });
+              {
+                text: "确定",
+                onPress: () => {
+                  dispatch({
+                    type: "init",
+                    payload: state.account,
+                  });
+                },
+              },
+            ]);
+          }}
+        />
+      ),
+    });
+  }, [state]);
 
   const submit = async () => {
     Loading.show();
@@ -303,8 +305,37 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                   key={index}
                   entering={FadeIn}
                   exiting={FadeOut}
-                  style={{ flexDirection: "row", marginTop: 5 }}
+                  style={{
+                    flexDirection: "row",
+                    marginTop: 5,
+                    alignItems: "center",
+                  }}
                 >
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert("提示", "确定要删除该条内容？", [
+                        {
+                          text: "取消",
+                        },
+                        {
+                          text: "确定",
+                          onPress: () => {
+                            const oldFields = state.fields;
+                            oldFields.splice(index, 1);
+                            dispatch({
+                              type: "setItem",
+                              payload: {
+                                fields: oldFields,
+                              },
+                            });
+                          },
+                        },
+                      ]);
+                    }}
+                    style={{ marginLeft: 15 }}
+                  >
+                    <Icon name="minus" color="red" />
+                  </TouchableOpacity>
                   <TextInput
                     style={styles.filedName}
                     placeholder="描述"

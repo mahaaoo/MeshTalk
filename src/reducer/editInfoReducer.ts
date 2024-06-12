@@ -94,8 +94,10 @@ const getRequestBody = (state: EditInfoState) => {
     fields.forEach((field, index) => {
       const { name, value } = field;
       console.log({ name, value });
-      formData.append(`fields_attributes[${index}][name]`, name);
-      formData.append(`fields_attributes[${index}][value]`, value);
+      if ((name && name.length > 0) || (value && value.length > 0)) {
+        formData.append(`fields_attributes[${index}][name]`, name);
+        formData.append(`fields_attributes[${index}][value]`, value);
+      }
     });
   }
   return formData;
