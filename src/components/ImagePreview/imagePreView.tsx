@@ -16,15 +16,13 @@ import Animated, {
 
 import ImageContainer from "./imageContainer";
 import ImagePreviewHeader from "./imagePreviewHeader";
+import { IMAGEMODALID } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
 
 interface ImagePreviewProps {
   imageList: string[];
   initialIndex?: number;
 }
-
-const SCALE_MAX = 2;
-const SCALE_MIN = 0.5;
 
 const duration = 400;
 
@@ -107,7 +105,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
             destY > 0 ? height : -height,
             { duration: 250 },
             () => {
-              runOnJS(ModalUtil.remove)("global-image-preview");
+              runOnJS(ModalUtil.remove)(IMAGEMODALID);
             },
           );
           return;
@@ -175,6 +173,12 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
       }
     });
 
+  const singleClick = Gesture.Tap()
+    .numberOfTaps(1)
+    .onEnd(() => {
+      runOnJS(ModalUtil.remove)(IMAGEMODALID);
+    });
+
   const animationStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -212,6 +216,7 @@ const ImagePreview: React.FC<ImagePreviewProps> = (props) => {
         gesture={Gesture.Exclusive(
           Gesture.Race(panGestureY, panGestureX, pinchGesture),
           doubleClick,
+          singleClick,
         )}
       >
         <Animated.View

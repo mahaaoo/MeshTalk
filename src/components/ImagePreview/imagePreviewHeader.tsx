@@ -8,6 +8,7 @@ import {
   SharedValue,
 } from "react-native-reanimated";
 
+import { IMAGEMODALID } from "../../config/constant";
 import ActionsSheet from "../ActionsSheet";
 import { Icon } from "../Icon";
 
@@ -60,7 +61,7 @@ const ImagePreviewHeader: React.FC<ImagePreviewHeaderProps> = (props) => {
     >
       <TouchableOpacity
         onPress={() => {
-          ModalUtil.remove("global-image-preview");
+          ModalUtil.remove(IMAGEMODALID);
         }}
       >
         <Icon name="close" color="white" />
