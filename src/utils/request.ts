@@ -126,4 +126,34 @@ const patch = <T>(
     });
 };
 
-export { get, post, api, patch };
+const api_delete = <T>(
+  url: string,
+  params?: object,
+  header?: AxiosRequestConfig,
+): Response<T> => {
+  return api
+    .delete(url, params, header)
+    .then((response: ApiResponse<T>) => {
+      console.log({
+        ok: response.ok,
+        status: response.status,
+        problem: response.problem,
+      }); // 假设response有这些属性
+      if (!response.ok) {
+        Sentry.captureEvent({
+          request: {
+            url,
+            data: params,
+          },
+          message: "request fail" + response.originalError,
+        });
+      }
+      return response;
+    })
+    .catch((error: any) => {
+      console.log("catch", error);
+      throw error;
+    })
+};
+
+export { get, post, api, patch, api_delete };

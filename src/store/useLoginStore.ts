@@ -54,6 +54,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
       client_secret: get().loginData?.client_secret,
       code,
     };
+    Loading.show();
     const { data, ok } = await getToken("https://" + get().path, params);
     if (data && ok) {
       await useAppStore
@@ -61,6 +62,7 @@ const useLoginStore = create<LoginStoreState>((set, get) => ({
         .checkTokenAndDomin(data.access_token, get().path, true, true);
       router.replace("/");
     }
+    Loading.hide();
   },
 }));
 

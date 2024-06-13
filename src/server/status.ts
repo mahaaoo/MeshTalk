@@ -4,7 +4,7 @@ import {
   Account,
   MediaAttachments,
 } from "../config/interface";
-import { get, patch, post, api } from "../utils/request";
+import { get, patch, post, api, api_delete } from "../utils/request";
 
 // https://mastodon.example/api/v1/statuses/:id
 // 根据id查询一个推文详情
@@ -48,4 +48,11 @@ export const media = (param: object): Response<MediaAttachments> => {
   api.setHeader("Content-Type", "multipart/form-data");
 
   return post<MediaAttachments>(url, param);
+};
+
+// 删除指定id嘟文
+export const deleteStatus = (id: string): Response<Timelines> => {
+  const url = "/api/v1/statuses/" + id;
+
+  return api_delete<Timelines>(url);
 };

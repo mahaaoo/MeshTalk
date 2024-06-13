@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { ModalUtil, UniqueModal } from "react-native-ma-modal";
+import { ModalUtil, Toast, UniqueModal } from "react-native-ma-modal";
 import { MeasuredDimensions } from "react-native-reanimated";
 
 import { PopOptionsContainer } from "./PopOptionsContainer";
@@ -22,33 +22,41 @@ import {
   block,
   unblock,
 } from "../../server/account";
+import { deleteStatus } from "../../server/status";
+import useAccountStore from "../../store/useAccountStore";
 import { Icon } from "../Icon";
 import SpacingBox from "../SpacingBox";
 import SplitLine from "../SplitLine";
 
 interface PopOptionsProps {
-  acct: string;
-  id: string;
+  acct: string; //
+  userId: string; // 点击的嘟文所属用户id
+  statusId: string; // 点击的嘟文id
 }
 
 const PopOptions: React.FC<PopOptionsProps> = (props) => {
-  const { id } = props;
+  const { userId, acct, statusId } = props;
   const [relation, setRelation] = useState<Relationship>();
+  const { currentAccount } = useAccountStore();
+  const isSelf = useMemo(() => {
+    // 该条嘟文所属的用户，是否和登录用户一致，即只能删除本人发出的嘟文
+    return currentAccount?.acct === acct;
+  }, [acct, currentAccount]);
 
   useEffect(() => {
     const fetchRelation = async () => {
-      const { data, ok } = await getRelationships(id);
+      const { data, ok } = await getRelationships(userId);
       if (ok && data) {
         setRelation(data[0]);
       }
     };
 
-    fetchRelation();
-  }, [id]);
+    !isSelf && fetchRelation();
+  }, [userId]);
 
   const unfollow = async () => {
     setRelation(undefined);
-    const { data, ok } = await unfollowById(id);
+    const { data, ok } = await unfollowById(userId);
     if (ok && data) {
       setRelation(data);
     }
@@ -56,7 +64,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 
   const follow = async () => {
     setRelation(undefined);
-    const { data, ok } = await followById(id);
+    const { data, ok } = await followById(userId);
     if (ok && data) {
       setRelation(data);
     }
@@ -65,12 +73,12 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
   const handleMute = async () => {
     setRelation(undefined);
     if (relation?.muting) {
-      const { data, ok } = await unmute(id);
+      const { data, ok } = await unmute(userId);
       if (ok && data) {
         setRelation(data);
       }
     } else {
-      const { data, ok } = await mute(id);
+      const { data, ok } = await mute(userId);
       if (ok && data) {
         setRelation(data);
       }
@@ -80,39 +88,58 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
   const handleBlock = async () => {
     setRelation(undefined);
     if (relation?.blocking) {
-      const { data, ok } = await unblock(id);
+      const { data, ok } = await unblock(userId);
       if (ok && data) {
         setRelation(data);
       }
     } else {
-      const { data, ok } = await block(id);
+      const { data, ok } = await block(userId);
       if (ok && data) {
         setRelation(data);
       }
     }
   };
 
+  const handleDeleteStatus = async () => {
+    const { data, ok } = await deleteStatus(statusId);
+    if (ok && data) {
+      Toast.show("删除嘟文成功");
+    }
+    PopOptonsUtil.hide();
+  };
+
   return (
     <View style={styles.container}>
       <BlurView intensity={98} tint="light">
-        <View>
-          {!relation ? (
-            <View style={styles.item}>
-              <ActivityIndicator />
-            </View>
-          ) : relation?.following ? (
-            <TouchableOpacity style={styles.item} onPress={unfollow}>
-              <Text style={styles.text}>取消关注该用户</Text>
-              <Icon name="unfollow" color="#333" />
+        {isSelf ? null : (
+          <>
+            {!relation ? (
+              <View style={styles.item}>
+                <ActivityIndicator />
+              </View>
+            ) : relation?.following ? (
+              <TouchableOpacity style={styles.item} onPress={unfollow}>
+                <Text style={styles.text}>取消关注该用户</Text>
+                <Icon name="unfollow" color="#333" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={styles.item} onPress={follow}>
+                <Text style={styles.text}>关注该用户</Text>
+                <Icon name="follow" color="#333" />
+              </TouchableOpacity>
+            )}
+            <SpacingBox height={5} color="#e9e9e9" />
+          </>
+        )}
+        {isSelf ? (
+          <>
+            <TouchableOpacity style={styles.item} onPress={handleDeleteStatus}>
+              <Text style={styles.text}>删除本条嘟文</Text>
+              <Icon name="delete" color="#333" />
             </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.item} onPress={follow}>
-              <Text style={styles.text}>关注该用户</Text>
-              <Icon name="follow" color="#333" />
-            </TouchableOpacity>
-          )}
-        </View>
-        <SpacingBox height={5} color="#e9e9e9" />
+            <SpacingBox height={5} color="#e9e9e9" />
+          </>
+        ) : null}
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>提及</Text>
           <Icon name="aite" color="#333" />
@@ -143,20 +170,20 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 
 export const PopOptonsUtil: UniqueModal = {
   key: POPMODALID,
-  template: (measurement: MeasuredDimensions, acct: string, id: string) => {
+  template: (measurement: MeasuredDimensions, params: PopOptionsProps) => {
     return (
       <PopOptionsContainer
         duration={200}
         mask={false}
         measurement={measurement}
       >
-        <PopOptions id={id} acct={acct} />
+        <PopOptions {...{ ...params }} />
       </PopOptionsContainer>
     );
   },
-  show: (measurement: MeasuredDimensions, acct: string, id: string) => {
+  show: (measurement: MeasuredDimensions, params: PopOptionsProps) => {
     ModalUtil.add(
-      PopOptonsUtil.template(measurement, acct, id),
+      PopOptonsUtil.template(measurement, params),
       PopOptonsUtil.key,
     );
   },

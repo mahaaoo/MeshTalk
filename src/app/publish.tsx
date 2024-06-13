@@ -9,7 +9,6 @@ import {
 import EmojiDisplay from "@ui/publish/emojiDisplay";
 import MediaDisplay from "@ui/publish/mediaDisplay";
 import { imageOriginPick } from "@utils/media";
-import { Image } from "expo-image";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
