@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from "react";
 import { Loading } from "react-native-ma-modal";
+import { shallow } from "zustand/shallow";
 
 import { RefreshState } from "../components/RefreshList";
 import { Response } from "../config/interface";
@@ -106,18 +107,26 @@ const useRefreshList = <T extends { id: string }>(
   loadType: "Normal" | "Link",
   limit: number = 20,
 ) => {
-  const { token } = useAppStore();
-
   const [dataSource, setDataSource] = useState<T[]>([]);
   const [link, setLink] = useState<string>();
   const [listStatus, setListStatus] = useState<RefreshState>(RefreshState.Idle);
   const end = useRef(false);
   const [err, setErr] = useState(false);
 
+  // TOOD:移动到具体的页面
   useEffect(() => {
-    // 处理切换账户列表重新请求
-    fetchData();
-  }, [token]);
+    const switchUserSubscribe = useAppStore.subscribe(
+      (state) => state.token,
+      () => {
+        fetchData();
+      },
+      {
+        equalityFn: shallow,
+        fireImmediately: false,
+      },
+    );
+    return switchUserSubscribe;
+  }, []);
 
   // 直接使用fetchData，如果首页数据不够一屏，会触发loadMore方法，多发一次请求，直接使用onRefresh则没问题
   const fetchData = async () => {

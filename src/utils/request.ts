@@ -25,8 +25,10 @@ api.addRequestTransform((request) => {
 api.addResponseTransform((response) => {
   console.log("\n===================响应拦截器=================");
   console.log(`返回`);
-  console.log(response);
   console.log(`返回状态：${response?.status}`);
+  if (response?.status !== 200) {
+    console.log(response);
+  }
   // console.log('返回数据：', response.data);
   console.log("============================================\n");
 });
