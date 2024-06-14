@@ -26,55 +26,43 @@ const replyObj = [
   },
 ];
 
-interface PublishStoreState {
-  statusContent: string;
+interface NewStatusParams {
   mediaList: ImagePickerAsset[];
-  warning: string;
-  inputContent: (input: string) => void;
-  warningInput: (input: string) => void;
-  addMedia: (media: ImagePickerAsset) => void;
-  deleteMedia: (index: number) => void;
-  postNewStatuses: (sensitive: boolean, visibility: string) => void;
+
+  sensitive: boolean;
+  reply: string; // 需要replyObj转换
+  status: string;
+  spoiler_text: string;
+}
+
+interface PublishStoreState {
+  postNewStatuses: (params: NewStatusParams) => void;
 }
 
 const usePublishStore = create<PublishStoreState>((set, get) => ({
-  statusContent: "",
-  warning: "",
-  mediaList: [],
-  inputContent: (input: string) => set({ statusContent: input }),
-  warningInput: (input: string) => set({ warning: input }),
-  addMedia: (media: ImagePickerAsset) => {
-    const newMediaList = [...get().mediaList];
-    newMediaList.push(media);
-    set({ mediaList: newMediaList });
-  },
-  deleteMedia: (index: number) => {
-    const newMediaList = [...get().mediaList];
-    newMediaList.splice(index, 1);
-    set({ mediaList: newMediaList });
-  },
-  postNewStatuses: async (sensitive: boolean, visibility: string) => {
+  postNewStatuses: async (params: NewStatusParams) => {
+    const { reply, mediaList, sensitive, status, spoiler_text } = params;
     // 设置嘟文可见范围
     const visibilityValue = replyObj.filter(
-      (reply) => reply.key === visibility,
+      (replyItem) => replyItem.key === reply,
     )[0];
 
-    let params: any = {
+    let buildParams: any = {
       sensitive,
-      status: get().statusContent,
+      status,
       visibility: visibilityValue.value,
     };
 
     // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容
-    if (get().mediaList.length === 0 && get().statusContent.length === 0) {
+    if (mediaList.length === 0 && status.length === 0) {
       return Toast.show("请输入内容");
     }
 
     Loading.show();
 
     // 多媒体信息请求队列
-    if (get().mediaList.length > 0) {
-      const fecthQueue = get().mediaList;
+    if (mediaList.length > 0) {
+      const fecthQueue = [...mediaList];
       const mediaResult = [];
       while (fecthQueue.length > 0) {
         const mediaRequest = fecthQueue.shift();
@@ -93,27 +81,26 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
           mediaResult.push(data.id);
         }
       }
-      params = {
-        ...params,
+      buildParams = {
+        ...buildParams,
         media_ids: mediaResult,
       };
     }
 
     // 如果有警告内容，添加隐私提醒到参数中
     if (sensitive) {
-      params = {
-        ...params,
-        spoiler_text: get().warning,
+      buildParams = {
+        ...buildParams,
+        spoiler_text,
       };
     }
 
     // 在media借口中设置了请求头信息，这个修改回来
     api.setHeader("Content-Type", "application/json");
 
-    const { data, ok } = await postNewStatuses(params);
+    const { data, ok } = await postNewStatuses(buildParams);
     Loading.hide();
     if (data && ok) {
-      set({ statusContent: "" });
       Toast.show("发表成功");
       router.back();
     } else {

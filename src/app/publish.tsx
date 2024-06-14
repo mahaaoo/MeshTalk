@@ -9,8 +9,15 @@ import {
 import EmojiDisplay from "@ui/publish/emojiDisplay";
 import MediaDisplay from "@ui/publish/mediaDisplay";
 import { imageOriginPick } from "@utils/media";
+import { ImagePickerAsset } from "expo-image-picker";
 import { router, useNavigation } from "expo-router";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   Text,
   TextInput,
@@ -36,25 +43,18 @@ interface PublishProps {}
 const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
-  const {
-    postNewStatuses,
-    statusContent,
-    inputContent,
-    mediaList,
-    addMedia,
-    deleteMedia,
-    warning,
-    warningInput,
-  } = usePublishStore();
+  const { postNewStatuses } = usePublishStore();
 
   const [reply, setReply] = useState("公开");
   const [isWarn, setIsWarn] = useState(false);
+  const [mediaList, setMediaList] = useState<ImagePickerAsset[]>([]);
+  const [statusContent, setStatusContent] = useState("");
+  const [spoilerText, setSpoilerText] = useState("");
 
   const { insets, width } = useDeviceStore();
   const offsetY = useSharedValue(insets.bottom);
 
   const pressEmoji = useSharedValue(false);
-
   const InputRef: any = useRef();
 
   useEffect(() => {
@@ -65,6 +65,17 @@ const Publish: React.FC<PublishProps> = () => {
       Keyboard.removeAllListeners("keyboardWillShow");
     };
   }, []);
+
+  const newStatusParams = useMemo(
+    () => ({
+      mediaList,
+      sensitive: isWarn,
+      reply, // 需要replyObj转换
+      status: statusContent,
+      spoiler_text: spoilerText,
+    }),
+    [mediaList, isWarn, reply, statusContent, spoilerText],
+  );
 
   useEffect(() => {
     navigation.setOptions({
@@ -86,12 +97,12 @@ const Publish: React.FC<PublishProps> = () => {
           textStyle={styles.header_text}
           text="发送"
           onPress={() => {
-            postNewStatuses(isWarn, reply);
+            postNewStatuses(newStatusParams);
           }}
         />
       ),
     });
-  }, [statusContent, isWarn]);
+  }, [newStatusParams]);
 
   const keyboardWillShow = useCallback((e: any) => {
     offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
@@ -130,6 +141,18 @@ const Publish: React.FC<PublishProps> = () => {
     });
   };
 
+  const addMedia = (media: ImagePickerAsset) => {
+    const newMediaList = [...mediaList];
+    newMediaList.push(media);
+    setMediaList(newMediaList);
+  };
+
+  const deleteMedia = (index: number) => {
+    const newMediaList = [...mediaList];
+    newMediaList.splice(index, 1);
+    setMediaList(newMediaList);
+  };
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       bottom: offsetY.value,
@@ -150,8 +173,8 @@ const Publish: React.FC<PublishProps> = () => {
                   style={styles.warnInput}
                   placeholder="折叠部分的警告信息"
                   underlineColorAndroid="transparent"
-                  value={warning}
-                  onChangeText={warningInput}
+                  value={spoilerText}
+                  onChangeText={(text) => setSpoilerText(text)}
                 />
               ) : null}
               <TextInput
@@ -164,7 +187,7 @@ const Publish: React.FC<PublishProps> = () => {
                 placeholder="有什么新鲜事"
                 underlineColorAndroid="transparent"
                 value={statusContent}
-                onChangeText={inputContent}
+                onChangeText={(text) => setStatusContent(text)}
               />
             </View>
           </View>
@@ -222,7 +245,7 @@ const Publish: React.FC<PublishProps> = () => {
                 </TouchableOpacity>
               </View>
               <View style={styles.currentContent}>
-                <CounterContent />
+                <CounterContent statusContent={statusContent} />
                 <View style={styles.emojiContainer} />
                 <TouchableOpacity
                   style={styles.emojiTouch}
@@ -235,7 +258,7 @@ const Publish: React.FC<PublishProps> = () => {
           </Animated.View>
           <EmojiDisplay
             onPressEmoji={(emoji) => {
-              inputContent(statusContent + emoji);
+              setStatusContent((status) => status + emoji);
             }}
             emojiHeight={offsetY}
           />
@@ -246,8 +269,8 @@ const Publish: React.FC<PublishProps> = () => {
 };
 
 // 输入内容长度计数，需要额外拿出来
-const CounterContent = () => {
-  const { statusContent } = usePublishStore();
+const CounterContent = (props: { statusContent: string }) => {
+  const { statusContent } = props;
   return <Text style={styles.currentContentText}>{statusContent.length}</Text>;
 };
 

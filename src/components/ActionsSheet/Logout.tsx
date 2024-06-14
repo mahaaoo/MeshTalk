@@ -14,21 +14,13 @@ import Avatar from "../Avatar";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
 
-type ActionsSheetTyps = {
-  onExitCurrentAccount: () => void;
-  onAddNewAccount: () => void;
-  onSwitchAccount: () => void;
-};
-
 const Logout = {
   key: ACTIONMODALIDLOGOUT,
-  template: ({
-    onExitCurrentAccount,
-    onAddNewAccount,
-    onSwitchAccount,
-  }: ActionsSheetTyps) => {
+  template: () => {
     const { currentAccount } = useAccountStore.getState();
-    const { multipleUser, switchUser } = useAppStore.getState();
+    const { multipleUser, switchUser, exitCurrentAccount } =
+      useAppStore.getState();
+
     return (
       <TranslateContainer onDisappear={() => {}} gesture>
         <View
@@ -82,14 +74,31 @@ const Logout = {
               );
             })}
             <TouchableOpacity
-              onPress={onAddNewAccount}
+              onPress={() => {
+                Logout.hide();
+                router.push("/welcome");
+              }}
               style={styles.functionContainer}
             >
               <Text style={styles.itemTitle}>添加已有账号</Text>
             </TouchableOpacity>
             <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
             <TouchableOpacity
-              onPress={onExitCurrentAccount}
+              onPress={() => {
+                Alert.alert("提示", "确定要退出当前账号，下次需要重新登录", [
+                  {
+                    text: "取消",
+                  },
+                  {
+                    text: "确定",
+                    onPress: () => {
+                      Logout.hide();
+                      Loading.show();
+                      exitCurrentAccount(acctName(currentAccount?.acct));
+                    },
+                  },
+                ]);
+              }}
               style={styles.functionContainer}
             >
               <Text style={styles.itemTitle}>退出当前账号</Text>
@@ -108,30 +117,7 @@ const Logout = {
     );
   },
   show: () => {
-    const { exitCurrentAccount } = useAppStore.getState();
-    const params = {
-      onAddNewAccount: () => {
-        Logout.hide();
-        // router.push("/login");
-
-        router.push("/welcome");
-      },
-      onSwitchAccount: () => {},
-      onExitCurrentAccount: () => {
-        Alert.alert("提示", "确定要退出当前账号，下次需要重新登录", [
-          {
-            text: "取消",
-          },
-          {
-            text: "确定",
-            onPress: () => {
-              exitCurrentAccount();
-            },
-          },
-        ]);
-      },
-    };
-    ModalUtil.add(Logout.template(params), Logout.key);
+    ModalUtil.add(Logout.template(), Logout.key);
   },
   hide: () => ModalUtil.remove(Logout.key || ""),
   isExist: () => ModalUtil.isExist(Logout.key || ""),

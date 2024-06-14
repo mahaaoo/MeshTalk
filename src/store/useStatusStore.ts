@@ -6,6 +6,7 @@ interface StatusState {
   sensitiveSet: Set<string>;
   addSensitive: (id: string) => void;
   checkSensitive: (id: string) => boolean;
+  resetStore: () => void; // 删除store所有内容
 }
 
 const useStatusStore = create<StatusState>((set, get) => ({
@@ -16,6 +17,10 @@ const useStatusStore = create<StatusState>((set, get) => ({
   checkSensitive: (id: string) => {
     return get().sensitiveSet.has(id);
   },
+  resetStore: () =>
+    set({
+      sensitiveSet: new Set(),
+    }),
 }));
 
 export default useStatusStore;

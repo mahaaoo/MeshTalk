@@ -6,12 +6,16 @@ import { subscribeWithSelector } from "zustand/middleware";
 
 import useAccountStore from "./useAccountStore";
 import useEmojiStore from "./useEmojiStore";
+import useStatusStore from "./useStatusStore";
 import * as constant from "../config/constant";
 import { getInstanceEmojis, verifyToken } from "../server/app";
 import { api } from "../utils/request";
-import { setItem, getItem, clear } from "../utils/storage";
+import { setItem, getItem, removeItem } from "../utils/storage";
 
 interface MultipleUserProsp {
+  // 为了方便多账号显示，这里的acct拼接上了domain，如：@mesh@m.cmx.im
+  // 和Account里面的acct并不一致
+  // 可以作为MultipleUser的id使用
   acct: string;
   avatar: string;
   displayName: string;
@@ -34,7 +38,8 @@ interface AppStoreState {
   switchUser: (user: MultipleUserProsp, sort: boolean) => void;
   initApp: () => void;
   // updateMultipleUser: () => void;
-  exitCurrentAccount: () => void;
+  exitCurrentAccount: (acct: string) => void;
+  resetStore: () => void; // 删除store所有内容
 }
 
 const useAppStore = create(
@@ -43,6 +48,13 @@ const useAppStore = create(
     hostURL: undefined,
     token: undefined,
     isReady: false,
+    resetStore: () =>
+      set({
+        multipleUser: [],
+        hostURL: undefined,
+        token: undefined,
+        isReady: false,
+      }),
     checkTokenAndDomin: async (
       token: string,
       domain: string,
@@ -114,6 +126,7 @@ const useAppStore = create(
       }
 
       const emojiJSON = user.emoji;
+      // 是否已经保存过了emoji，如果没有保存过，在checkTokenAndDomin里需要重新请求
       if (!emojiJSON) {
         get().checkTokenAndDomin(user.token, user.domain, true, false);
       } else {
@@ -163,9 +176,41 @@ const useAppStore = create(
         });
       }
     },
-    exitCurrentAccount: () => {
+    exitCurrentAccount: (acct: string) => {
       // TODO:退出当前账号，自动切换到下一个账号，如果没有则退出到登录页面
-      clear();
+      // TODO:这里需要调用删除oauth2的授权接口
+      const multipleUser = get().multipleUser;
+      if (multipleUser.length > 1) {
+        const index = multipleUser.map((m) => m.acct).indexOf(acct);
+        if (index > -1) {
+          multipleUser.splice(index, 1); // 删除元素
+        }
+        setItem(constant.MULTIPLEUSER, JSON.stringify(multipleUser));
+
+        set({ multipleUser });
+        router.replace("/");
+        // 切换到下一个用户
+        const user = multipleUser[0];
+        get().switchUser(user, false);
+      } else {
+        // 重置以下Store里面的所有内容
+        const needClearStores = [
+          useAccountStore.getState(),
+          useAppStore.getState(),
+          useStatusStore.getState(),
+        ];
+        needClearStores.forEach((store) => {
+          store.resetStore();
+        });
+
+        router.replace("/");
+
+        set({
+          isReady: true,
+        });
+
+        removeItem(constant.MULTIPLEUSER);
+      }
     },
   })),
 );

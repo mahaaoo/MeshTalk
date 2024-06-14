@@ -10,7 +10,7 @@ export const stringAddComma = (string: number): string => {
   return Number(string).toLocaleString();
 };
 
-// 校验用户名是否合规，包含了实例的名称
+// 校验用户名是否合规，包含了实例的名称 实际上是处理acct
 export const acctName = (name?: string): string => {
   if (!name) return "";
   if (!name.includes("@")) {
