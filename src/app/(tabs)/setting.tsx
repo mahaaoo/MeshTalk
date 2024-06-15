@@ -79,6 +79,10 @@ const Setting: React.FC<object> = () => {
     router.push("/blocks");
   };
 
+  const handleToAnnounce = () => {
+    router.push("/announcement");
+  };
+
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = -event.contentOffset.y;
@@ -162,6 +166,11 @@ const Setting: React.FC<object> = () => {
           leftIcon={<Icon name="block" size={21} color="#333" />}
           title="拉黑"
           onPress={handleToBlock}
+        />
+        <ListRow
+          leftIcon={<Icon name="announcement" size={23} color="#333" />}
+          title="站点公告"
+          onPress={handleToAnnounce}
         />
         <ListRow
           leftIcon={<Icon name="logout" size={22} color="#333" />}

@@ -29,7 +29,6 @@ Sentry.init({
 
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
-  const { setInset } = useDeviceStore();
   const insets = useSafeAreaInsets();
 
   const ref = useNavigationContainerRef();
@@ -42,7 +41,12 @@ const App: React.FC<object> = () => {
 
   useEffect(() => {
     initApp();
-    setInset(insets);
+  }, []);
+
+  useEffect(() => {
+    useDeviceStore.setState({
+      insets,
+    });
   }, [insets]);
 
   // if (!isReady) {

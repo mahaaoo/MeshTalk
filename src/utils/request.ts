@@ -128,6 +128,36 @@ const patch = <T>(
     });
 };
 
+const put = <T>(
+  url: string,
+  data?: object,
+  axiosConfig?: AxiosRequestConfig,
+): Response<T> => {
+  return api
+    .put(url, data, axiosConfig)
+    .then((response: ApiResponse<T>) => {
+      console.log({
+        ok: response.ok,
+        status: response.status,
+        problem: response.problem,
+      }); // 假设response有这些属性
+      if (!response.ok) {
+        Sentry.captureEvent({
+          request: {
+            url,
+            data,
+          },
+          message: "request fail" + response?.originalError,
+        });
+      }
+      return response;
+    })
+    .catch((error: any) => {
+      console.log("catch", error);
+      throw error;
+    });
+};
+
 const api_delete = <T>(
   url: string,
   params?: object,
@@ -158,4 +188,4 @@ const api_delete = <T>(
     })
 };
 
-export { get, post, api, patch, api_delete };
+export { get, post, api, patch, api_delete, put };

@@ -200,3 +200,27 @@ export interface FollowAndFansQueryParameters {
   min_id: number;
   limit: number;
 }
+
+export interface AnnouncementReaction {
+  name: string;
+  count: number;
+  me: boolean;
+  url?: string; // 设置为可选，因为最后一个表情没有提供url
+  static_url?: string; // 设置为可选，因为最后一个表情没有提供static_url
+}
+
+export interface AnnouncementInterface {
+  id: string;
+  content: string;
+  starts_at?: string; // 设置为可选，因为值是null
+  ends_at?: string; // 设置为可选，因为值是null
+  all_day: boolean;
+  published_at: string;
+  updated_at: string;
+  read: boolean;
+  mentions: Account[]; // 假设我们不知道这个数组的确切类型，或者它可以是任何类型的数组
+  statuses: any[]; // 同样假设
+  tags: any[]; // 同样假设
+  emojis: Emoji[]; // 同样假设
+  reactions: AnnouncementReaction[];
+}

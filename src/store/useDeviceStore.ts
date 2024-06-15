@@ -10,7 +10,7 @@ interface DeviceStoreState {
   onePixel: number;
   insets: EdgeInsets;
   platform: string;
-  setInset: (inset: EdgeInsets) => void;
+  headerHeight: number;
 }
 
 const useDeviceStore = create<DeviceStoreState>((set, get) => ({
@@ -19,9 +19,7 @@ const useDeviceStore = create<DeviceStoreState>((set, get) => ({
   onePixel: 1 / PixelRatio.get(),
   insets: { top: 0, bottom: 0, left: 0, right: 0 },
   platform: Platform.OS,
-  setInset: (insets: EdgeInsets) => {
-    set({ insets });
-  },
+  headerHeight: 0,
 }));
 
 export default useDeviceStore;
