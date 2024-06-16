@@ -177,9 +177,7 @@ const Setting: React.FC<object> = () => {
           leftIcon={<Icon name="announcement" size={23} color="#333" />}
           title="language"
           onPress={() => {
-            console.log('18', i18n.locale);
-            switchLocale();
-            console.log('19', i18n.locale);
+            switchLocale(i18n.locale === "zh" ? "en" : "zh");
           }}
         />
         <ListRow

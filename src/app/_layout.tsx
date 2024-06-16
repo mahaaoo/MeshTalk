@@ -10,9 +10,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors } from "../config";
 import useAppStore from "../store/useAppStore";
 import useDeviceStore from "../store/useDeviceStore";
-import { getLocales } from "expo-localization";
 import useI18nStore from "../store/useI18nStore";
-// import { initI18n } from "../../locales";
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 // SENTRY_AUTH_TOKEN 已存入eas环境变量中
@@ -33,7 +31,7 @@ Sentry.init({
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
   const insets = useSafeAreaInsets();
-  const {initI18n} = useI18nStore();
+  const { initI18n } = useI18nStore();
 
   const ref = useNavigationContainerRef();
 
@@ -45,6 +43,7 @@ const App: React.FC<object> = () => {
 
   useEffect(() => {
     initApp();
+    // 初始化i18n
     initI18n();
   }, []);
 
@@ -53,14 +52,6 @@ const App: React.FC<object> = () => {
       insets,
     });
   }, [insets]);
-
-  // if (!isReady) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <ActivityIndicator animating color={Colors.theme} />
-  //     </View>
-  //   );
-  // }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

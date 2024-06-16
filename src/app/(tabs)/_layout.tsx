@@ -4,9 +4,11 @@ import React from "react";
 import ActionsSheet from "../../components/ActionsSheet";
 import { Icon } from "../../components/Icon";
 import useAccountStore from "../../store/useAccountStore";
+import useI18nStore from "../../store/useI18nStore";
 
 const TabRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
   if (!currentAccount) {
     return <Redirect href="/welcome" />;
   }
@@ -22,7 +24,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="index"
         options={{
-          title: "主页",
+          title: i18n.t("tabbar_icon_home"),
           tabBarIcon: ({ color }) => (
             <Icon name="elephant" size={33} color={color} />
           ),
@@ -36,7 +38,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="public"
         options={{
-          tabBarLabel: "跨站",
+          tabBarLabel: i18n.t("tabbar_icon_public"),
           tabBarIcon: ({ color }) => (
             <Icon name="areas" size={22} color={color} />
           ),
@@ -45,7 +47,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="new"
         options={{
-          tabBarLabel: "新嘟文",
+          tabBarLabel: i18n.t("tabbar_icon_new"),
           tabBarIcon: ({ color }) => (
             <Icon name="plane" size={26} color={color} />
           ),
@@ -60,7 +62,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="notify"
         options={{
-          tabBarLabel: "通知",
+          tabBarLabel: i18n.t("tabbar_icon_notify"),
           tabBarIcon: ({ color }) => (
             <Icon name="notify" size={25} color={color} />
           ),
@@ -69,7 +71,7 @@ const TabRouter: React.FC<object> = () => {
       <Tabs.Screen
         name="setting"
         options={{
-          tabBarLabel: "设置",
+          tabBarLabel: i18n.t("tabbar_icon_setting"),
           tabBarIcon: ({ color }) => (
             <Icon name="user" size={22} color={color} />
           ),
