@@ -6,10 +6,13 @@ import { View, StyleSheet } from "react-native";
 
 import { Colors } from "../../config";
 import useDeviceStore from "../../store/useDeviceStore";
+// import i18n from "../../../locales";
+import useI18nStore from "../../store/useI18nStore";
 
 const Home: React.FC<object> = () => {
   const [index, setIndex] = useState(0);
   const { insets, width } = useDeviceStore();
+  const { i18n } = useI18nStore();
 
   return (
     <View style={styles.container}>
@@ -21,7 +24,7 @@ const Home: React.FC<object> = () => {
         }}
       />
       <TabView
-        tabBar={["本站推荐", "正在关注"]}
+        tabBar={[i18n.t("welcome"), "正在关注"]}
         initialPage={0}
         style={{ flex: 1 }}
         onChangeTab={(index) => setIndex(index)}

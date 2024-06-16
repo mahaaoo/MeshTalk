@@ -289,7 +289,7 @@ const User: React.FC<UserProps> = (props) => {
       >
         <View style={[styles.slider, { marginTop: insets.top }]}>
           <UserName
-            displayname={userData?.username}
+            displayname={userData?.display_name || userData?.username}
             fontSize={18}
             emojis={userData?.emojis}
           />

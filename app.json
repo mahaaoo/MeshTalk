@@ -48,7 +48,8 @@
           "organization": "mahaaoo-oran-y3",
           "project": "meshtalk"
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "scheme": "meshtalk",
     "extra": {

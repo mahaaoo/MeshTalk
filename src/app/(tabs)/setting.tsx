@@ -21,6 +21,7 @@ import Animated, {
 import { Colors } from "../../config";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 const IMAGEHEIGHT = 150; // 顶部下拉放大图片的高度
 const PULLOFFSETY = 100; // 下拉刷新的触发距离
@@ -29,7 +30,7 @@ const Setting: React.FC<object> = () => {
   const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
   const { width, insets } = useDeviceStore();
-
+  const { i18n, switchLocale } = useI18nStore();
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
   const handleEdit = useCallback(() => {
@@ -171,6 +172,15 @@ const Setting: React.FC<object> = () => {
           leftIcon={<Icon name="announcement" size={23} color="#333" />}
           title="站点公告"
           onPress={handleToAnnounce}
+        />
+        <ListRow
+          leftIcon={<Icon name="announcement" size={23} color="#333" />}
+          title="language"
+          onPress={() => {
+            console.log('18', i18n.locale);
+            switchLocale();
+            console.log('19', i18n.locale);
+          }}
         />
         <ListRow
           leftIcon={<Icon name="logout" size={22} color="#333" />}
