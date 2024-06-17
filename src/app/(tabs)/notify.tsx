@@ -10,10 +10,12 @@ import FavouriteItem from "../../ui/notify/favouriteItem";
 import FollowItem from "../../ui/notify/followItem";
 import MetionItem from "../../ui/notify/metionItem";
 import { useRefreshList } from "../../utils/hooks";
+import useI18nStore from "../../store/useI18nStore";
 
 interface AllNotifyProps {}
 
 const AllNotify: React.FC<AllNotifyProps> = () => {
+  const { i18n } = useI18nStore();
   const { dataSource, listStatus, onRefresh, onLoadMore, err } = useRefreshList(
     getNotifications,
     "Normal",
@@ -52,7 +54,7 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
   }, [dataSource, relationships]);
 
   return (
-    <Screen title="通知" headerShown>
+    <Screen title={i18n.t("tabbar_icon_notify")} headerShown>
       {err ? (
         <View
           style={{

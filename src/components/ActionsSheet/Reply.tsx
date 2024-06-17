@@ -5,70 +5,70 @@ import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 import { Colors } from "../../config";
 import { ACTIONMODALIDREPLY } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 import { Icon } from "../Icon";
+import { Library } from "../Icon/library";
 import SplitLine from "../SplitLine";
 
-type ActionsSheetTyps = {
-  onSelect: (reply: string) => void;
+export interface ReplyItemProps {
+  title: string;
+  key: string;
+  icon: keyof typeof Library;
+}
+
+interface ActionsSheetTyps {
+  params: ReplyItemProps[];
+  onSelect: (reply: ReplyItemProps) => void;
   onClose: () => void;
+}
+
+const ReplyComponent: React.FC<ActionsSheetTyps> = (props) => {
+  const { params, onSelect } = props;
+  const { i18n } = useI18nStore();
+  return (
+    <View
+      style={[
+        styles.scrollViewContainer,
+        { paddingBottom: useDeviceStore.getState().insets.bottom },
+      ]}
+    >
+      <View style={styles.titleContainer} />
+      <Text style={styles.title}>{i18n.t("new_status_ares_title")}</Text>
+      <View style={[styles.item, { marginTop: 10 }]}>
+        {params.map((param) => {
+          return (
+            <View key={param.key}>
+              <TouchableOpacity
+                onPress={() => onSelect(param)}
+                style={styles.itemContainer}
+              >
+                <Text style={styles.itemTitle}>{param.title}</Text>
+                <Icon name={param.icon} color="#333" />
+              </TouchableOpacity>
+              <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+            </View>
+          );
+        })}
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          Reply.hide();
+        }}
+        style={[styles.item, styles.cacelButton]}
+      >
+        <Text style={styles.itemTitle}>{i18n.t("new_status_ares_cancel")}</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 // TODO: 在replyObj中获取
 const Reply = {
   key: ACTIONMODALIDREPLY,
-  template: ({ onSelect, onClose }: ActionsSheetTyps) => {
+  template: ({ onSelect, onClose, params }: ActionsSheetTyps) => {
     return (
       <TranslateContainer onDisappear={onClose} gesture>
-        <View
-          style={[
-            styles.scrollViewContainer,
-            { paddingBottom: useDeviceStore.getState().insets.bottom },
-          ]}
-        >
-          <View style={styles.titleContainer} />
-          <Text style={styles.title}>谁可以回复？</Text>
-          <View style={[styles.item, { marginTop: 10 }]}>
-            <TouchableOpacity
-              onPress={() => onSelect("公开")}
-              style={styles.itemContainer}
-            >
-              <Text style={styles.itemTitle}>公开</Text>
-              <Icon name="unlock" color="#333" />
-            </TouchableOpacity>
-            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-            <TouchableOpacity
-              onPress={() => onSelect("不出现在公共时间线上")}
-              style={styles.functionContainer}
-            >
-              <Text style={styles.itemTitle}>不出现在公共时间线上</Text>
-              <Icon name="replyLock" color="#333" />
-            </TouchableOpacity>
-            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-            <TouchableOpacity
-              onPress={() => onSelect("仅关注者可见")}
-              style={styles.functionContainer}
-            >
-              <Text style={styles.itemTitle}>仅关注者可见</Text>
-              <Icon name="replyFollow" color="#333" />
-            </TouchableOpacity>
-            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-            <TouchableOpacity
-              onPress={() => onSelect("仅提及的人可见")}
-              style={styles.functionContainer}
-            >
-              <Text style={styles.itemTitle}>仅提及的人可见</Text>
-              <Icon name="replyAite" color="#333" />
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            onPress={() => {
-              Reply.hide();
-            }}
-            style={[styles.item, styles.cacelButton]}
-          >
-            <Text style={styles.itemTitle}>取消</Text>
-          </TouchableOpacity>
-        </View>
+        <ReplyComponent {...{ onSelect, onClose, params }} />
       </TranslateContainer>
     );
   },

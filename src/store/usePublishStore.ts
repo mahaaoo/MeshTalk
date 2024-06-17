@@ -7,25 +7,6 @@ import { create } from "zustand";
 
 import { postNewStatuses, media } from "../server/status";
 
-const replyObj = [
-  {
-    key: "公开",
-    value: "public",
-  },
-  {
-    key: "不出现在公共时间线上",
-    value: "unlisted",
-  },
-  {
-    key: "仅关注者可见",
-    value: "private",
-  },
-  {
-    key: "仅提及的人可见",
-    value: "direct",
-  },
-];
-
 interface NewStatusParams {
   mediaList: ImagePickerAsset[];
 
@@ -42,15 +23,11 @@ interface PublishStoreState {
 const usePublishStore = create<PublishStoreState>((set, get) => ({
   postNewStatuses: async (params: NewStatusParams) => {
     const { reply, mediaList, sensitive, status, spoiler_text } = params;
-    // 设置嘟文可见范围
-    const visibilityValue = replyObj.filter(
-      (replyItem) => replyItem.key === reply,
-    )[0];
 
     let buildParams: any = {
       sensitive,
       status,
-      visibility: visibilityValue.value,
+      visibility: reply,
     };
 
     // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容

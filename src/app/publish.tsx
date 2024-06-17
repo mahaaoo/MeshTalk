@@ -36,6 +36,7 @@ import Animated, {
 import { Colors } from "../config";
 import useAccountStore from "../store/useAccountStore";
 import useDeviceStore from "../store/useDeviceStore";
+import useI18nStore from "../store/useI18nStore";
 import usePublishStore from "../store/usePublishStore";
 
 interface PublishProps {}
@@ -44,8 +45,8 @@ const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
   const { postNewStatuses } = usePublishStore();
+  const { i18n } = useI18nStore();
 
-  const [reply, setReply] = useState("公开");
   const [isWarn, setIsWarn] = useState(false);
   const [mediaList, setMediaList] = useState<ImagePickerAsset[]>([]);
   const [statusContent, setStatusContent] = useState("");
@@ -56,6 +57,34 @@ const Publish: React.FC<PublishProps> = () => {
 
   const pressEmoji = useSharedValue(false);
   const InputRef: any = useRef();
+
+  const replyObj = useMemo(
+    () => [
+      {
+        title: i18n.t("new_status_ares_public"),
+        key: "public",
+        icon: "unlock",
+      },
+      {
+        title: i18n.t("new_status_ares_unlist"),
+        key: "unlisted",
+        icon: "replyLock",
+      },
+      {
+        title: i18n.t("new_status_ares_follow_only"),
+        key: "private",
+        icon: "replyFollow",
+      },
+      {
+        title: i18n.t("new_status_ares_direct"),
+        key: "direct",
+        icon: "replyAite",
+      },
+    ],
+    [i18n],
+  );
+
+  const [reply, setReply] = useState(replyObj[0]);
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillShow", keyboardWillShow);
@@ -70,7 +99,7 @@ const Publish: React.FC<PublishProps> = () => {
     () => ({
       mediaList,
       sensitive: isWarn,
-      reply, // 需要replyObj转换
+      reply: reply.key,
       status: statusContent,
       spoiler_text: spoilerText,
     }),
@@ -87,7 +116,7 @@ const Publish: React.FC<PublishProps> = () => {
           }}
         >
           <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
-            取消
+            {i18n.t("new_status_goback_title")}
           </Text>
         </TouchableOpacity>
       ),
@@ -95,14 +124,14 @@ const Publish: React.FC<PublishProps> = () => {
         <Button
           style={styles.header}
           textStyle={styles.header_text}
-          text="发送"
+          text={i18n.t("new_status_header_submit")}
           onPress={() => {
             postNewStatuses(newStatusParams);
           }}
         />
       ),
     });
-  }, [newStatusParams]);
+  }, [newStatusParams, i18n]);
 
   const keyboardWillShow = useCallback((e: any) => {
     offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
@@ -131,8 +160,9 @@ const Publish: React.FC<PublishProps> = () => {
   const handleReply = () => {
     Keyboard.dismiss();
     ActionsSheet.Reply.show({
-      onSelect: (text: string) => {
-        setReply(text);
+      params: replyObj as never,
+      onSelect: (reply) => {
+        setReply(reply);
         ActionsSheet.Reply.hide();
       },
       onClose: () => {
@@ -160,7 +190,7 @@ const Publish: React.FC<PublishProps> = () => {
   });
 
   return (
-    <Screen headerShown title="新嘟文">
+    <Screen headerShown title={i18n.t("new_status_header_title")}>
       <View style={styles.main}>
         <ScrollView>
           <View style={{ flexDirection: "row" }}>
@@ -171,7 +201,7 @@ const Publish: React.FC<PublishProps> = () => {
               {isWarn ? (
                 <TextInput
                   style={styles.warnInput}
-                  placeholder="折叠部分的警告信息"
+                  placeholder={i18n.t("new_status_warning_placeholder")}
                   underlineColorAndroid="transparent"
                   value={spoilerText}
                   onChangeText={(text) => setSpoilerText(text)}
@@ -184,7 +214,7 @@ const Publish: React.FC<PublishProps> = () => {
                 textAlignVertical="top"
                 multiline
                 numberOfLines={4}
-                placeholder="有什么新鲜事"
+                placeholder={i18n.t("new_status_content_placeholder")}
                 underlineColorAndroid="transparent"
                 value={statusContent}
                 onChangeText={(text) => setStatusContent(text)}
@@ -212,9 +242,11 @@ const Publish: React.FC<PublishProps> = () => {
         <View style={styles.contentContainer}>
           <Animated.View style={[styles.tool, animatedStyle]}>
             <View style={styles.toolBar}>
-              <TouchableOpacity style={styles.power} onPress={handleReply}>
-                <Text style={styles.replayText}>{reply}</Text>
-              </TouchableOpacity>
+              <View style={styles.power}>
+                <Text style={styles.replayText} onPress={handleReply}>
+                  {reply.title}
+                </Text>
+              </View>
               <SplitLine start={0} end={width} />
             </View>
             <View style={styles.iconContainer}>

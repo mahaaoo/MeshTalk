@@ -5,8 +5,49 @@ import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 import { Colors } from "../../config";
 import { ACTIONMODALIDREPLY } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
+
+interface PicMoreComponentProps {
+  onSave: () => void;
+  onShare: () => void;
+}
+
+const PicMoreComponent: React.FC<PicMoreComponentProps> = (props) => {
+  const { onSave, onShare } = props;
+  const { i18n } = useI18nStore();
+
+  return (
+    <View
+      style={[
+        styles.scrollViewContainer,
+        { paddingBottom: useDeviceStore.getState().insets.bottom },
+      ]}
+    >
+      <View style={styles.titleContainer} />
+      <View style={styles.item}>
+        <TouchableOpacity onPress={onSave} style={styles.itemContainer}>
+          <Text style={styles.itemTitle}>{i18n.t("pic_save_text")}</Text>
+          <Icon name="download" />
+        </TouchableOpacity>
+        <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+        <TouchableOpacity onPress={onShare} style={styles.itemContainer}>
+          <Text style={styles.itemTitle}>{i18n.t("pic_share_text")}</Text>
+          <Icon name="share" />
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        onPress={() => {
+          PicMore.hide();
+        }}
+        style={[styles.item, styles.cacelButton]}
+      >
+        <Text style={styles.itemTitle}>{i18n.t("pic_cancel_text")}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 type ActionsSheetTyps = {
   onSave: () => void;
@@ -18,33 +59,7 @@ const PicMore = {
   key: ACTIONMODALIDREPLY,
   template: ({ onSave, onClose, onShare }: ActionsSheetTyps) => (
     <TranslateContainer onDisappear={onClose} gesture>
-      <View
-        style={[
-          styles.scrollViewContainer,
-          { paddingBottom: useDeviceStore.getState().insets.bottom },
-        ]}
-      >
-        <View style={styles.titleContainer} />
-        <View style={styles.item}>
-          <TouchableOpacity onPress={onSave} style={styles.itemContainer}>
-            <Text style={styles.itemTitle}>保存图片</Text>
-            <Icon name="download" />
-          </TouchableOpacity>
-          <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-          <TouchableOpacity onPress={onShare} style={styles.itemContainer}>
-            <Text style={styles.itemTitle}>分享内容</Text>
-            <Icon name="share" />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            PicMore.hide();
-          }}
-          style={[styles.item, styles.cacelButton]}
-        >
-          <Text style={styles.itemTitle}>取消</Text>
-        </TouchableOpacity>
-      </View>
+      <PicMoreComponent onSave={onSave} onShare={onShare} />
     </TranslateContainer>
   ),
   show: (params: ActionsSheetTyps) => {

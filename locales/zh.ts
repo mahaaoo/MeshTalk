@@ -1,5 +1,8 @@
 const zh = {
   header_back_title: "返回",
+  alert_title_text: "提示",
+  alert_cancel_text: "取消",
+  alert_confim_text: "确定",
 
   tabbar_icon_home: "主页",
   tabbar_icon_public: "跨站",
@@ -64,5 +67,46 @@ const zh = {
   page_block_null: "没有拉黑任何人",
 
   page_title_announce: "站点公告",
+
+  new_status_goback_title: "取消",
+  new_status_header_title: "新嘟文",
+  new_status_header_submit: "发送",
+
+  new_status_content_placeholder: "有什么新鲜事",
+  new_status_warning_placeholder: "警告信息",
+
+  new_status_ares_title: "谁能回复？",
+  new_status_ares_public: "公开",
+  new_status_ares_unlist: "不出现在公共时间线",
+  new_status_ares_follow_only: "仅关注者可见",
+  new_status_ares_direct: "仅提及的人可见",
+  new_status_ares_cancel: "取消",
+
+  switch_account_add: "添加已有账号",
+  switch_account_logout: "退出当前账号",
+  switch_account_cancel: "取消",
+  switch_account_alert: "退出当前账号，下次需要重新登录",
+
+  pic_save_text: "保存图片",
+  pic_share_text: "分享图片",
+  pic_cancel_text: "取消",
+
+  edit_info_header_title: "编辑个人资料",
+  edit_info_reset: "重置",
+  edit_info_reset_alert: "确定要重置内容？",
+  edit_info_display_name: "昵称",
+  edit_info_display_name_placeholder: "输入昵称",
+  edit_info_note: "简介",
+  edit_info_note_placeholder: "输入简介",
+  edit_info_robot: "机器人",
+  edit_info_robot_explain: "这个账户大多数操作时自动的，并且可能无人监控",
+  edit_info_lock: "锁定",
+  edit_info_lock_explain: "你需要手动审核所有的关注请求",
+  edit_info_profile_metadata: "附加信息",
+  edit_info_profile_metadata_explain: "将会在个人资料页上展示，最多4个内容",
+  edit_info_profile_key: "描述",
+  edit_info_profile_value: "内容",
+  edit_info_save: "保存",
+  edit_info_delete_metadata_alert: "确定要删除该条内容？",
 };
 export default zh;

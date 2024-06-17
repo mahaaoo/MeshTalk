@@ -33,6 +33,7 @@ import { verifyToken } from "../../server/app";
 import { updateCredentials } from "../../server/status";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 interface EditInfoProps {}
 
@@ -42,6 +43,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   const { width } = useDeviceStore();
   const offset = useSharedValue(0);
   const { setCurrentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -62,22 +64,27 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
         <Button
           style={styles.header}
           textStyle={styles.headerText}
-          text="重置"
+          text={i18n.t("edit_info_reset")}
           onPress={() => {
-            Alert.alert("提示", "确定要重置内容？", [
-              {
-                text: "取消",
-              },
-              {
-                text: "确定",
-                onPress: () => {
-                  dispatch({
-                    type: "init",
-                    payload: state.account,
-                  });
+            Alert.alert(
+              i18n.t("alert_title_text"),
+              i18n.t("edit_info_reset_alert"),
+              [
+                {
+                  text: i18n.t("alert_cancel_text"),
                 },
-              },
-            ]);
+                {
+                  style: "destructive",
+                  text: i18n.t("alert_confim_text"),
+                  onPress: () => {
+                    dispatch({
+                      type: "init",
+                      payload: state.account,
+                    });
+                  },
+                },
+              ],
+            );
           }}
         />
       ),
@@ -131,7 +138,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
   }));
 
   return (
-    <Screen headerShown title="编辑个人资料">
+    <Screen headerShown title={i18n.t("edit_info_header_title")}>
       <SafeAreaView style={{ flex: 1 }}>
         <Animated.ScrollView
           scrollEventThrottle={16}
@@ -185,10 +192,10 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           </View>
           <SplitLine start={0} end={width} />
           <View style={styles.itemContainer}>
-            <Text style={styles.title}>昵称</Text>
+            <Text style={styles.title}>{i18n.t("edit_info_display_name")}</Text>
             <TextInput
               style={styles.nameInput}
-              placeholder="输入昵称"
+              placeholder={i18n.t("edit_info_display_name_placeholder")}
               underlineColorAndroid="transparent"
               value={state.displayName}
               onChangeText={(text) => {
@@ -203,11 +210,11 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           </View>
           <SplitLine start={0} end={width} />
           <View style={styles.itemContainer}>
-            <Text style={styles.title}>简介</Text>
+            <Text style={styles.title}>{i18n.t("edit_info_note")}</Text>
             <TextInput
               multiline
               style={[styles.nameInput, { height: 100, marginTop: -5 }]}
-              placeholder="输入简介"
+              placeholder={i18n.t("edit_info_note_placeholder")}
               value={state.note}
               underlineColorAndroid="transparent"
               onChangeText={(text) => {
@@ -231,10 +238,10 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <View>
-              <Text style={styles.title}>机器人</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>{i18n.t("edit_info_robot")}</Text>
               <Text style={styles.biref}>
-                这个账户大多数操作时自动的，并且可能无人监控
+                {i18n.t("edit_info_robot_explain")}
               </Text>
             </View>
             <Switch
@@ -253,9 +260,11 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <View>
-              <Text style={styles.title}>锁定</Text>
-              <Text style={styles.biref}>你需要手动审核所有的关注请求</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.title}>{i18n.t("edit_info_lock")}</Text>
+              <Text style={styles.biref}>
+                {i18n.t("edit_info_lock_explain")}
+              </Text>
             </View>
             <Switch
               value={state.lock}
@@ -274,9 +283,11 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
             <View>
-              <Text style={styles.title}>附加信息</Text>
+              <Text style={styles.title}>
+                {i18n.t("edit_info_profile_metadata")}
+              </Text>
               <Text style={styles.biref}>
-                将会在个人资料页上展示，最多4个内容
+                {i18n.t("edit_info_profile_metadata_explain")}
               </Text>
             </View>
             <TouchableOpacity
@@ -338,7 +349,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                   </TouchableOpacity>
                   <TextInput
                     style={styles.filedName}
-                    placeholder="描述"
+                    placeholder={i18n.t("edit_info_profile_key")}
                     underlineColorAndroid="transparent"
                     value={field?.name}
                     onChangeText={(text) => {
@@ -363,7 +374,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                   />
                   <TextInput
                     style={styles.filedValue}
-                    placeholder="内容"
+                    placeholder={i18n.t("edit_info_profile_value")}
                     underlineColorAndroid="transparent"
                     value={field?.value}
                     onChangeText={(text) => {
@@ -389,7 +400,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <Button
             style={styles.saveButton}
             textStyle={styles.headerText}
-            text="保存"
+            text={i18n.t("edit_info_save")}
             onPress={submit}
           />
         </Animated.ScrollView>

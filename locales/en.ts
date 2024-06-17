@@ -1,5 +1,8 @@
 const en = {
   header_back_title: "Back",
+  alert_title_text: "Tip",
+  alert_cancel_text: "Cancel",
+  alert_confim_text: "OK",
 
   tabbar_icon_home: "Home",
   tabbar_icon_public: "Public",
@@ -64,6 +67,47 @@ const en = {
   page_block_null: "You haven't blocked anyone.",
 
   page_title_announce: "Announcements",
+
+  new_status_goback_title: "Cancel",
+  new_status_header_title: "New Post",
+  new_status_header_submit: "Submit",
+
+  new_status_content_placeholder: "What's happening?",
+  new_status_warning_placeholder: "Warning messages",
+
+  new_status_ares_title: "Who can reply",
+  new_status_ares_public: "Public",
+  new_status_ares_unlist: "Unlisted",
+  new_status_ares_follow_only: "Followers Only",
+  new_status_ares_direct: "Mentioned Only",
+  new_status_ares_cancel: "Cancel",
+
+  switch_account_add: "Add an existing account",
+  switch_account_logout: "Sign out",
+  switch_account_cancel: "Cancel",
+  switch_account_alert: "Logout the current account. You will need to re-login.",
+
+  pic_save_text: "Save Image",
+  pic_share_text: "Share Image",
+  pic_cancel_text: "Cancel",
+
+  edit_info_header_title: "Edit Profile",
+  edit_info_reset: "Reset",
+  edit_info_reset_alert: "Are you sure to reset the content?",
+  edit_info_display_name: "Display name",
+  edit_info_display_name_placeholder: "Enter Display Name",
+  edit_info_note: "Bio",
+  edit_info_note_placeholder: "Enter Bio",
+  edit_info_robot: "Robot",
+  edit_info_robot_explain: "Most operations on this account are automated and may not be monitored",
+  edit_info_lock: "Lock",
+  edit_info_lock_explain: "You need to manually review all follow requests.",
+  edit_info_profile_metadata: "Profile metadata",
+  edit_info_profile_metadata_explain: "You can have up to 4 items displayed as a table on your profile",
+  edit_info_profile_key: "Label",
+  edit_info_profile_value: "Content",
+  edit_info_save: "Save",
+  edit_info_delete_metadata_alert: "Are you sure you want to delete this content?",
 };
 
 export default en;
