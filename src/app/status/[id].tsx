@@ -9,12 +9,14 @@ import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import { getStatusesById } from "../../server/status";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 interface StatusDetailProps {}
 
 const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   const { id = "" } = useLocalSearchParams<{ id: string }>();
   const { insets } = useDeviceStore();
+  const { i18n } = useI18nStore();
   const [statusDetail, setStatusDetail] = useState<Timelines>();
 
   useEffect(() => {
@@ -29,7 +31,7 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   }, [id]);
 
   return (
-    <Screen headerShown title="详情">
+    <Screen headerShown title={i18n.t("page_status_detail")}>
       {!statusDetail ? (
         <View />
       ) : (

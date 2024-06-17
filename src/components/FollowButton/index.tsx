@@ -20,6 +20,7 @@ import {
   getRelationships,
   unfollowById,
 } from "../../server/account";
+import useI18nStore from "../../store/useI18nStore";
 
 export enum FollowButtonStatus {
   UnFollow, // 关注
@@ -36,6 +37,7 @@ interface FollowButtonProps {
 
 const FollowButton: React.FC<FollowButtonProps> = (props) => {
   const { id, locked } = props;
+  const { i18n } = useI18nStore();
   // 获取上一次渲染的组件样式
   const prevContentRef: any = useRef();
   const [buttonStatus, setButtonStatus] = useState(
@@ -91,7 +93,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     if (buttonStatus === FollowButtonStatus.Requesting) {
       return (
         prevCount || {
-          buttonText: "请求中",
+          buttonText: i18n.t("follow_button_requesting"),
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -107,7 +109,9 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
     switch (true) {
       case buttonStatus === FollowButtonStatus.UnFollow: {
         return {
-          buttonText: locked ? "请求关注" : "关注",
+          buttonText: locked
+            ? i18n.t("follow_button_request_follow")
+            : i18n.t("follow_button_follow"),
           buttonStyle: {
             backgroundColor: Colors.defaultWhite,
             borderColor: Colors.theme,
@@ -121,7 +125,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       }
       case buttonStatus === FollowButtonStatus.Following: {
         return {
-          buttonText: "正在关注",
+          buttonText: i18n.t("follow_button_following"),
           buttonStyle: {
             backgroundColor: Colors.theme,
             borderColor: Colors.theme,
@@ -135,7 +139,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       }
       case buttonStatus === FollowButtonStatus.BothFollow: {
         return {
-          buttonText: "互相关注",
+          buttonText: i18n.t("follow_button_mutual"),
           buttonStyle: {
             backgroundColor: Colors.theme,
             borderColor: Colors.theme,
@@ -149,7 +153,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
       }
       case buttonStatus === FollowButtonStatus.LockFollowRequest: {
         return {
-          buttonText: "等待通过",
+          buttonText: i18n.t("follow_button_waiting"),
           buttonStyle: {
             backgroundColor: Colors.theme,
             borderColor: Colors.theme,
@@ -162,7 +166,7 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
         };
       }
     }
-  }, [buttonStatus, locked]);
+  }, [buttonStatus, locked, i18n]);
 
   const handleOnPress = useCallback(async () => {
     if (buttonStatus === FollowButtonStatus.UnFollow) {
@@ -214,7 +218,7 @@ const styles = StyleSheet.create({
     height: 38,
     borderRadius: 20,
     borderWidth: 1,
-    width: 100,
+    paddingHorizontal: 8,
   },
 });
 

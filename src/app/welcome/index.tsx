@@ -15,9 +15,11 @@ import { Colors } from "../../config";
 import { MastodonServers } from "../../config/interface";
 import { getMastodonServers } from "../../server/app";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 const Guide: React.FC<object> = () => {
   const [recommend, setRecommend] = useState<MastodonServers[]>([]);
+  const { i18n } = useI18nStore();
   const { width } = useDeviceStore();
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const Guide: React.FC<object> = () => {
     <Screen>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.guide_main}>
-          <Text style={styles.guide_title}>欢迎来到MeshTalk</Text>
+          <Text style={styles.guide_title}>{i18n.t("page_welcome_text")}</Text>
           <View style={{ height: 450, marginVertical: 25 }}>
             {recommend.length > 0 ? (
               <FlatList
@@ -52,7 +54,7 @@ const Guide: React.FC<object> = () => {
             ) : null}
           </View>
           <Button
-            text="寻找更多的实例"
+            text={i18n.t("page_welcome_more")}
             style={{ marginTop: 10, width: width - 50, marginLeft: 25 }}
             onPress={() => {
               router.push("/welcome/moreServers");
@@ -60,14 +62,14 @@ const Guide: React.FC<object> = () => {
           />
           <View style={styles.login_view}>
             <Text style={styles.login_title}>
-              已有账号？
+              {i18n.t("page_has_account")}
               <Text
                 style={styles.login_text}
                 onPress={() => {
                   router.push("/login");
                 }}
               >
-                登录
+                {i18n.t("page_account_login")}
               </Text>
             </Text>
           </View>

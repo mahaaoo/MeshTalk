@@ -5,11 +5,13 @@ import { View, Text, TextInput, StyleSheet, SafeAreaView } from "react-native";
 
 import { Colors } from "../config";
 import useDeviceStore from "../store/useDeviceStore";
+import useI18nStore from "../store/useI18nStore";
 import useLoginStore from "../store/useLoginStore";
 
 const Login: React.FC<object> = () => {
   const { domain = "" } = useLocalSearchParams<{ domain: string }>();
   const { path, onPressLogin, onChangePath } = useLoginStore();
+  const { i18n } = useI18nStore();
 
   useEffect(() => {
     if (domain.length > 0) {
@@ -22,20 +24,20 @@ const Login: React.FC<object> = () => {
       <SafeAreaView style={styles.main_view}>
         <View style={styles.go_back_view}>
           <Text style={styles.go_back_text} onPress={() => router.back()}>
-            取消
+            {i18n.t("page_login_cancel")}
           </Text>
         </View>
-        <Text style={styles.login_title}>登录Mastodon</Text>
+        <Text style={styles.login_title}>{i18n.t("page_login_title")}</Text>
         <TextInput
           style={styles.input_style}
-          placeholder="应用实例地址，例如：acg.mn"
+          placeholder={i18n.t("page_login_server_placeholder")}
           autoFocus
           onChangeText={onChangePath}
           value={path}
           underlineColorAndroid="transparent"
         />
         <Button
-          text="登录"
+          text={i18n.t("page_login_text")}
           onPress={onPressLogin}
           style={styles.button_style}
         />

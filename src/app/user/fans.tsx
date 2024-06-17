@@ -7,6 +7,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Colors } from "../../config";
 import { getFollowersById, removeFollowers } from "../../server/account";
 import useAccountStore from "../../store/useAccountStore";
+import useI18nStore from "../../store/useI18nStore";
 import { useRefreshList } from "../../utils/hooks";
 
 interface UserFansProps {}
@@ -14,6 +15,7 @@ interface UserFansProps {}
 const UserFans: React.FC<UserFansProps> = (props) => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { currentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
   const { dataSource, listStatus, onLoadMore, onRefresh, err } = useRefreshList(
     (params) => getFollowersById(id, params),
     "Link",
@@ -34,10 +36,7 @@ const UserFans: React.FC<UserFansProps> = (props) => {
   };
 
   return (
-    <Screen
-      headerShown
-      title={`关注${currentAccount?.id === id ? "你" : "他/她"}的人`}
-    >
+    <Screen headerShown title={i18n.t("page_title_follower")}>
       {err ? (
         <View
           style={{
@@ -48,7 +47,7 @@ const UserFans: React.FC<UserFansProps> = (props) => {
         >
           <Error type="NoData" style={{ marginTop: 200 }} />
           <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-            没有任何人关注{currentAccount?.id === id ? "你" : "他/她"}
+            {i18n.t("page_title_follower_null")}
           </Text>
         </View>
       ) : (

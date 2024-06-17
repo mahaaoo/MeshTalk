@@ -324,24 +324,29 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
                 >
                   <TouchableOpacity
                     onPress={() => {
-                      Alert.alert("提示", "确定要删除该条内容？", [
-                        {
-                          text: "取消",
-                        },
-                        {
-                          text: "确定",
-                          onPress: () => {
-                            const oldFields = state.fields;
-                            oldFields.splice(index, 1);
-                            dispatch({
-                              type: "setItem",
-                              payload: {
-                                fields: oldFields,
-                              },
-                            });
+                      Alert.alert(
+                        i18n.t("alert_title_text"),
+                        i18n.t("edit_info_delete_metadata_alert"),
+                        [
+                          {
+                            text: i18n.t("alert_cancel_text"),
                           },
-                        },
-                      ]);
+                          {
+                            style: "destructive",
+                            text: i18n.t("alert_confim_text"),
+                            onPress: () => {
+                              const oldFields = state.fields;
+                              oldFields.splice(index, 1);
+                              dispatch({
+                                type: "setItem",
+                                payload: {
+                                  fields: oldFields,
+                                },
+                              });
+                            },
+                          },
+                        ],
+                      );
                     }}
                     style={{ marginLeft: 15 }}
                   >

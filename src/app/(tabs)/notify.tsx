@@ -6,11 +6,11 @@ import { Colors } from "../../config";
 import { Relationship } from "../../config/interface";
 import { getRelationships } from "../../server/account";
 import { getNotifications } from "../../server/notifications";
+import useI18nStore from "../../store/useI18nStore";
 import FavouriteItem from "../../ui/notify/favouriteItem";
 import FollowItem from "../../ui/notify/followItem";
 import MetionItem from "../../ui/notify/metionItem";
 import { useRefreshList } from "../../utils/hooks";
-import useI18nStore from "../../store/useI18nStore";
 
 interface AllNotifyProps {}
 
@@ -65,7 +65,7 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
         >
           <Error type="NoNotify" style={{ marginTop: 200 }} />
           <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-            暂时没有通知
+            {i18n.t("tabbar_icon_notify_null")}
           </Text>
         </View>
       ) : (

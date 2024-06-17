@@ -3,6 +3,7 @@ import React from "react";
 import { View, Text } from "react-native";
 
 import { Colors } from "../../config";
+import useI18nStore from "../../store/useI18nStore";
 import Error from "../Error";
 import { ErrorBoundary } from "../ErrorBoundary";
 
@@ -14,6 +15,7 @@ interface ScreenProps {
 
 const Screen: React.FC<ScreenProps> = (props) => {
   const { headerShown = false, children, title } = props;
+  const { i18n } = useI18nStore();
 
   return (
     <View style={{ flex: 1 }}>
@@ -35,7 +37,7 @@ const Screen: React.FC<ScreenProps> = (props) => {
               onPress={() => router.replace("/")}
               style={{ fontSize: 16, color: Colors.grayTextColor }}
             >
-              出错了,刷新试试
+              {i18n.t("screen_load_error_text")}
             </Text>
           </View>
         )}

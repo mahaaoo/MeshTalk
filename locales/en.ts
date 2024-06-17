@@ -10,6 +10,23 @@ const en = {
   tabbar_icon_notify: "Notify",
   tabbar_icon_setting: "Setting",
 
+  tabbar_icon_notify_null: "No Notify",
+
+  screen_load_error_text: "An error occurred, please try refreshing.",
+  page_welcome_text: "Welcome to MeshTalk",
+  page_welcome_more: "Find More Servers",
+  page_has_account: "Has Accound?",
+  page_account_login: "Login",
+
+  page_login_cancel: "Cancel",
+  page_login_title: "Login Mastodon",
+  page_login_server_placeholder: "Enter servers address",
+  page_login_text: "Login",
+
+  page_server_title: "Servers",
+  page_server_detail_title: "Servers Detail",
+  page_status_detail: "Detail",
+
   home_tabview_title1: "Recommended",
   home_tabview_title2: "Following",
 
@@ -108,6 +125,23 @@ const en = {
   edit_info_profile_value: "Content",
   edit_info_save: "Save",
   edit_info_delete_metadata_alert: "Are you sure you want to delete this content?",
+
+  page_title_following: "Following",
+  page_title_following_null: "No Following",
+
+  page_title_follower: "Follower",
+  page_title_follower_null: "No followers",
+
+  follow_button_requesting: "Requesting",
+  follow_button_request_follow: "Request Follow",
+  follow_button_follow: "Follow",
+  follow_button_following: "Following",
+  follow_button_mutual: "Mutual",
+  follow_button_waiting: "Waiting",
+
+  refresh_list_foot_text: "loading more",
+  refresh_list_foot_fail_text: "reload",
+  refresh_list_foot_nomore_text: "no more data",
 };
 
 export default en;

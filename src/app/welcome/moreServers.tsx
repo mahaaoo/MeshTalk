@@ -7,11 +7,13 @@ import { FlatList, View, Text, TouchableOpacity } from "react-native";
 import { Colors } from "../../config";
 import { MastodonServers } from "../../config/interface";
 import { getMastodonServers } from "../../server/app";
+import useI18nStore from "../../store/useI18nStore";
 
 interface MoreServersProps {}
 
 const MoreServers: React.FC<MoreServersProps> = (props) => {
   const [recommend, setRecommend] = useState<MastodonServers[]>([]);
+  const { i18n } = useI18nStore();
 
   useEffect(() => {
     const fetch = async () => {
@@ -26,7 +28,7 @@ const MoreServers: React.FC<MoreServersProps> = (props) => {
   }, []);
 
   return (
-    <Screen headerShown title="实例列表">
+    <Screen headerShown title={i18n.t("page_server_title")}>
       <FlatList
         data={recommend}
         showsHorizontalScrollIndicator={false}

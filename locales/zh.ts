@@ -10,6 +10,23 @@ const zh = {
   tabbar_icon_notify: "通知",
   tabbar_icon_setting: "设置",
 
+  tabbar_icon_notify_null: "暂时没有通知",
+
+  screen_load_error_text: "出错了,刷新试试",
+  page_welcome_text: "欢迎来到MeshTalk",
+  page_welcome_more: "寻找更多的实例",
+  page_has_account: "已有账号？",
+  page_account_login: "登录",
+
+  page_login_cancel: "取消",
+  page_login_title: "登录Mastodon",
+  page_login_server_placeholder: "应用实例地址",
+  page_login_text: "登录",
+
+  page_server_title: "实例列表",
+  page_server_detail_title: "实例详情",
+  page_status_detail: "详情",
+
   home_tabview_title1: "推荐",
   home_tabview_title2: "正在关注",
 
@@ -108,5 +125,22 @@ const zh = {
   edit_info_profile_value: "内容",
   edit_info_save: "保存",
   edit_info_delete_metadata_alert: "确定要删除该条内容？",
+
+  page_title_following: "正在关注",
+  page_title_following_null: "暂无正在关注",
+
+  page_title_follower: "关注者",
+  page_title_follower_null: "暂无关注者",
+
+  follow_button_requesting: "请求中",
+  follow_button_request_follow: "请求关注",
+  follow_button_follow: "关注",
+  follow_button_following: "正在关注",
+  follow_button_mutual: "互相关注",
+  follow_button_waiting: "等待通过",
+
+  refresh_list_foot_text: "数据加载中…",
+  refresh_list_foot_fail_text: "点击重新加载",
+  refresh_list_foot_nomore_text: "已加载全部数据",
 };
 export default zh;

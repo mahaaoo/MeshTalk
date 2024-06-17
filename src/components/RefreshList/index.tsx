@@ -24,6 +24,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import useI18nStore from "../../store/useI18nStore";
 
 export enum RefreshState {
   Idle = 0,
@@ -56,6 +57,7 @@ export interface RefreshListRef {
 
 const RefreshList = forwardRef<RefreshListRef, RefreshListProps>(
   (props, ref) => {
+    const { i18n } = useI18nStore();
     const {
       refreshState = RefreshState.Idle,
       renderItem,
@@ -65,9 +67,9 @@ const RefreshList = forwardRef<RefreshListRef, RefreshListProps>(
       emptyComponent,
       footerContainerStyle,
       footerTextStyle,
-      footerRefreshingText = "数据加载中…",
-      footerFailureText = "点击重新加载",
-      footerNoMoreDataText = "已加载全部数据",
+      footerRefreshingText = i18n.t("refresh_list_foot_text"),
+      footerFailureText = i18n.t("refresh_list_foot_fail_text"),
+      footerNoMoreDataText = i18n.t("refresh_list_foot_nomore_text"),
       canRefresh = true,
       ...options
     } = props;

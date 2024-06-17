@@ -15,6 +15,7 @@ import Animated, {
 
 import { MastodonServers } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 interface ServerDetailProps {}
 
@@ -22,6 +23,7 @@ const ServerDetail: React.FC<ServerDetailProps> = (props) => {
   const { server = "" } = useLocalSearchParams<{ server: string }>();
   const serverObject = JSON.parse(server) as MastodonServers;
   const { height, width } = useDeviceStore();
+  const { i18n } = useI18nStore();
 
   const rotateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
@@ -61,7 +63,7 @@ const ServerDetail: React.FC<ServerDetailProps> = (props) => {
   });
 
   return (
-    <Screen headerShown title="实例详情">
+    <Screen headerShown title={i18n.t("page_server_detail_title")}>
       <View
         style={{
           flex: 1,

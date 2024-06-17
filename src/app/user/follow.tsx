@@ -7,6 +7,7 @@ import { View, StyleSheet, Text } from "react-native";
 import { Colors } from "../../config";
 import { getFollowingById, unfollowById } from "../../server/account";
 import useAccountStore from "../../store/useAccountStore";
+import useI18nStore from "../../store/useI18nStore";
 import { useRefreshList } from "../../utils/hooks";
 
 interface UserFollowProps {}
@@ -14,6 +15,7 @@ interface UserFollowProps {}
 const UserFollow: React.FC<UserFollowProps> = (props) => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { currentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
 
   const { dataSource, listStatus, onLoadMore, onRefresh, err } = useRefreshList(
     (params) => getFollowingById(id, params),
@@ -35,10 +37,7 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
   };
 
   return (
-    <Screen
-      headerShown
-      title={`${currentAccount?.id === id ? "你" : "他/她"}的关注`}
-    >
+    <Screen headerShown title={i18n.t("page_title_following")}>
       {err ? (
         <View
           style={{
@@ -49,7 +48,7 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
         >
           <Error type="NoData" style={{ marginTop: 200 }} />
           <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-            {currentAccount?.id === id ? "你" : "他/她"}没有关注任何人
+            {i18n.t("page_title_following_null")}
           </Text>
         </View>
       ) : (
