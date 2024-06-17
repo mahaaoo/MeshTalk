@@ -24,7 +24,7 @@ const Home: React.FC<object> = () => {
         }}
       />
       <TabView
-        tabBar={["推荐", "正在关注"]}
+        tabBar={[i18n.t("home_tabview_title1"), i18n.t("home_tabview_title2")]}
         initialPage={0}
         style={{ flex: 1 }}
         onChangeTab={(index) => setIndex(index)}

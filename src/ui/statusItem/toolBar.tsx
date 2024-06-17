@@ -5,6 +5,7 @@ import { styles } from "./index.style";
 import { Icon } from "../../components";
 import { Colors } from "../../config";
 import { favouriteStatuses, unfavouriteStatuses } from "../../server/status";
+import useI18nStore from "../../store/useI18nStore";
 
 interface ToolBarProps {
   favourited?: boolean;
@@ -24,7 +25,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     id,
     reblogged = false,
   } = props;
-
+  const { i18n } = useI18nStore();
   const [isFavourited, setIsFavourited] = useState(favourited);
   const [favouritesCount, setFavouritesCount] = useState(favourites_count);
 
@@ -59,7 +60,9 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
               { color: reblogged ? "green" : Colors.commonToolBarText },
             ]}
           >
-            {reblogs_count === 0 ? "转发" : reblogs_count}
+            {reblogs_count === 0
+              ? i18n.t("status_tool_bar_turn")
+              : reblogs_count}
           </Text>
         </TouchableOpacity>
       </View>
@@ -67,7 +70,9 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
         <TouchableOpacity style={styles.toolItem}>
           <Icon name="comment" size={20} color={Colors.commonToolBarText} />
           <Text style={styles.toolTitle}>
-            {replies_count === 0 ? "转评" : replies_count}
+            {replies_count === 0
+              ? i18n.t("status_tool_bar_comment")
+              : replies_count}
           </Text>
         </TouchableOpacity>
       </View>
@@ -84,7 +89,9 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
               { color: !isFavourited ? Colors.commonToolBarText : "red" },
             ]}
           >
-            {favouritesCount === 0 ? "赞" : favouritesCount}
+            {favouritesCount === 0
+              ? i18n.t("status_tool_bar_like")
+              : favouritesCount}
           </Text>
         </TouchableOpacity>
       </View>

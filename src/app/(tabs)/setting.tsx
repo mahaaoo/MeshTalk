@@ -123,7 +123,7 @@ const Setting: React.FC<object> = () => {
                 <Text style={styles.msg_number}>
                   {StringUtil.stringAddComma(currentAccount!.statuses_count)}
                 </Text>
-                <Text style={styles.msg}>嘟文</Text>
+                <Text style={styles.msg}>{i18n.t("user_post")}</Text>
               </View>
               <TouchableOpacity
                 style={styles.actItem}
@@ -132,7 +132,7 @@ const Setting: React.FC<object> = () => {
                 <Text style={styles.msg_number}>
                   {StringUtil.stringAddComma(currentAccount!.following_count)}
                 </Text>
-                <Text style={styles.msg}>关注</Text>
+                <Text style={styles.msg}>{i18n.t("user_folloing")}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.actItem}
@@ -141,7 +141,7 @@ const Setting: React.FC<object> = () => {
                 <Text style={styles.msg_number}>
                   {StringUtil.stringAddComma(currentAccount!.followers_count)}
                 </Text>
-                <Text style={styles.msg}>粉丝</Text>
+                <Text style={styles.msg}>{i18n.t("user_follower")}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -153,36 +153,36 @@ const Setting: React.FC<object> = () => {
         />
         <ListRow
           leftIcon={<Icon name="like" size={24} color="#333" />}
-          title="喜欢"
+          title={i18n.t("setting_like")}
           onPress={() => {
             router.push("/favourites");
           }}
         />
         <ListRow
           leftIcon={<Icon name="mute" size={23} color="#333" />}
-          title="屏蔽"
+          title={i18n.t("setting_mute")}
           onPress={handleToMute}
         />
         <ListRow
           leftIcon={<Icon name="block" size={21} color="#333" />}
-          title="拉黑"
+          title={i18n.t("setting_block")}
           onPress={handleToBlock}
         />
         <ListRow
           leftIcon={<Icon name="announcement" size={23} color="#333" />}
-          title="站点公告"
+          title={i18n.t("setting_announce")}
           onPress={handleToAnnounce}
         />
         <ListRow
           leftIcon={<Icon name="announcement" size={23} color="#333" />}
-          title="language"
+          title={i18n.t("setting_lanuage")}
           onPress={() => {
             switchLocale(i18n.locale === "zh" ? "en" : "zh");
           }}
         />
         <ListRow
           leftIcon={<Icon name="logout" size={22} color="#333" />}
-          title="退出/切换账号"
+          title={i18n.t("setting_logout")}
           onPress={() => {
             ActionsSheet.Logout.show();
           }}

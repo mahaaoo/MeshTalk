@@ -6,11 +6,13 @@ import { View, StyleSheet } from "react-native";
 
 import { Colors } from "../config";
 import { getFavouritesById } from "../server/account";
+import useI18nStore from "../store/useI18nStore";
 import { useRefreshList } from "../utils/hooks";
 
 interface FavouritiesProps {}
 
 const Favourities: React.FC<FavouritiesProps> = (props) => {
+  const { i18n } = useI18nStore();
   const { dataSource, listStatus, onRefresh, onLoadMore } = useRefreshList(
     getFavouritesById,
     "Link",
@@ -22,7 +24,7 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
   }, []);
 
   return (
-    <Screen headerShown title="喜欢的内容">
+    <Screen headerShown title={i18n.t("page_title_like")}>
       <View style={styles.main}>
         <RefreshList
           data={dataSource}

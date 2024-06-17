@@ -7,10 +7,12 @@ import { Colors } from "../config";
 import { AnnouncementInterface } from "../config/interface";
 import { announcements } from "../server/notifications";
 import useDeviceStore from "../store/useDeviceStore";
+import useI18nStore from "../store/useI18nStore";
 
 interface AnnouncementProps {}
 
 const Announcement: React.FC<AnnouncementProps> = (props) => {
+  const { i18n } = useI18nStore();
   const [announcement, setAnnouncements] = useState<AnnouncementInterface[]>(
     [],
   );
@@ -26,7 +28,7 @@ const Announcement: React.FC<AnnouncementProps> = (props) => {
   }, []);
 
   return (
-    <Screen headerShown title="站点公告">
+    <Screen headerShown title={i18n.t("page_title_announce")}>
       {announcement.length === 0 ? (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}

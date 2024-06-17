@@ -31,7 +31,7 @@ Sentry.init({
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
   const insets = useSafeAreaInsets();
-  const { initI18n } = useI18nStore();
+  const { initI18n, i18n } = useI18nStore();
 
   const ref = useNavigationContainerRef();
 
@@ -70,7 +70,7 @@ const App: React.FC<object> = () => {
         ) : (
           <Stack
             screenOptions={{
-              headerBackTitle: "返回",
+              headerBackTitle: i18n.t("header_back_title"),
             }}
           >
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

@@ -5,11 +5,13 @@ import { View, StyleSheet, Text } from "react-native";
 
 import { Colors } from "../config";
 import { blocks, unblock } from "../server/account";
+import useI18nStore from "../store/useI18nStore";
 import { useRefreshList } from "../utils/hooks";
 
 interface BlocksProps {}
 
 const Blocks: React.FC<BlocksProps> = (props) => {
+  const { i18n } = useI18nStore();
   const { dataSource, listStatus, onRefresh, onLoadMore, err } = useRefreshList(
     blocks,
     "Link",
@@ -28,7 +30,7 @@ const Blocks: React.FC<BlocksProps> = (props) => {
   };
 
   return (
-    <Screen headerShown title="拉黑列表">
+    <Screen headerShown title={i18n.t("page_title_block")}>
       {err ? (
         <View
           style={{
@@ -39,7 +41,7 @@ const Blocks: React.FC<BlocksProps> = (props) => {
         >
           <Error type="NoData" style={{ marginTop: 200 }} />
           <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-            没有拉黑任何人
+            {i18n.t("page_block_null")}
           </Text>
         </View>
       ) : (

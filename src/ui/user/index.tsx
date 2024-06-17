@@ -9,7 +9,7 @@ import {
 } from "@components";
 import { StringUtil } from "@utils/index";
 import { router } from "expo-router";
-import React, { useCallback, useState, useRef } from "react";
+import React, { useCallback, useState, useRef, useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -28,15 +28,21 @@ import {
   HEADER_HEIGHT,
   PULL_OFFSETY,
   RESET_TIMING_EASING,
-  tabViewConfig,
   NestedScrollStatus,
 } from "./type";
 import UserHead from "./userHead";
 import UserLine from "./userLine";
 import { Colors } from "../../config";
 import { Account } from "../../config/interface";
+import {
+  getStatusesById,
+  getStatusesReplyById,
+  getStatusesMediaById,
+  getStatusesPinById,
+} from "../../server/account";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 import UserName from "../home/userName";
 
 interface UserProps {
@@ -49,6 +55,7 @@ const User: React.FC<UserProps> = (props) => {
 
   const { insets, width, height } = useDeviceStore();
   const { currentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
 
   const stickyHeight = useSharedValue(0);
   const currentIndex = useSharedValue(0);
@@ -57,7 +64,6 @@ const User: React.FC<UserProps> = (props) => {
   const offset = useSharedValue(0);
   const enable = useSharedValue(false);
   const [nativeRefs, setNativeRefs] = useState<GestureTypeRef[]>([]); // 子view里的scroll ref
-  const arefs = useRef(new Array(tabViewConfig.length));
 
   const nestedScrollStatus = useSharedValue(NestedScrollStatus.OutScrolling);
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
@@ -102,6 +108,40 @@ const User: React.FC<UserProps> = (props) => {
       ],
     };
   });
+
+  const tabViewConfig = useMemo(
+    () => [
+      {
+        fetchApi: (id: string) => (params: object) =>
+          getStatusesById(id, params),
+        title: i18n.t("user_tabview_post"),
+      },
+      {
+        fetchApi: (id: string) => (params: object) =>
+          getStatusesReplyById(id, params),
+        title: i18n.t("user_tabview_reply"),
+      },
+      {
+        fetchApi: (id: string) => (params: object) =>
+          getStatusesPinById(id, params),
+        title: i18n.t("user_tabview_pin"),
+      },
+      {
+        fetchApi: (id: string) => (params: object) =>
+          getStatusesMediaById(id, params),
+        title: i18n.t("user_tabview_media"),
+      },
+    ],
+    [
+      i18n,
+      getStatusesById,
+      getStatusesReplyById,
+      getStatusesPinById,
+      getStatusesMediaById,
+    ],
+  );
+
+  const arefs = useRef(new Array(tabViewConfig.length));
 
   // useMemo是必须的，在切换到新tab之后，需要重新获取Gesture属性
   const panGesture = Gesture.Pan()
@@ -224,21 +264,25 @@ const User: React.FC<UserProps> = (props) => {
               <View style={styles.act}>
                 <Text style={styles.msgNumber}>
                   {StringUtil.stringAddComma(userData?.statuses_count)}
-                  <Text style={styles.msg}>&nbsp;嘟文</Text>
+                  <Text style={styles.msg}>&nbsp;{i18n.t("user_post")}</Text>
                 </Text>
                 <Text
                   onPress={handleNavigateToFollowing}
                   style={[styles.msgNumber, styles.msgLeft]}
                 >
                   {StringUtil.stringAddComma(userData?.following_count)}
-                  <Text style={styles.msg}>&nbsp;关注</Text>
+                  <Text style={styles.msg}>
+                    &nbsp;{i18n.t("user_folloing")}
+                  </Text>
                 </Text>
                 <Text
                   onPress={handleNavigateToFans}
                   style={[styles.msgNumber, styles.msgLeft]}
                 >
                   {StringUtil.stringAddComma(userData?.followers_count)}
-                  <Text style={styles.msg}>&nbsp;粉丝</Text>
+                  <Text style={styles.msg}>
+                    &nbsp;{i18n.t("user_follower")}
+                  </Text>
                 </Text>
               </View>
             </View>

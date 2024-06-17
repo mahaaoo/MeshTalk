@@ -24,6 +24,7 @@ import {
 } from "../../server/account";
 import { deleteStatus } from "../../server/status";
 import useAccountStore from "../../store/useAccountStore";
+import useI18nStore from "../../store/useI18nStore";
 import { Icon } from "../Icon";
 import SpacingBox from "../SpacingBox";
 import SplitLine from "../SplitLine";
@@ -38,6 +39,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
   const { userId, acct, statusId } = props;
   const [relation, setRelation] = useState<Relationship>();
   const { currentAccount } = useAccountStore();
+  const { i18n } = useI18nStore();
   const isSelf = useMemo(() => {
     // 该条嘟文所属的用户，是否和登录用户一致，即只能删除本人发出的嘟文
     return currentAccount?.acct === acct;
@@ -119,12 +121,16 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
               </View>
             ) : relation?.following ? (
               <TouchableOpacity style={styles.item} onPress={unfollow}>
-                <Text style={styles.text}>取消关注该用户</Text>
+                <Text style={styles.text}>
+                  {i18n.t("status_options_item_unfollow")}
+                </Text>
                 <Icon name="unfollow" color="#333" />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity style={styles.item} onPress={follow}>
-                <Text style={styles.text}>关注该用户</Text>
+                <Text style={styles.text}>
+                  {i18n.t("status_options_item_follow")}
+                </Text>
                 <Icon name="follow" color="#333" />
               </TouchableOpacity>
             )}
@@ -134,33 +140,43 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
         {isSelf ? (
           <>
             <TouchableOpacity style={styles.item} onPress={handleDeleteStatus}>
-              <Text style={styles.text}>删除本条嘟文</Text>
+              <Text style={styles.text}>
+                {i18n.t("status_options_item_delete")}
+              </Text>
               <Icon name="delete" color="#333" />
             </TouchableOpacity>
             <SpacingBox height={5} color="#e9e9e9" />
           </>
         ) : null}
         <TouchableOpacity style={styles.item}>
-          <Text style={styles.text}>提及</Text>
+          <Text style={styles.text}>
+            {i18n.t("status_options_item_mention")}
+          </Text>
           <Icon name="aite" color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item} onPress={handleMute}>
           <Text style={styles.text}>
-            {relation?.muting ? "取消屏蔽" : "屏蔽"}
+            {relation?.muting
+              ? i18n.t("status_options_item_unmute")
+              : i18n.t("status_options_item_mute")}
           </Text>
           <Icon name="mute" size={22} color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item} onPress={handleBlock}>
           <Text style={[styles.text, { color: "red" }]}>
-            {relation?.blocking ? "取消拉黑" : "拉黑"}
+            {relation?.blocking
+              ? i18n.t("status_options_item_unblock")
+              : i18n.t("status_options_item_block")}
           </Text>
           <Icon name="block" size={20} color="#333" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item}>
-          <Text style={[styles.text, { color: "red" }]}>举报</Text>
+          <Text style={[styles.text, { color: "red" }]}>
+            {i18n.t("status_options_item_report")}
+          </Text>
           <Icon name="report" size={20} color="#333" />
         </TouchableOpacity>
       </BlurView>

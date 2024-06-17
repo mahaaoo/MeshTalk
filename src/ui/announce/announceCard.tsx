@@ -37,7 +37,7 @@ const AnnounceCard: React.FC<AnnounceCardProps> = (props) => {
     <ScrollView style={{ width, flex: 1 }}>
       <View style={styles.item}>
         <View style={styles.time}>
-          <Text>发布于：{dateToFromNow(announce?.updated_at)}</Text>
+          <Text>发布于：{announce?.updated_at}</Text>
           <Text>{`${index}/${total}`}</Text>
         </View>
         <HTMLContent

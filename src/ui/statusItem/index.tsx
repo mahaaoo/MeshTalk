@@ -1,7 +1,7 @@
 import { Avatar, SplitLine, NinePicture, HTMLContent } from "@components";
 import { replaceContentEmoji, DateUtil, StringUtil } from "@utils/index";
 import { router } from "expo-router";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { styles } from "./index.style";
@@ -12,6 +12,7 @@ import WebCard from "./webCard";
 import { Colors } from "../../config";
 import { Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 import UserName from "../home/userName";
 
 interface StatusItemProps {
@@ -24,6 +25,16 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const { item, needToolbar = true, sameUser = false } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
+  const { i18n } = useI18nStore();
+
+  const units = useMemo(() => {
+    return {
+      days: i18n.t("status_time_days"),
+      hours: i18n.t("status_time_hours"),
+      minutes: i18n.t("status_time_minutes"),
+      now: i18n.t("status_time_now"),
+    };
+  }, [i18n]);
 
   const handleAvatar = useCallback(() => {
     if (sameUser) return;
@@ -53,14 +64,14 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           <ReplyName
             displayName={item.account.display_name || item.account.username}
             emojis={showItem.account.emojis}
-            type="转发了"
+            type={i18n.t("status_turn")}
           />
         ) : null}
         {item.in_reply_to_id ? (
           <ReplyName
             displayName={item.account.display_name || item.account.username}
             emojis={showItem.account.emojis}
-            type="转评了"
+            type={i18n.t("status_comment")}
           />
         ) : null}
         <View style={styles.content}>
@@ -90,7 +101,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                   </Text>
                 </View>
                 <Text style={styles.sourceText}>
-                  {DateUtil.dateToFromNow(showItem.created_at)}
+                  {DateUtil.dateToFromNow(showItem.created_at, units)}
                 </Text>
               </View>
             </View>
@@ -128,7 +139,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               }}
             >
               <Text style={styles.nameText}>
-                &nbsp;&nbsp;来自
+                {i18n.t("status_origin")}&nbsp;&nbsp;
                 <Text style={{ color: Colors.linkTagColor }}>
                   {showItem.application.name}
                 </Text>

@@ -5,11 +5,13 @@ import { View, StyleSheet, Text } from "react-native";
 
 import { Colors } from "../config";
 import { mutes, unmute } from "../server/account";
+import useI18nStore from "../store/useI18nStore";
 import { useRefreshList } from "../utils/hooks";
 
 interface MutesProps {}
 
 const Mutes: React.FC<MutesProps> = (props) => {
+  const { i18n } = useI18nStore();
   const { dataSource, listStatus, onRefresh, onLoadMore, err } = useRefreshList(
     mutes,
     "Link",
@@ -28,7 +30,7 @@ const Mutes: React.FC<MutesProps> = (props) => {
   };
 
   return (
-    <Screen headerShown title="屏蔽列表">
+    <Screen headerShown title={i18n.t("page_title_mute")}>
       {err ? (
         <View
           style={{
@@ -39,7 +41,7 @@ const Mutes: React.FC<MutesProps> = (props) => {
         >
           <Error type="NoData" style={{ marginTop: 200 }} />
           <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-            没有屏蔽任何人
+            {i18n.t("page_mute_null")}
           </Text>
         </View>
       ) : (
