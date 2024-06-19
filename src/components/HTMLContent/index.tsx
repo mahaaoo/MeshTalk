@@ -17,6 +17,7 @@ import HTML, {
 
 import Colors from "../../config/colors";
 import useStatusStore from "../../store/useStatusStore";
+import useI18nStore from "../../store/useI18nStore";
 
 const defaultTagsStyles = {
   p: {
@@ -63,6 +64,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
   const { html, tagsStyles, blur = false, spoilerText = "", id = "" } = props;
   const { width } = useWindowDimensions();
   const { checkSensitive, addSensitive } = useStatusStore();
+  const { i18n } = useI18nStore();
   const [showBlur, setShowBlur] = useState(() => {
     if (checkSensitive(id)) return false;
     return blur;
@@ -116,7 +118,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           >
             <Text style={{ fontSize: 18, color: "#333" }}>{spoilerText}</Text>
             <Text style={{ fontSize: 14, color: Colors.theme, marginTop: 5 }}>
-              点击查看
+              {i18n.t("html_content_sensitive_show")}
             </Text>
           </TouchableOpacity>
         </BlurView>

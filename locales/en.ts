@@ -141,9 +141,14 @@ const en = {
   follow_button_mutual: "Mutual",
   follow_button_waiting: "Waiting",
 
-  refresh_list_foot_text: "loading more",
-  refresh_list_foot_fail_text: "reload",
-  refresh_list_foot_nomore_text: "no more data",
+  refresh_list_foot_text: "Loading more",
+  refresh_list_foot_fail_text: "Reload",
+  refresh_list_foot_nomore_text: "No more data",
+
+  meida_sensitive_text: "Sensitive Content",
+  meida_sensitive_show: "Show",
+
+  html_content_sensitive_show: "Show",
 };
 
 export default en;

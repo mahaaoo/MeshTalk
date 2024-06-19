@@ -8,23 +8,23 @@ import useAppStore from "../store/useAppStore";
 
 // 防抖hooks
 const useDebounce = <T extends () => void>(
-  fn: T,
+  fn: any,
   delay: number = 1000,
   dep: any[] = [],
 ) => {
-  const { current }: any = useRef({ fn, timer: null });
-  useEffect(() => {
+  const { current } = useRef<{ fn: any, timer: any }>({ fn, timer: null });
+  useEffect(function () {
     current.fn = fn;
   }, [fn]);
 
-  return useCallback(() => {
+  return useCallback((...args: any) => {
     if (current.timer) {
       clearTimeout(current.timer);
     }
     current.timer = setTimeout(() => {
-      current.fn();
+      current.fn(...args);
     }, delay);
-  }, dep);
+  }, dep)
 };
 
 interface UseRequestOptions {
@@ -201,5 +201,9 @@ const useRefreshList = <T extends { id: string }>(
     err,
   };
 };
+
+const useImmediately = () => {
+  
+}
 
 export { useDebounce, useRequest, useSetTimeout, useRefreshList };

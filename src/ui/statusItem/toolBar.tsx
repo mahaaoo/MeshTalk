@@ -7,7 +7,6 @@ import { Colors } from "../../config";
 import { favouriteStatuses, unfavouriteStatuses } from "../../server/status";
 import { addBookmark, deleteBookmark } from "../../server/account";
 
-import useI18nStore from "../../store/useI18nStore";
 import { Timelines } from "../../config/interface";
 
 interface ToolBarProps {
@@ -28,7 +27,6 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     bookmarked = false,
   } = item;
 
-  const { i18n } = useI18nStore();
   const [isFavourited, setIsFavourited] = useState(favourited);
   const [favouritesCount, setFavouritesCount] = useState(favourites_count);
 
@@ -36,16 +34,20 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
 
   const handleLike = useCallback(async () => {
     if (isFavourited) {
+      setIsFavourited(false);
+      setFavouritesCount(favouritesCount - 1);
       const { ok } = await unfavouriteStatuses(id);
-      if (ok) {
-        setIsFavourited(!isFavourited);
-        setFavouritesCount(favouritesCount - 1);
+      if (!ok) {
+        setIsFavourited(true);
+        setFavouritesCount(favouritesCount + 1);
       }
     } else {
+      setIsFavourited(true);
+      setFavouritesCount(favouritesCount + 1);
       const { ok } = await favouriteStatuses(id);
-      if (ok) {
-        setIsFavourited(!isFavourited);
-        setFavouritesCount(favouritesCount + 1);
+      if (!ok) {
+        setIsFavourited(false);
+        setFavouritesCount(favouritesCount - 1);
       }
     }
   }, [isFavourited, favouritesCount, id]);

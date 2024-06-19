@@ -13,6 +13,7 @@ import Animated, {
 import useStatusStore from "../../store/useStatusStore";
 import { ImagePreviewUtil } from "../ImagePreview";
 import SpacingBox from "../SpacingBox";
+import useI18nStore from "../../store/useI18nStore";
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
@@ -24,7 +25,6 @@ interface MediaImageProps {
 
 const MediaImage: React.FC<MediaImageProps> = (props) => {
   const { item, handleClick, index } = props;
-
   if (item.type === "audio") {
     console.log("item.type", item.type);
     return <Text>{item.type}</Text>;
@@ -121,6 +121,8 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
   const { imageList = [], height = 220, sensitive, id } = props;
   const intensity = useSharedValue(sensitive ? 95 : 0);
   const { checkSensitive, addSensitive } = useStatusStore();
+  const { i18n } = useI18nStore();
+
   const [showBlur, setShowBlur] = useState(() => {
     if (checkSensitive(id)) return false;
     return sensitive;
@@ -257,7 +259,7 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
             }}
           >
             <Text style={{ fontSize: 18, color: "#fff" }}>
-              可能涉及敏感内容
+              {i18n.t("meida_sensitive_text")}
             </Text>
             <TouchableOpacity
               style={{
@@ -277,7 +279,7 @@ const NinePicture: React.FC<NinePictureProps> = (props) => {
                 });
               }}
             >
-              <Text style={{ fontSize: 18, color: "#fff" }}>显示</Text>
+              <Text style={{ fontSize: 18, color: "#fff" }}>{i18n.t("meida_sensitive_show")}</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         </AnimatedBlurView>

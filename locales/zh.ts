@@ -144,5 +144,10 @@ const zh = {
   refresh_list_foot_text: "数据加载中…",
   refresh_list_foot_fail_text: "点击重新加载",
   refresh_list_foot_nomore_text: "已加载全部数据",
+
+  meida_sensitive_text: "可能涉及敏感内容",
+  meida_sensitive_show: "显示",
+
+  html_content_sensitive_show: "点击查看",
 };
 export default zh;
