@@ -179,3 +179,20 @@ export const removeFollowers = (id: string): Response<Relationship> => {
   const url = "/api/v1/accounts/" + id + "/remove_from_followers";
   return post<Relationship>(url);
 };
+
+// 获取书签内容
+export const bookmarks = (params?: Partial<FollowAndFansQueryParameters>): Response<Timelines[]> => {
+  const url = "/api/v1/bookmarks";
+  return get<Timelines[]>(url, params);
+}
+
+// 把推文加入到书签中
+export const addBookmark = (id: string): Response<Timelines> => {
+  const url = `/api/v1/statuses/${id}/bookmark`;
+  return post<Timelines>(url)
+}
+// 把推文从书签中删除
+export const deleteBookmark = (id: string): Response<Timelines> => {
+  const url = `/api/v1/statuses/${id}/unbookmark`;
+  return post<Timelines>(url)
+}

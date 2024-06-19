@@ -151,12 +151,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
           {needToolbar ? (
             <ToolBar
-              id={showItem.id}
-              favourited={showItem.favourited}
-              favourites_count={showItem.favourites_count}
-              reblogged={showItem.reblogged}
-              reblogs_count={showItem.reblogs_count}
-              replies_count={showItem.replies_count}
+              item={showItem}
             />
           ) : null}
         </View>

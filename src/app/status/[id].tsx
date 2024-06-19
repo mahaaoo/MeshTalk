@@ -38,7 +38,7 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
         <>
           <StatusItem item={statusDetail} needToolbar={false} />
           <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
-            <ToolBar id={id} />
+            <ToolBar item={statusDetail} />
           </View>
         </>
       )}

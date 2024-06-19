@@ -152,26 +152,39 @@ const Setting: React.FC<object> = () => {
           color={Colors.pageDefaultBackground}
         />
         <ListRow
-          leftIcon={<Icon name="like" size={24} color="#333" />}
+          leftIcon={<Icon name="like" size={25} color="#333" />}
           title={i18n.t("setting_like")}
           onPress={() => {
             router.push("/favourites");
           }}
         />
         <ListRow
+          leftIcon={<Icon name="bookmark" size={22} color="#333" />}
+          title={i18n.t("setting_bookmark")}
+          onPress={() => {
+            router.push("/bookmark");
+          }}
+        />
+        <ListRow
           leftIcon={<Icon name="mute" size={23} color="#333" />}
           title={i18n.t("setting_mute")}
-          onPress={handleToMute}
+          onPress={() => {
+            router.push("/mutes");
+          }}
         />
         <ListRow
           leftIcon={<Icon name="block" size={21} color="#333" />}
           title={i18n.t("setting_block")}
-          onPress={handleToBlock}
+          onPress={() => {
+            router.push("/blocks");
+          }}
         />
         <ListRow
           leftIcon={<Icon name="announcement" size={24} color="#333" />}
           title={i18n.t("setting_announce")}
-          onPress={handleToAnnounce}
+          onPress={() => {
+            router.push("/announcement");
+          }}
         />
         <ListRow
           leftIcon={<Icon name="language" size={24} color="#333" />}

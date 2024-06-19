@@ -30,9 +30,9 @@ const en = {
   home_tabview_title1: "Recommended",
   home_tabview_title2: "Following",
 
-  status_tool_bar_turn: "retweet",
-  status_tool_bar_comment: "comment",
-  status_tool_bar_like: "like",
+  // status_tool_bar_turn: "retweet",
+  // status_tool_bar_comment: "comment",
+  // status_tool_bar_like: "like",
 
   status_turn: "retweet",
   status_comment: "comment",
@@ -60,6 +60,7 @@ const en = {
   status_options_item_report: "Report",
 
   setting_like: "Like",
+  setting_bookmark: "Bookmark",
   setting_mute: "Mute",
   setting_block: "Block",
   setting_announce: "Announcements",
@@ -76,6 +77,7 @@ const en = {
   user_tabview_media: "Media",
 
   page_title_like: "Like",
+  page_title_bookmark: "Bookmark",
 
   page_title_mute: "Mute List",
   page_mute_null: "You haven't muted anyone.",

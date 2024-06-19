@@ -30,9 +30,9 @@ const zh = {
   home_tabview_title1: "推荐",
   home_tabview_title2: "正在关注",
 
-  status_tool_bar_turn: "转发",
-  status_tool_bar_comment: "转评",
-  status_tool_bar_like: "喜欢",
+  // status_tool_bar_turn: "转发",
+  // status_tool_bar_comment: "转评",
+  // status_tool_bar_like: "喜欢",
 
   status_turn: "转发了",
   status_comment: "转评了",
@@ -60,6 +60,7 @@ const zh = {
   status_options_item_report: "举报",
 
   setting_like: "喜欢",
+  setting_bookmark: "书签",
   setting_mute: "屏蔽",
   setting_block: "拉黑",
   setting_announce: "站点公告",
@@ -76,6 +77,7 @@ const zh = {
   user_tabview_media: "媒体",
 
   page_title_like: "喜欢的内容",
+  page_title_bookmark: "书签",
 
   page_title_mute: "屏蔽列表",
   page_mute_null: "没有屏蔽任何人",
