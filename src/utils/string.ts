@@ -23,6 +23,7 @@ export const acctName = (name?: string): string => {
   return `@${name}`;
 };
 
+// 获取媒体文件的格式
 export const getUrlType = (url: string): string => {
   if (!url || url.length <= 0) return "";
   const urlParts = url.split(".");
@@ -30,9 +31,20 @@ export const getUrlType = (url: string): string => {
   return type;
 };
 
+// 获取媒体文件的名字
 export const getUrlName = (url: string): string => {
   if (!url || url.length <= 0) return "";
   const urlParts = url.split("/");
   const name = urlParts[urlParts.length - 1];
   return name;
 };
+
+// 判断是否是合理的链接
+export const isValidURL = (str: string): boolean => {  
+  try {  
+      new URL(str);  
+      return true;  
+  } catch (_) {  
+      return false;  
+  }  
+}

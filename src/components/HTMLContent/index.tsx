@@ -1,6 +1,5 @@
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
-import { openBrowserAsync } from "expo-web-browser";
 import React, { useState } from "react";
 import {
   useWindowDimensions,
@@ -18,6 +17,7 @@ import HTML, {
 import Colors from "../../config/colors";
 import useStatusStore from "../../store/useStatusStore";
 import useI18nStore from "../../store/useI18nStore";
+import { openURL } from "@utils/media";
 
 const defaultTagsStyles = {
   p: {
@@ -84,7 +84,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           a: {
             onPress: (_, href) => {
               console.log("打开链接", href);
-              openBrowserAsync(href);
+              openURL(href);
               // console.log("123", href)
             },
           },

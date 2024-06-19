@@ -2,9 +2,12 @@ import * as FileSystem from "expo-file-system";
 import { FileInfo } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
-import { Platform, Share } from "react-native";
+import { openBrowserAsync } from "expo-web-browser";
+import { Linking, Platform, Share } from "react-native";
 import { Loading, Toast } from "react-native-ma-modal";
+import { isValidURL } from "./string";
 
+// 获取缩小版尺寸的图片，上传头像等
 export const imagePick = async () => {
   const permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -33,6 +36,7 @@ export const imagePick = async () => {
   };
 };
 
+// 获取原始尺寸的图片，上传头像等
 export const imageOriginPick = async () => {
   const permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -58,6 +62,7 @@ export const imageOriginPick = async () => {
   };
 };
 
+// 调用系统级分享
 export const systemShare = async (url: string) => {
   try {
     const result = await Share.share({
@@ -78,6 +83,7 @@ export const systemShare = async (url: string) => {
   }
 };
 
+// 保存文件，保存图片等
 export const fileSave = async (url: string) => {
   const permissions = await MediaLibrary.requestPermissionsAsync();
   Loading.show();
@@ -101,3 +107,11 @@ export const fileSave = async (url: string) => {
     Toast.show("无相册相关权限");
   }
 };
+
+export const openURL = (url: string) => {
+  // 根据用户偏好，选择在app内打开还是在浏览器打开
+  if (isValidURL(url)) {
+    openBrowserAsync(url);
+    // Linking.openURL(url);
+  }
+}

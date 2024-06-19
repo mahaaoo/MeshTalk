@@ -8,6 +8,7 @@ import { favouriteStatuses, unfavouriteStatuses } from "../../server/status";
 import { addBookmark, deleteBookmark } from "../../server/account";
 
 import { Timelines } from "../../config/interface";
+import { systemShare } from "@utils/media";
 
 interface ToolBarProps {
   item: Timelines;
@@ -25,6 +26,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
     id,
     reblogged = false,
     bookmarked = false,
+    url,
   } = item;
 
   const [isFavourited, setIsFavourited] = useState(favourited);
@@ -32,6 +34,8 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
 
   const [isBookmark, setIsBookmark] = useState(bookmarked);
 
+  // TODO: 将此类型的操作，抽象成一个hook单独使用
+  // 即先改变UI，在经过防抖处理之后，再去调用实际的api，请求成功则不处理，如果失败则UI回退
   const handleLike = useCallback(async () => {
     if (isFavourited) {
       setIsFavourited(false);
@@ -67,6 +71,10 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
       }
     }
   }, [isBookmark, id]);
+
+  const handleShare = useCallback(() => {
+    systemShare(url)
+  }, [url])
 
   return (
     <View style={styles.tool}>
@@ -117,6 +125,9 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
       <View style={styles.toolItem}>
         <TouchableOpacity style={styles.toolItem} onPress={handleBookmark}>
           <Icon name={isBookmark ? "bookmarkFill" : "bookmark"} size={18} color={isBookmark ?  "orange" : Colors.commonToolBarText} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.toolItem} onPress={handleShare}>
+          <Icon name={"share"} size={20} color={Colors.commonToolBarText} />
         </TouchableOpacity>
       </View>
     </View>

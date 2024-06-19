@@ -219,6 +219,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     paddingHorizontal: 8,
+    flex: -1,
+    minWidth: 100,
   },
 });
 

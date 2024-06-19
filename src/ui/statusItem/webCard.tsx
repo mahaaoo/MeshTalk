@@ -1,11 +1,11 @@
 import { Image } from "expo-image";
-import { openBrowserAsync } from "expo-web-browser";
 import React, { useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { styles } from "./index.style";
 import { Colors } from "../../config";
 import { Card } from "../../config/interface";
+import { openURL } from "@utils/media";
 
 interface WebCardProps {
   card: Card;
@@ -16,7 +16,7 @@ const WebCard: React.FC<WebCardProps> = (props) => {
 
   const handleNavigation = useCallback(() => {
     console.log("handleNavigation");
-    openBrowserAsync(card.url);
+    openURL(card.url);
   }, []);
 
   if (!card || !card.image) {

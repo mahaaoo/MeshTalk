@@ -1,11 +1,11 @@
 import { Button } from "@components";
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { openBrowserAsync } from "expo-web-browser";
 import { View, Text, StyleSheet } from "react-native";
 
 import { Colors } from "../../config";
 import { MastodonServers } from "../../config/interface";
+import { openURL } from "@utils/media";
 
 interface ServerCardProps {
   server: MastodonServers;
@@ -55,7 +55,7 @@ const ServerCard: React.FC<ServerCardProps> = (props) => {
             text={server.approval_required ? "申请账号" : "创建账号"}
             style={styles.button}
             onPress={() => {
-              openBrowserAsync(`https://${server.domain}/auth/sign_up`);
+              openURL(`https://${server.domain}/auth/sign_up`);
             }}
           />
           <Button
