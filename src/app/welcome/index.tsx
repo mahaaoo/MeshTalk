@@ -19,22 +19,22 @@ import useI18nStore from "../../store/useI18nStore";
 
 const Guide: React.FC<object> = () => {
   const [recommend, setRecommend] = useState<MastodonServers[]>([]);
-  const { i18n } = useI18nStore();
+  const { i18n, local } = useI18nStore();
   const { width } = useDeviceStore();
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetch = async (local: string) => {
       // TODO:获取本地的语言类型，默认en
       const { data, ok } = await getMastodonServers({
-        language: "zh",
+        language: local,
       });
 
       if (ok && data && data?.length > 0) {
         setRecommend(data);
       }
     };
-    fetch();
-  }, []);
+    fetch(local);
+  }, [local]);
 
   return (
     <Screen>

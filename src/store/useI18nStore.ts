@@ -9,17 +9,21 @@ import translations, { SupportLocale } from "../../locales";
 interface I18nState {
   i18n: I18n;
   initI18n: () => void;
+  local: string;
   switchLocale: (local: SupportLocale) => void;
 }
 
 const useI18nStore = create<I18nState>((set, get) => ({
   i18n: new I18n(translations),
+  local: "",
   initI18n: () => {
     const i18n = get().i18n;
-    i18n.locale = getLocales()[0].languageCode ?? "en";
+    const local = getLocales()[0].languageCode ?? "en";
+    i18n.locale = local;
     i18n.enableFallback = true;
     set({
       i18n,
+      local,
     });
   },
   switchLocale: (local: SupportLocale) => {

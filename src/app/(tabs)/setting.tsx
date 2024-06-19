@@ -169,12 +169,12 @@ const Setting: React.FC<object> = () => {
           onPress={handleToBlock}
         />
         <ListRow
-          leftIcon={<Icon name="announcement" size={23} color="#333" />}
+          leftIcon={<Icon name="announcement" size={24} color="#333" />}
           title={i18n.t("setting_announce")}
           onPress={handleToAnnounce}
         />
         <ListRow
-          leftIcon={<Icon name="announcement" size={23} color="#333" />}
+          leftIcon={<Icon name="language" size={24} color="#333" />}
           title={i18n.t("setting_lanuage")}
           onPress={() => {
             switchLocale(i18n.locale === "zh" ? "en" : "zh");
