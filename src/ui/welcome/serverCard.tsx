@@ -1,4 +1,3 @@
-import { Button } from "@components";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { View, Text, StyleSheet } from "react-native";
@@ -6,6 +5,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Colors } from "../../config";
 import { MastodonServers } from "../../config/interface";
 import { openURL } from "@utils/media";
+import useI18nStore from "../../store/useI18nStore";
 
 interface ServerCardProps {
   server: MastodonServers;
@@ -15,6 +15,7 @@ interface ServerCardProps {
 
 const ServerCard: React.FC<ServerCardProps> = (props) => {
   const { server, height = 450, width = 300 } = props;
+  const { i18n } = useI18nStore();
 
   return (
     <View style={[styles.cardContainer, { width, height }]}>
@@ -46,22 +47,17 @@ const ServerCard: React.FC<ServerCardProps> = (props) => {
         <View
           style={{
             width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-around",
+            alignItems: "center",
           }}
         >
-          <Button
-            textStyle={{ color: Colors.theme }}
-            text={server.approval_required ? "申请账号" : "创建账号"}
-            style={styles.button}
+          <Text 
             onPress={() => {
               openURL(`https://${server.domain}/auth/sign_up`);
-            }}
-          />
-          <Button
-            textStyle={{ color: Colors.theme }}
-            text="登录实例"
-            style={styles.button}
+            }}            
+            style={{ color: Colors.theme, fontSize: 16 }}>
+            {server.approval_required ? i18n.t("server_card_apply_text") : i18n.t("server_card_create_text")}
+          </Text>
+          <Text 
             onPress={() => {
               router.push({
                 pathname: "/login",
@@ -70,9 +66,10 @@ const ServerCard: React.FC<ServerCardProps> = (props) => {
                 },
               });
             }}
-          />
+            style={{ color: Colors.theme, fontSize: 16, marginTop: 5 }}>
+            {i18n.t("server_card_login_text")}
+          </Text>
         </View>
-
         <View style={styles.activeUser}>
           <View style={styles.point} />
           <Text>{`${server.last_week_users}/${server.total_users}`}</Text>
@@ -120,11 +117,6 @@ const styles = StyleSheet.create({
     height: 95,
     justifyContent: "center",
     alignItems: "center",
-  },
-  button: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: Colors.theme,
   },
   activeUser: {
     marginTop: 10,

@@ -149,5 +149,9 @@ const zh = {
   meida_sensitive_show: "显示",
 
   html_content_sensitive_show: "点击查看",
+
+  server_card_login_text: "登录实例",
+  server_card_create_text: "创建账号",
+  server_card_apply_text: "申请账号",
 };
 export default zh;
