@@ -46,7 +46,7 @@ const PullLoading: React.FC<PullLoadingProps> = memo((props) => {
         animatedStyle,
       ]}
     >
-      <ActivityIndicator color="#fff" />
+      <ActivityIndicator animating size={"small"} color={"#fff"} />
     </Animated.View>
   );
 });

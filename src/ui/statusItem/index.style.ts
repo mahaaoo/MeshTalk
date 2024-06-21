@@ -17,15 +17,13 @@ export const styles = StyleSheet.create({
     width: useDeviceStore.getState().width,
   },
   title: {
+    flex: 1,
     flexDirection: "row",
-    paddingTop: 15,
-  },
-  avatar: {
-    paddingRight: 10,
+    marginTop: 15,
   },
   name: {
-    justifyContent: "center",
     flex: 1,
+    marginLeft: 10,
   },
   turnText: {
     color: Colors.commonToolBarText,
@@ -35,7 +33,7 @@ export const styles = StyleSheet.create({
     lineHeight: 20,
   },
   content: {
-    marginHorizontal: 15,
+    paddingHorizontal: 15,
   },
   nameContainer: {
     flex: 1,
@@ -52,10 +50,10 @@ export const styles = StyleSheet.create({
   sourceContainer: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
   sourceView: {
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
   },

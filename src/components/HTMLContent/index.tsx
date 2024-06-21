@@ -99,6 +99,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
             left: 0,
             bottom: 0,
             right: 0,
+            width: "100%",
           }}
         >
           <TouchableOpacity
@@ -110,6 +111,8 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
               right: 0,
               justifyContent: "center",
               alignItems: "center",
+              width: "100%",
+              height: "100%",
             }}
             onPress={() => {
               setShowBlur(false);

@@ -76,7 +76,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         ) : null}
         <View style={styles.content}>
           <View style={styles.title}>
-            <TouchableOpacity style={styles.avatar} onPress={handleAvatar}>
+            <TouchableOpacity onPress={handleAvatar}>
               <Avatar url={showItem.account.avatar} />
             </TouchableOpacity>
             <View style={styles.name}>
@@ -96,7 +96,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               </View>
               <View style={styles.sourceContainer}>
                 <View style={styles.sourceView}>
-                  <Text style={styles.mentionText}>
+                  <Text style={styles.mentionText} ellipsizeMode="tail" numberOfLines={1}>
                     {StringUtil.acctName(showItem.account.acct)}
                   </Text>
                 </View>
