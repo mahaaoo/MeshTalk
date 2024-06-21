@@ -56,3 +56,17 @@ export const deleteStatus = (id: string): Response<Timelines> => {
 
   return api_delete<Timelines>(url);
 };
+
+// 置顶嘟文
+export const pinStatus = (id: string): Response<Timelines> => {
+  const url = "/api/v1/statuses/" + id + "/pin";
+
+  return post<Timelines>(url);
+};
+
+// 取消置顶嘟文
+export const unpinStatus = (id: string): Response<Timelines> => {
+  const url = "/api/v1/statuses/" + id + "/unpin";
+
+  return post<Timelines>(url);
+};

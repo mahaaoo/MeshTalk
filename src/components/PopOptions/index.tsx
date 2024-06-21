@@ -22,7 +22,7 @@ import {
   block,
   unblock,
 } from "../../server/account";
-import { deleteStatus } from "../../server/status";
+import { deleteStatus, pinStatus } from "../../server/status";
 import useAccountStore from "../../store/useAccountStore";
 import useI18nStore from "../../store/useI18nStore";
 import { Icon } from "../Icon";
@@ -110,6 +110,14 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
     PopOptonsUtil.hide();
   };
 
+  const handlePin = async () => {
+    const { ok, data } = await pinStatus(statusId);
+    if (ok && data) {
+      Toast.show("置顶嘟文成功");
+    }
+    PopOptonsUtil.hide();
+  }
+
   return (
     <View style={styles.container}>
       <BlurView intensity={98} tint="light">
@@ -147,6 +155,14 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
             </TouchableOpacity>
             <SpacingBox height={5} color="#e9e9e9" />
           </>
+        ) : null}
+        {isSelf ? (
+          <TouchableOpacity style={styles.item} onPress={handlePin}>
+            <Text style={styles.text}>
+              {i18n.t("status_options_item_pin")}
+            </Text>
+            <Icon name="pin" color="#333" />
+          </TouchableOpacity>
         ) : null}
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>

@@ -51,6 +51,9 @@ const zh = {
 
   status_options_item_mention: "提及",
 
+  status_options_item_pin: "置顶",
+  status_options_item_unpin: "取消置顶",
+
   status_options_item_mute: "屏蔽",
   status_options_item_unmute: "取消屏蔽",
 

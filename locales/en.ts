@@ -51,6 +51,9 @@ const en = {
 
   status_options_item_mention: "Mention",
 
+  status_options_item_pin: "Pin",
+  status_options_item_unpin: "Unpin",
+
   status_options_item_mute: "Mute",
   status_options_item_unmute: "Unmute",
 
