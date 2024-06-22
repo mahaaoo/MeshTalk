@@ -3,6 +3,7 @@ import {
   Response,
   Account,
   MediaAttachments,
+  StatusContext,
 } from "../config/interface";
 import { get, patch, post, api, api_delete } from "../utils/request";
 
@@ -69,4 +70,13 @@ export const unpinStatus = (id: string): Response<Timelines> => {
   const url = "/api/v1/statuses/" + id + "/unpin";
 
   return post<Timelines>(url);
+};
+
+
+// https://mastodon.example/api/v1/statuses/:id
+// 根据id查询一个推文详情
+export const getStatusesContext = (id: string = ""): Response<StatusContext> => {
+  const url = "/api/v1/statuses/" + id + "/context";
+
+  return get<StatusContext>(url);
 };

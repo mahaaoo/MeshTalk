@@ -1,15 +1,15 @@
 import { Screen } from "@components";
 import StatusItem from "@ui/statusItem";
-import ToolBar from "@ui/statusItem/toolBar";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, ScrollView } from "react-native";
 
 import { Colors } from "../../config";
-import { Timelines } from "../../config/interface";
-import { getStatusesById } from "../../server/status";
+import { getStatusesById, getStatusesContext } from "../../server/status";
 import useDeviceStore from "../../store/useDeviceStore";
 import useI18nStore from "../../store/useI18nStore";
+import { arrayToTree, StatusCtxTree } from "@utils/array";
+import { Loading } from "react-native-ma-modal";
 
 interface StatusDetailProps {}
 
@@ -17,31 +17,58 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
   const { id = "" } = useLocalSearchParams<{ id: string }>();
   const { insets } = useDeviceStore();
   const { i18n } = useI18nStore();
-  const [statusDetail, setStatusDetail] = useState<Timelines>();
+  const [ctxTree, setCtxTree] = useState<React.ReactNode>(null);
 
   useEffect(() => {
     const fetchStatus = async (id: string) => {
-      const { data } = await getStatusesById(id);
-      if (data) {
-        setStatusDetail(data);
+      Loading.show();
+      const { data: statusData, ok: statusOK } = await getStatusesById(id);
+      const { data: ctxData, ok: ctxOK } = await getStatusesContext(id);
+      if ( statusData && statusOK ) {
+        if ( ctxData && ctxOK ) {
+          // 转成树结构
+          const tree = arrayToTree(ctxData.descendants, statusData, 0);
+          const list = dfsTree(tree);
+          setCtxTree(list);
+        } else {
+          const node = {
+            node: statusData,
+            children: [],
+            deep: 0,
+          }    
+          const list = dfsTree(node);
+          setCtxTree(list);
+        }
+      } else {
+        // request error
       }
+      Loading.hide();
     };
 
     fetchStatus(id);
   }, [id]);
 
+  const dfsTree = (ctxTree: StatusCtxTree) => {
+    if (!ctxTree) return null;
+
+    const statusItemList: Array<React.ReactNode> = [];
+    const dfs = (treeNode: StatusCtxTree) => {
+      if (!treeNode) return;
+      statusItemList.push(<StatusItem key={treeNode.node.id} isReply={treeNode.deep > 0} item={treeNode.node} deep={treeNode.deep} canToDetail={treeNode.deep > 0} />)
+      treeNode.children.forEach((tree) => {
+        dfs(tree)
+      });
+    }
+
+    dfs(ctxTree);
+    return statusItemList.length === 0 ? null : statusItemList;
+  };
+
   return (
     <Screen headerShown title={i18n.t("page_status_detail")}>
-      {!statusDetail ? (
-        <View />
-      ) : (
-        <>
-          <StatusItem item={statusDetail} needToolbar={false} />
-          <View style={[styles.toolBar, { height: 40 + insets.bottom }]}>
-            <ToolBar item={statusDetail} />
-          </View>
-        </>
-      )}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: insets.bottom  }}>
+        {ctxTree}
+      </ScrollView>
     </Screen>
   );
 };

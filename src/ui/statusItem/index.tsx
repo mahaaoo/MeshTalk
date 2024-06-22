@@ -18,11 +18,14 @@ import UserName from "../home/userName";
 interface StatusItemProps {
   item: Timelines;
   needToolbar?: boolean; // 是否显示转发工具条
-  sameUser?: boolean; // 是否是同一个用户，在user中会用
+  canToDetail?: boolean; // 是否可以点击跳转到详情
+  isReply?: boolean; // 是否是回复的嘟文
+  deep?: number; // 当前回复深度
+  sameUser?: boolean; // 点击的嘟文是否当前用户用户，在user中会用
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
-  const { item, needToolbar = true, sameUser = false } = props;
+  const { item, needToolbar = true, sameUser = false, canToDetail = true, isReply = false, deep } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
   const { i18n } = useI18nStore();
@@ -48,6 +51,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   }, [item, sameUser]);
 
   const handleNavigation = useCallback(() => {
+    if (!canToDetail) return;
     needToolbar &&
       router.push({
         pathname: "/status/[id]",
@@ -55,19 +59,30 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           id: showItem.id,
         },
       });
-  }, [needToolbar, item]);
+  }, [needToolbar, item, canToDetail]);
 
   return (
-    <View style={styles.main} key={showItem.id}>
+    <View style={[styles.main, { marginBottom: isReply ? 0 : 10 }]} key={showItem.id}>
+      {
+        isReply && deep && deep > 0 ? (
+          <View style={{ position: "absolute", left: 18, top: 0, bottom: 0, height: "100%", flexDirection: "row" }}>
+          {
+            new Array(deep).fill(0).map((_, index) => (
+              <View key={index} style={{ height: "100%", width: 2, backgroundColor: "#ccc", opacity: index === deep - 1 ? 1 : 0.5, marginLeft: 5 }} />
+            ))
+          }
+          </View>
+        ) : null
+      }
       <TouchableOpacity activeOpacity={1} onPress={handleNavigation}>
-        {item.reblog ? (
+        {!isReply && item.reblog ? (
           <ReplyName
             displayName={item.account.display_name || item.account.username}
             emojis={showItem.account.emojis}
             type={i18n.t("status_turn")}
           />
         ) : null}
-        {item.in_reply_to_id ? (
+        {!isReply && item.in_reply_to_id ? (
           <ReplyName
             displayName={item.account.display_name || item.account.username}
             emojis={showItem.account.emojis}
@@ -75,6 +90,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           />
         ) : null}
         <View style={styles.content}>
+
           <View style={styles.title}>
             <TouchableOpacity onPress={handleAvatar}>
               <Avatar url={showItem.account.avatar} />
@@ -107,28 +123,30 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             </View>
           </View>
 
-          <HTMLContent
-            id={item.id}
-            blur={showItem.sensitive && showItem.media_attachments.length === 0}
-            spoilerText={showItem.spoiler_text}
-            html={replaceContentEmoji(showItem.content, showItem.emojis)}
-          />
-
-          <View style={{ paddingVertical: 8 }}>
-            <NinePicture
-              sensitive={
-                // D：如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
-                // 只要设置了敏感信息，则隐藏
-                showItem.sensitive
-              }
+          <View style={{ marginLeft: isReply ? 55 : 0 }}>
+            <HTMLContent
               id={item.id}
-              imageList={showItem.media_attachments}
+              blur={showItem.sensitive && showItem.media_attachments.length === 0}
+              spoilerText={showItem.spoiler_text}
+              html={replaceContentEmoji(showItem.content, showItem.emojis)}
             />
-          </View>
+            <View style={{ paddingVertical: 8 }}>
+              <NinePicture
+                sensitive={
+                  // D：如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
+                  // 只要设置了敏感信息，则隐藏
+                  showItem.sensitive
+                }
+                id={item.id}
+                imageList={showItem.media_attachments}
+              />
+            </View>
 
-          {showItem.media_attachments.length === 0 ? (
-            <WebCard card={showItem.card} />
-          ) : null}
+            {showItem.media_attachments.length === 0 ? (
+              <WebCard card={showItem.card} />
+            ) : null}
+
+          </View>
 
           {showItem.application ? (
             <View
@@ -147,13 +165,15 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             </View>
           ) : null}
 
-          <SplitLine start={0} end={width - 30} />
+          <View style={{ marginLeft: isReply ? 55 : 0 }}>
+            <SplitLine start={0} end={width - 30} />
 
-          {needToolbar ? (
-            <ToolBar
-              item={showItem}
-            />
-          ) : null}
+            {needToolbar ? (
+              <ToolBar
+                item={showItem}
+              />
+            ) : null}
+          </View>
         </View>
       </TouchableOpacity>
       <StatusOptions account={showItem.account} item={showItem} />

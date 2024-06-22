@@ -224,3 +224,8 @@ export interface AnnouncementInterface {
   emojis: Emoji[]; // 同样假设
   reactions: AnnouncementReaction[];
 }
+
+export interface StatusContext {
+  ancestors: Timelines[]
+  descendants: Timelines[]
+}
