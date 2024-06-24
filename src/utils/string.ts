@@ -48,3 +48,20 @@ export const isValidURL = (str: string): boolean => {
       return false;  
   }  
 }
+
+// about:///https/o3o.ca/@foxyearthO
+export const getAcctFromUrl = (url: string): string => {
+  // 判断字符串是否以"about"开头  
+  if (url.startsWith('about://')) {  
+    // 查找"@"在字符串中最后出现的位置  
+    const atIndex = url.lastIndexOf('@');  
+      
+    // 如果找到了"@"且其位置不是字符串的开头  
+    if (atIndex !== -1 && atIndex !== 0) {  
+        // 提取"@"之后的内容
+        return url.substring(atIndex + 1); // 或者使用 str.slice(atIndex + 1)  
+    }  
+  }  
+  
+  return "";  
+}

@@ -31,6 +31,18 @@ export interface MediaAttachments {
   blurhash: string;
 }
 
+export interface Mention {
+  id: string;
+  username: string;
+  url: string;
+  acct: string
+}
+
+export interface Tag {
+  name: string;
+  url: string;
+}
+
 // 就是官网的Status对象
 export interface Timelines {
   account: Account;
@@ -47,7 +59,7 @@ export interface Timelines {
   in_reply_to_id: string;
   language: string;
   media_attachments: MediaAttachments[];
-  mentions: any[];
+  mentions: Mention[];
   muted: boolean;
   poll: string;
   reblog: Timelines;
@@ -56,7 +68,7 @@ export interface Timelines {
   replies_count: number;
   sensitive: boolean;
   spoiler_text: string;
-  tags: any[];
+  tags: Tag[];
   uri: string;
   url: string;
   visibility: string;
@@ -219,9 +231,9 @@ export interface AnnouncementInterface {
   published_at: string;
   updated_at: string;
   read: boolean;
-  mentions: Account[]; // 假设我们不知道这个数组的确切类型，或者它可以是任何类型的数组
+  mentions: Mention[]; // 假设我们不知道这个数组的确切类型，或者它可以是任何类型的数组
   statuses: any[]; // 同样假设
-  tags: any[]; // 同样假设
+  tags: Tag[]; // 同样假设
   emojis: Emoji[]; // 同样假设
   reactions: AnnouncementReaction[];
 }

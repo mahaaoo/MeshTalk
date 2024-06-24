@@ -66,7 +66,6 @@ const Setting: React.FC<object> = () => {
     router.push({
       pathname: "/user/[id]",
       params: {
-        id: currentAccount?.id,
         acct: currentAccount?.acct,
       },
     });

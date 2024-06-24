@@ -134,6 +134,7 @@ const User: React.FC<UserProps> = (props) => {
     ],
     [
       i18n,
+      id,
       getStatusesById,
       getStatusesReplyById,
       getStatusesPinById,

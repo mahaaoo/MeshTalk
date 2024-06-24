@@ -41,6 +41,8 @@ const AnnounceCard: React.FC<AnnounceCardProps> = (props) => {
           <Text>{`${index}/${total}`}</Text>
         </View>
         <HTMLContent
+          mentions={announce.mentions}
+          tags={announce.tags}
           html={replaceContentEmoji(announce.content, announce.emojis)}
         />
         <View style={styles.reactionsContainer}>

@@ -118,12 +118,6 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
   }
 
   const handleBrowser = async () => {
-    console.log(
-      {
-        uri: item.uri,
-        url: item.url,
-      }
-    )
     openURL(item.url);
   }
 

@@ -21,7 +21,6 @@ const FollowItem: React.FC<FollowItemProps> = (props) => {
     router.push({
       pathname: "/user/[id]",
       params: {
-        id: item.account.id,
         acct: item.account.acct,
       },
     });

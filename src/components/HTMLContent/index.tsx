@@ -18,6 +18,9 @@ import Colors from "../../config/colors";
 import useStatusStore from "../../store/useStatusStore";
 import useI18nStore from "../../store/useI18nStore";
 import { openURL } from "@utils/media";
+import { Mention, Tag } from "../../config/interface";
+import { getAcctFromUrl } from "@utils/string";
+import { router } from "expo-router";
 
 const defaultTagsStyles = {
   p: {
@@ -57,11 +60,13 @@ interface HTMLContentProps {
   tagsStyles?: any;
   blur?: boolean;
   spoilerText?: string;
-  id?: string;
+  id?: string;  // 该条嘟文的id，为了记录是否已经展示过敏感信息set记录
+  mentions?: Mention[];
+  tags?: Tag[];
 }
 
 const HTMLContent: React.FC<HTMLContentProps> = (props) => {
-  const { html, tagsStyles, blur = false, spoilerText = "", id = "" } = props;
+  const { html, tagsStyles, blur = false, spoilerText = "", id = "", mentions, tags } = props;
   const { width } = useWindowDimensions();
   const { checkSensitive, addSensitive } = useStatusStore();
   const { i18n } = useI18nStore();
@@ -83,7 +88,23 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
         renderersProps={{
           a: {
             onPress: (_, href) => {
-              console.log("打开链接", href);
+              console.log("HTMLContent <a>", href);
+              const getAcct = getAcctFromUrl(href);
+              if (href.indexOf("/tags/") !== -1) {
+                // 打开相应的tag
+                console.log("打开相应的tag");
+              } else if (getAcct.length > 0) {
+                // console.log(mentions)
+                const user = mentions?.filter(m => m.username === getAcct) || [];
+                if (user?.length > 0) {
+                  router.push({
+                    pathname: "/user/[id]",
+                    params: {
+                      acct: user[0].acct,
+                    },
+                  });              
+                }
+              }
               openURL(href);
               // console.log("123", href)
             },

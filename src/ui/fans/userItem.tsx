@@ -27,7 +27,6 @@ const UserItem: React.FC<UserItemProps> = (props) => {
     router.push({
       pathname: "/user/[id]",
       params: {
-        id: item.id,
         acct: item.acct,
       },
     });

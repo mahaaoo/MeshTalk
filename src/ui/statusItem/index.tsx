@@ -44,7 +44,6 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
     router.push({
       pathname: "/user/[id]",
       params: {
-        id: showItem.account.id,
         acct: showItem.account.acct,
       },
     });
@@ -129,6 +128,8 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               blur={showItem.sensitive && showItem.media_attachments.length === 0}
               spoilerText={showItem.spoiler_text}
               html={replaceContentEmoji(showItem.content, showItem.emojis)}
+              mentions={showItem.mentions}
+              tags={showItem.tags}
             />
             <View style={{ paddingVertical: 8 }}>
               <NinePicture
