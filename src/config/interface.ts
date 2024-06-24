@@ -60,6 +60,7 @@ export interface Timelines {
   uri: string;
   url: string;
   visibility: string;
+  pinned: boolean;
 }
 
 export interface AccountFields {

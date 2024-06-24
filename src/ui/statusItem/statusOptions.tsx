@@ -26,9 +26,8 @@ const StatusOptions: React.FC<StatusOptionsProps> = (props) => {
       const measurement = measure(aref);
       if (measurement !== null) {
         const params = {
-          acct: account.acct,
-          userId: account.id,
-          statusId: item.id,
+          account,
+          item,
         };
         runOnJS(PopOptonsUtil.show)(measurement, params);
       }
