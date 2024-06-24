@@ -51,6 +51,9 @@ const zh = {
 
   status_options_item_mention: "提及",
 
+  status_options_item_copy_link: "复制嘟文链接",
+  status_options_item_open_link: "在浏览器中打开",
+
   status_options_item_pin: "置顶",
   status_options_item_unpin: "取消置顶",
 

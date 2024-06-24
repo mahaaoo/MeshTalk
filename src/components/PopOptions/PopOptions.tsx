@@ -2,6 +2,8 @@ import { BlurView } from 'expo-blur';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
 import { Toast } from 'react-native-ma-modal';
+import * as Clipboard from 'expo-clipboard';
+
 import { PopOptonsUtil } from '.';
 import { Account, Relationship, Timelines } from '../../config/interface';
 import { getRelationships, unfollowById, followById, unmute, mute, unblock, block } from '../../server/account';
@@ -11,6 +13,7 @@ import useI18nStore from '../../store/useI18nStore';
 import { Icon } from '../Icon';
 import SpacingBox from '../SpacingBox';
 import SplitLine from '../SplitLine';
+import { openURL } from '@utils/media';
 
 export interface PopOptionsProps {
   account: Account;
@@ -108,6 +111,22 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
     PopOptonsUtil.hide();
   }
 
+  const handleCopy = async () => {
+    await Clipboard.setStringAsync(item.url);
+    PopOptonsUtil.hide();
+    Toast.show("已复制到粘贴板");
+  }
+
+  const handleBrowser = async () => {
+    console.log(
+      {
+        uri: item.uri,
+        url: item.url,
+      }
+    )
+    openURL(item.url);
+  }
+
   return (
     <View style={styles.container}>
       <BlurView intensity={98} tint="light">
@@ -154,6 +173,18 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
             <Icon name="pin" color="#333" />
           </TouchableOpacity>
         ) : null}
+        <TouchableOpacity style={styles.item} onPress={handleCopy}>
+          <Text style={styles.text}>
+            {i18n.t("status_options_item_copy_link")}
+          </Text>
+          <Icon name="link" color="#333" size={20} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item} onPress={handleBrowser}>
+          <Text style={styles.text}>
+            {i18n.t("status_options_item_open_link")}
+          </Text>
+          <Icon name="browser" color="#333" size={22} />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>
             {i18n.t("status_options_item_mention")}
@@ -193,7 +224,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
-    width: 220,
+    width: 240,
     overflow: "hidden",
   },
   item: {

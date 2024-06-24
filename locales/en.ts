@@ -51,6 +51,9 @@ const en = {
 
   status_options_item_mention: "Mention",
 
+  status_options_item_copy_link: "Copy the post link",
+  status_options_item_open_link: "Open in browser",
+
   status_options_item_pin: "Pin",
   status_options_item_unpin: "Unpin",
 
