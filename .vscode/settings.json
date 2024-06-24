@@ -1,0 +1,8 @@
+{
+  "eslint.debug": true,
+  "eslint.format.enable": true,
+  "eslint.enable": true, // 开启eslint检查
+  "editor.formatOnSave": true, // 开启保存文件自动格式化代码
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // 默认的代码格式化工具
+  "prettier.requireConfig": true // 需要Prettier的配置文件
+}
