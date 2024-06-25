@@ -1,5 +1,5 @@
 import { Button } from "@components";
-import { dateToFromNow } from "@utils/date";
+import { dateLocale } from "@utils/date";
 import { replaceContentEmoji } from "@utils/emoji";
 import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, Text } from "react-native";
@@ -11,6 +11,7 @@ import { Colors } from "../../config";
 import { AnnouncementInterface } from "../../config/interface";
 import { dismissAnnounce } from "../../server/notifications";
 import useDeviceStore from "../../store/useDeviceStore";
+import useI18nStore from "../../store/useI18nStore";
 
 interface AnnounceCardProps {
   announce: AnnouncementInterface;
@@ -21,6 +22,8 @@ interface AnnounceCardProps {
 const AnnounceCard: React.FC<AnnounceCardProps> = (props) => {
   const { announce, index, total } = props;
   const { width, insets } = useDeviceStore();
+  const { i18n } = useI18nStore();
+
   const [read, setRead] = useState(announce.read);
 
   const handleRead = async () => {
@@ -37,7 +40,7 @@ const AnnounceCard: React.FC<AnnounceCardProps> = (props) => {
     <ScrollView style={{ width, flex: 1 }}>
       <View style={styles.item}>
         <View style={styles.time}>
-          <Text>发布于：{announce?.updated_at}</Text>
+          <Text>{dateLocale(announce?.updated_at)}</Text>
           <Text>{`${index}/${total}`}</Text>
         </View>
         <HTMLContent
@@ -64,7 +67,7 @@ const AnnounceCard: React.FC<AnnounceCardProps> = (props) => {
           marginBottom: insets.bottom,
           backgroundColor: read ? Colors.defaultLineGreyColor : Colors.theme,
         }}
-        text="已读"
+        text={i18n.t("announce_read_button_text")}
         onPress={handleRead}
       />
     </ScrollView>

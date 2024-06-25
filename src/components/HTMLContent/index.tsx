@@ -89,15 +89,16 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           a: {
             onPress: (_, href) => {
               console.log("HTMLContent <a>", href);
-              const getAcct = getAcctFromUrl(href);
               if (href.indexOf("/tags/") !== -1) {
                 // 打开相应的tag
                 console.log("打开相应的tag");
-              } else if (getAcct.length > 0) {
+              } else if (href.indexOf("@") !== -1) {
                 // console.log(mentions)
+                const getAcct = getAcctFromUrl(href);
+
                 const user = mentions?.filter(m => m.username === getAcct) || [];
                 if (user?.length > 0) {
-                  router.push({
+                  return router.push({
                     pathname: "/user/[id]",
                     params: {
                       acct: user[0].acct,

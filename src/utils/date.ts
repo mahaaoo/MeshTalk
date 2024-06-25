@@ -42,3 +42,13 @@ export const dateToFromNow = (date: string, units: DateUnits): string => {
 
   return units.now;
 };
+
+export const dateLocale = (date: string) => {
+  const dateEnd = Date.parse(date);
+  const localDate = new Date(dateEnd);
+  const year = localDate.getFullYear();  
+  const month = String(localDate.getMonth() + 1).padStart(2, '0'); // 月份是从0开始的，所以需要+1，并使用padStart补全到两位数  
+  const day = String(localDate.getDate()).padStart(2, '0'); 
+  
+  return `${year}-${month}-${day}`
+}

@@ -158,7 +158,9 @@ const en = {
   
   server_card_login_text: "Login",
   server_card_create_text: "Create Account",
-  server_card_apply_text: "Apply Account"
+  server_card_apply_text: "Apply Account",
+
+  announce_read_button_text: "Read",
 };
 
 export default en;

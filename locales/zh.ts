@@ -159,5 +159,7 @@ const zh = {
   server_card_login_text: "登录实例",
   server_card_create_text: "创建账号",
   server_card_apply_text: "申请账号",
+
+  announce_read_button_text: "已读",
 };
 export default zh;
