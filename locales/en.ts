@@ -72,6 +72,7 @@ const en = {
   setting_announce: "Announcements",
   setting_lanuage: "Language",
   setting_logout: "Logout/Switch Account",
+  setting_tag: "Hashtags",
 
   user_post: "Posts",
   user_folloing: "Following",
@@ -84,6 +85,9 @@ const en = {
 
   page_title_like: "Like",
   page_title_bookmark: "Bookmark",
+
+  page_title_hashtag: "Hashtags List",
+  page_hashtag_null: "You haven't hashtags anyone.",
 
   page_title_mute: "Mute List",
   page_mute_null: "You haven't muted anyone.",
@@ -161,6 +165,8 @@ const en = {
   server_card_apply_text: "Apply Account",
 
   announce_read_button_text: "Read",
+
+  hash_tag_describe: (days: number, accounts: number, uses: number) => `In the past ${days} days, a total of ${accounts} users have used it ${uses} times`,
 };
 
 export default en;

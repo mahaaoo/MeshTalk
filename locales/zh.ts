@@ -72,6 +72,7 @@ const zh = {
   setting_announce: "站点公告",
   setting_lanuage: "语言",
   setting_logout: "退出/切换账号",
+  setting_tag: "话题标签",
 
   user_post: "嘟文",
   user_folloing: "正在关注",
@@ -84,6 +85,9 @@ const zh = {
 
   page_title_like: "喜欢的内容",
   page_title_bookmark: "书签",
+
+  page_title_hashtag: "话题标签",
+  page_hashtag_null: "没有话题标签",
 
   page_title_mute: "屏蔽列表",
   page_mute_null: "没有屏蔽任何人",
@@ -161,5 +165,7 @@ const zh = {
   server_card_apply_text: "申请账号",
 
   announce_read_button_text: "已读",
+
+  hash_tag_describe: (days: number, accounts: number, uses: number) => `过去${days}天,共有${accounts}个用户使用${uses}次`,
 };
 export default zh;

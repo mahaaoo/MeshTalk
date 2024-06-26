@@ -102,7 +102,7 @@ const useSetTimeout = (
 };
 
 // 下拉刷新和上拉加载列表
-const useRefreshList = <T extends { id: string }>(
+const useRefreshList = <T>(
   fetchApi: (...args: any) => Response<T[]>, // 请求接口
   loadType: "Normal" | "Link",
   limit: number = 20,
@@ -165,7 +165,8 @@ const useRefreshList = <T extends { id: string }>(
       // max_id获取方式和接口有关
       let maxId = "";
       if (loadType === "Normal") {
-        maxId = dataSource[dataSource.length - 1].id;
+        // @ts-ignore
+        maxId = dataSource[dataSource.length - 1]?.id;
       }
       if (loadType === "Link") {
         const regex = /max_id=(\d+)/;

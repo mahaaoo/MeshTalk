@@ -242,3 +242,16 @@ export interface StatusContext {
   ancestors: Timelines[]
   descendants: Timelines[]
 }
+
+export interface HashTagHistory {
+  day: string;
+  uses: string;
+  accounts: string;
+}
+
+export interface HashTag {
+  name: string;
+  url: string;
+  history: HashTagHistory[];
+  following: boolean;
+}

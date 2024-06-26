@@ -22,8 +22,10 @@ import { TabView, DefaultTabBar } from "./TabView";
 
 export * from "./ErrorBoundary";
 export * from "./ImagePreview";
+import AccountChart from "./AccountChart";
 
 export {
+  AccountChart,
   ActionsSheet,
   Avatar,
   Button,

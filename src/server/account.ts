@@ -4,6 +4,7 @@ import {
   Relationship,
   FollowAndFansQueryParameters,
   Response,
+  HashTag,
 } from "../config/interface";
 import { get, post } from "../utils/request";
 
@@ -195,4 +196,11 @@ export const addBookmark = (id: string): Response<Timelines> => {
 export const deleteBookmark = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/unbookmark`;
   return post<Timelines>(url)
+}
+
+// 获取关注的tag列表
+export const followedTags = (params: object): Response<HashTag[]> => {
+  const url = "/api/v1/followed_tags";
+
+  return get<HashTag[]>(url, params);
 }

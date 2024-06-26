@@ -179,6 +179,13 @@ const Setting: React.FC<object> = () => {
           }}
         />
         <ListRow
+          leftIcon={<Icon name="hashTag" size={24} color="#333" />}
+          title={i18n.t("setting_tag")}
+          onPress={() => {
+            router.push("/hashtag");
+          }}
+        />
+        <ListRow
           leftIcon={<Icon name="announcement" size={24} color="#333" />}
           title={i18n.t("setting_announce")}
           onPress={() => {
