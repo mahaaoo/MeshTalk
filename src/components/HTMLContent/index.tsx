@@ -91,7 +91,26 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
               console.log("HTMLContent <a>", href);
               if (href.indexOf("/tags/") !== -1) {
                 // 打开相应的tag
-                console.log("打开相应的tag");
+                console.log("打开相应的tag", tags);
+                const splitList = href.split("/");
+                const last = splitList[splitList.length - 1];
+
+                const matchTag = tags?.filter(tag => {
+                  const tagUrls = tag.url.split("/");
+                  const tagLast = tagUrls[tagUrls.length - 1];
+                  return tagLast === last;
+                });
+                if (matchTag && matchTag?.length > 0) {
+                  // 是一个合理的tag值
+                  return router.push({
+                    pathname: "/tag/[id]",
+                    params: {
+                      id: matchTag[0].name,
+                    },
+                  });              
+                }
+
+                console.log("是一个非法的tag或者匹配失败");
               } else if (href.indexOf("@") !== -1) {
                 // console.log(mentions)
                 const getAcct = getAcctFromUrl(href);
