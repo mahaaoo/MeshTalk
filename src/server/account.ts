@@ -204,3 +204,31 @@ export const followedTags = (params: object): Response<HashTag[]> => {
 
   return get<HashTag[]>(url, params);
 }
+
+// 获取这个tag信息
+export const tagInfo = (id: string): Response<HashTag> => {
+  const url = "/api/v1/tags/" + id;
+
+  return get<HashTag>(url);
+}
+
+// 获取tag下的嘟文
+export const tagTimelines = (id: string, params: object): Response<Timelines[]> => {
+  const url = "/api/v1/timelines/tag/" + id;
+  
+  return get<Timelines[]>(url, params); 
+}
+
+// 关注一个tag
+export const followTag = (id: string): Response<HashTag> => {
+  const url = "/api/v1/tags/" + id + "/follow";
+
+  return post<HashTag>(url);
+}
+
+// 取关一个tag
+export const unfollowTag = (id: string): Response<HashTag> => {
+  const url = "/api/v1/tags/" + id + "/unfollow";
+
+  return post<HashTag>(url);
+}

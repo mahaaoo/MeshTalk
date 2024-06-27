@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { HashTag } from '../../config/interface';
 import { Icon, AccountChart, SplitLine } from '@components';
 import { Colors } from '../../config';
 import useI18nStore from '../../store/useI18nStore';
 import useDeviceStore from '../../store/useDeviceStore';
+import { router } from 'expo-router';
 
 interface HashTagItemProps {
   item: HashTag;
@@ -30,7 +31,14 @@ const HashTagItem: React.FC<HashTagItemProps> = props => {
   }, [item])
 
   return (
-    <>
+    <TouchableOpacity onPress={() => {
+      router.push({
+        pathname: "/tag/[id]",
+        params: {
+          id: item.name,
+        },
+      });
+    }}>
       <View key={item.url} style={styles.itemContainer}>
         <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
           <Icon name='hashTag' color='#333' />
@@ -42,7 +50,7 @@ const HashTagItem: React.FC<HashTagItemProps> = props => {
         <AccountChart history={item.history} />
       </View>
       <SplitLine start={0} end={width} />
-    </>
+    </TouchableOpacity>
   )
 };
 

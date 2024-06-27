@@ -167,6 +167,9 @@ const en = {
   announce_read_button_text: "Read",
 
   hash_tag_describe: (days: number, accounts: number, uses: number) => `In the past ${days} days, a total of ${accounts} users have used it ${uses} times`,
+
+  hash_info_follow_text: "Follow",
+  hash_info_following_text: "Following",
 };
 
 export default en;

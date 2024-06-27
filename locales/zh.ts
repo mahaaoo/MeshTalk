@@ -167,5 +167,8 @@ const zh = {
   announce_read_button_text: "已读",
 
   hash_tag_describe: (days: number, accounts: number, uses: number) => `过去${days}天,共有${accounts}个用户使用${uses}次`,
+
+  hash_info_follow_text: "关注",
+  hash_info_following_text: "正在关注",
 };
 export default zh;

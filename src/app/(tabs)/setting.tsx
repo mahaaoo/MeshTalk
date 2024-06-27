@@ -71,18 +71,6 @@ const Setting: React.FC<object> = () => {
     });
   }, []);
 
-  const handleToMute = () => {
-    router.push("/mutes");
-  };
-
-  const handleToBlock = () => {
-    router.push("/blocks");
-  };
-
-  const handleToAnnounce = () => {
-    router.push("/announcement");
-  };
-
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = -event.contentOffset.y;
