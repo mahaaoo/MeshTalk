@@ -80,3 +80,17 @@ export const getStatusesContext = (id: string = ""): Response<StatusContext> => 
 
   return get<StatusContext>(url);
 };
+
+// 转发嘟文
+export const reblog = (id: string): Response<Timelines> => {
+  const url = `/api/v1/statuses/${id}/reblog`;
+
+  return post<Timelines>(url);
+}
+
+// 取消转发嘟文
+export const unreblog = (id: string): Response<Timelines> => {
+  const url = `/api/v1/statuses/${id}/unreblog`;
+
+  return post<Timelines>(url);
+}
