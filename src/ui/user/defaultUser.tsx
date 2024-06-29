@@ -21,11 +21,15 @@ const DefaultUser: React.FC<DefaultUserProps> = props => {
           reverse
         >
           <View style={{ height: 150 }} />
-          <Skeleton.SkeletonRect style={styles.mainAvatar} />
-          <Skeleton.SkeletonRect style={styles.userName} />
-          <Skeleton.SkeletonRect style={styles.userId} />
-          <Skeleton.SkeletonRect style={styles.userBio} />
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Skeleton.SkeletonRect style={styles.mainAvatar} />
+            <Skeleton.SkeletonRect style={styles.button} />
+          </View>
 
+            <Skeleton.SkeletonRect style={styles.userName} />
+            <Skeleton.SkeletonRect style={styles.userId} />
+
+          <Skeleton.SkeletonRect style={styles.userBio} />
           <View style={{ flexDirection: "row", justifyContent: "space-around", marginTop: 10 }}>
             <Skeleton.SkeletonRect style={styles.tabItem} />
             <Skeleton.SkeletonRect style={styles.tabItem} />
@@ -107,6 +111,11 @@ const styles = StyleSheet.create({
     height: 20,
     width: 80,
     marginTop: 5,
+  },
+  button: {
+    height: 40,
+    width: 100,
+    borderRadius: 20,
   },
   userId: {
     height: 20,
