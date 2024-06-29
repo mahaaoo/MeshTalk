@@ -23,7 +23,6 @@ const HomeLine: React.FC<HomeLineProps> = (props) => {
     const unsubscribe = navigation.addListener<any>("tabPress", () => {
       if (navigation.isFocused() && currentIndex === index) {
         if (ref.current && ref.current?.offset() > 0) {
-          console.log("zhx");
           ref.current && ref.current?.srollToTop();
         } else {
           // onRefresh();
@@ -38,7 +37,7 @@ const HomeLine: React.FC<HomeLineProps> = (props) => {
     if (dataSource.length === 0 && index === currentIndex) {
       fetchData();
     }
-  }, [currentIndex, index]);
+  }, [currentIndex, index, dataSource, fetchData]);
 
   return (
     <RefreshList

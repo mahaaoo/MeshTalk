@@ -69,7 +69,7 @@ const User: React.FC<UserProps> = (props) => {
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
   // 返回上一页
-  const handleBack = useCallback(router.back, []);
+  const handleBack = useCallback(() => router.back(), []);
   // 由于个人简介内容高度不定，所以在请求获取到内容之后，重新的吸顶测量高度
   const handleOnLayout = (e: any) => {
     const { height } = e.nativeEvent.layout;
@@ -132,14 +132,7 @@ const User: React.FC<UserProps> = (props) => {
         title: i18n.t("user_tabview_media"),
       },
     ],
-    [
-      i18n,
-      id,
-      getStatusesById,
-      getStatusesReplyById,
-      getStatusesPinById,
-      getStatusesMediaById,
-    ],
+    [i18n],
   );
 
   const arefs = useRef(new Array(tabViewConfig.length));

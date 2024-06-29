@@ -1,11 +1,6 @@
 import { Avatar, FollowButton, HTMLContent, Icon } from "@components";
 import UserName from "@ui/home/userName";
-import {
-  StringUtil,
-  replaceContentEmoji,
-  replaceNameEmoji,
-} from "@utils/index";
-import { Image } from "expo-image";
+import { StringUtil, replaceContentEmoji } from "@utils/index";
 import React from "react";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 

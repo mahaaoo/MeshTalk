@@ -89,7 +89,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
         />
       ),
     });
-  }, [state]);
+  }, [i18n, navigation, state]);
 
   const submit = async () => {
     Loading.show();

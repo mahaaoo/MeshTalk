@@ -40,26 +40,26 @@ export const getUrlName = (url: string): string => {
 };
 
 // 判断是否是合理的链接
-export const isValidURL = (str: string): boolean => {  
-  try {  
-      new URL(str);  
-      return true;  
-  } catch (_) {  
-      return false;  
-  }  
-}
+export const isValidURL = (str: string): boolean => {
+  try {
+    new URL(str);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 // about:///https/o3o.ca/@foxyearthO
 // https://m.cmx.im/@strawberry
 export const getAcctFromUrl = (url: string): string => {
-  // 判断字符串是否以"about"开头  
-  const atIndex = url.lastIndexOf('@');  
-    
-  // 如果找到了"@"且其位置不是字符串的开头  
-  if (atIndex !== -1 && atIndex !== 0) {  
-      // 提取"@"之后的内容
-      return url.substring(atIndex + 1); // 或者使用 str.slice(atIndex + 1)  
-  }  
-  
-  return "";  
-}
+  // 判断字符串是否以"about"开头
+  const atIndex = url.lastIndexOf("@");
+
+  // 如果找到了"@"且其位置不是字符串的开头
+  if (atIndex !== -1 && atIndex !== 0) {
+    // 提取"@"之后的内容
+    return url.substring(atIndex + 1); // 或者使用 str.slice(atIndex + 1)
+  }
+
+  return "";
+};

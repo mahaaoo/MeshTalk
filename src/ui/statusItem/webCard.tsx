@@ -17,7 +17,7 @@ const WebCard: React.FC<WebCardProps> = (props) => {
   const handleNavigation = useCallback(() => {
     console.log("handleNavigation");
     openURL(card.url);
-  }, []);
+  }, [card]);
 
   if (!card || !card.image) {
     return null;

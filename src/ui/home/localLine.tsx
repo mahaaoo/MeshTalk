@@ -41,7 +41,7 @@ const Local: React.FC<LocalProps> = (props) => {
     if (dataSource.length === 0 && index === currentIndex) {
       fetchData();
     }
-  }, [currentIndex, index]);
+  }, [currentIndex, dataSource, fetchData, index]);
 
   return (
     <View style={styles.main}>

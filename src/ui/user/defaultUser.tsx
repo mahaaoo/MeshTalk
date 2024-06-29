@@ -1,36 +1,39 @@
-import { Skeleton, Icon } from '@components';
-import React, { useCallback } from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import useDeviceStore from '../../store/useDeviceStore';
-import { router } from 'expo-router';
+import { Skeleton, Icon } from "@components";
+import React, { useCallback } from "react";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import useDeviceStore from "../../store/useDeviceStore";
+import { router } from "expo-router";
 
-interface DefaultUserProps {
-};
+interface DefaultUserProps {}
 
-const DefaultUser: React.FC<DefaultUserProps> = props => {
-  const {} = props;
+const DefaultUser: React.FC<DefaultUserProps> = (props) => {
   const { insets } = useDeviceStore();
 
-  const handleBack = useCallback(router.back, []);
+  const handleBack = useCallback(() => router.back(), []);
 
   return (
     <>
       <View style={styles.main}>
-        <Skeleton.SkeletonContainer
-          childAnimation={Skeleton.Breath}
-          reverse
-        >
+        <Skeleton.SkeletonContainer childAnimation={Skeleton.Breath} reverse>
           <View style={{ height: 150 }} />
-          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
             <Skeleton.SkeletonRect style={styles.mainAvatar} />
             <Skeleton.SkeletonRect style={styles.button} />
           </View>
 
-            <Skeleton.SkeletonRect style={styles.userName} />
-            <Skeleton.SkeletonRect style={styles.userId} />
+          <Skeleton.SkeletonRect style={styles.userName} />
+          <Skeleton.SkeletonRect style={styles.userId} />
 
           <Skeleton.SkeletonRect style={styles.userBio} />
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginTop: 10 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginTop: 10,
+            }}
+          >
             <Skeleton.SkeletonRect style={styles.tabItem} />
             <Skeleton.SkeletonRect style={styles.tabItem} />
             <Skeleton.SkeletonRect style={styles.tabItem} />
@@ -84,7 +87,7 @@ const DefaultUser: React.FC<DefaultUserProps> = props => {
         <Icon name="arrowLeft" color="#fff" size={18} />
       </TouchableOpacity>
     </>
-  )
+  );
 };
 
 const styles = StyleSheet.create({

@@ -50,14 +50,17 @@ const ServerCard: React.FC<ServerCardProps> = (props) => {
             alignItems: "center",
           }}
         >
-          <Text 
+          <Text
             onPress={() => {
               openURL(`https://${server.domain}/auth/sign_up`);
-            }}            
-            style={{ color: Colors.theme, fontSize: 16 }}>
-            {server.approval_required ? i18n.t("server_card_apply_text") : i18n.t("server_card_create_text")}
+            }}
+            style={{ color: Colors.theme, fontSize: 16 }}
+          >
+            {server.approval_required
+              ? i18n.t("server_card_apply_text")
+              : i18n.t("server_card_create_text")}
           </Text>
-          <Text 
+          <Text
             onPress={() => {
               router.push({
                 pathname: "/login",
@@ -66,7 +69,8 @@ const ServerCard: React.FC<ServerCardProps> = (props) => {
                 },
               });
             }}
-            style={{ color: Colors.theme, fontSize: 16, marginTop: 5 }}>
+            style={{ color: Colors.theme, fontSize: 16, marginTop: 5 }}
+          >
             {i18n.t("server_card_login_text")}
           </Text>
         </View>

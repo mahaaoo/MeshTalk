@@ -7,24 +7,26 @@ import { Response } from "../config/interface";
 import useAppStore from "../store/useAppStore";
 
 // 防抖hooks
-const useDebounce = <T extends () => void>(
-  fn: any,
-  delay: number = 1000,
-  dep: any[] = [],
-) => {
-  const { current } = useRef<{ fn: any, timer: any }>({ fn, timer: null });
-  useEffect(function () {
-    current.fn = fn;
-  }, [fn]);
+const useDebounce = (fn: any, delay: number = 1000, dep: any[] = []) => {
+  const { current } = useRef<{ fn: any; timer: any }>({ fn, timer: null });
+  useEffect(
+    function () {
+      current.fn = fn;
+    },
+    [current, fn],
+  );
 
-  return useCallback((...args: any) => {
-    if (current.timer) {
-      clearTimeout(current.timer);
-    }
-    current.timer = setTimeout(() => {
-      current.fn(...args);
-    }, delay);
-  }, dep)
+  return useCallback(
+    (...args: any) => {
+      if (current.timer) {
+        clearTimeout(current.timer);
+      }
+      current.timer = setTimeout(() => {
+        current.fn(...args);
+      }, delay);
+    },
+    [current, delay],
+  );
 };
 
 interface UseRequestOptions {
@@ -64,7 +66,7 @@ const useRequest = <T>(
           }
         });
     },
-    [fn],
+    [current.fn, options.loading],
   );
 
   useEffect(() => {
@@ -72,7 +74,7 @@ const useRequest = <T>(
     if (options?.manual === false && !data) {
       run();
     }
-  }, [fn]);
+  }, [current, data, fn, options?.manual, run]);
 
   return {
     data,
@@ -98,7 +100,7 @@ const useSetTimeout = (
     };
     const timer = setTimeout(cb, delay);
     return () => clearTimeout(timer);
-  }, []);
+  }, [delay]);
 };
 
 // 下拉刷新和上拉加载列表
@@ -113,23 +115,8 @@ const useRefreshList = <T>(
   const end = useRef(false);
   const [err, setErr] = useState(false);
 
-  // TOOD:移动到具体的页面
-  useEffect(() => {
-    const switchUserSubscribe = useAppStore.subscribe(
-      (state) => state.token,
-      () => {
-        fetchData();
-      },
-      {
-        equalityFn: shallow,
-        fireImmediately: false,
-      },
-    );
-    return switchUserSubscribe;
-  }, []);
-
   // 直接使用fetchData，如果首页数据不够一屏，会触发loadMore方法，多发一次请求，直接使用onRefresh则没问题
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const { data, headers } = await fetchApi({ limit });
     if (data) {
       if (data.length > 0) {
@@ -152,7 +139,7 @@ const useRefreshList = <T>(
       }
     }
     Loading.hide();
-  };
+  }, [fetchApi, limit, loadType]);
 
   const onRefresh = async () => {
     setListStatus(RefreshState.HeaderRefreshing);
@@ -191,7 +178,23 @@ const useRefreshList = <T>(
         setListStatus(RefreshState.Idle);
       }
     }
-  }, [dataSource, end, link]);
+  }, [dataSource, fetchApi, limit, link, loadType]);
+
+  // TOOD:移动到具体的页面
+  // 当token发生变动，即切换用户的时候，重新发起请求
+  useEffect(() => {
+    const switchUserSubscribe = useAppStore.subscribe(
+      (state) => state.token,
+      () => {
+        fetchData();
+      },
+      {
+        equalityFn: shallow,
+        fireImmediately: false,
+      },
+    );
+    return switchUserSubscribe;
+  }, [fetchData]);
 
   return {
     dataSource,
@@ -202,9 +205,5 @@ const useRefreshList = <T>(
     err,
   };
 };
-
-const useImmediately = () => {
-  
-}
 
 export { useDebounce, useRequest, useSetTimeout, useRefreshList };

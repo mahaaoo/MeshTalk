@@ -131,7 +131,7 @@ const Publish: React.FC<PublishProps> = () => {
         />
       ),
     });
-  }, [newStatusParams, i18n]);
+  }, [newStatusParams, i18n, navigation, postNewStatuses]);
 
   const keyboardWillShow = useCallback((e: any) => {
     offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
@@ -148,14 +148,14 @@ const Publish: React.FC<PublishProps> = () => {
     Keyboard.dismiss();
     const offset = pressEmoji.value ? insets.bottom : 280;
     offsetY.value = withTiming(offset, { duration: 250 });
-  }, []);
+  }, [insets, offsetY, pressEmoji]);
 
   const handleClickPic = useCallback(async () => {
     const { ok, fileInfo } = await imageOriginPick();
     if (ok) {
       addMedia(fileInfo!);
     }
-  }, [mediaList]);
+  }, []);
 
   const handleReply = () => {
     Keyboard.dismiss();

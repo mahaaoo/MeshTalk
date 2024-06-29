@@ -4,7 +4,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import { styles } from "./index.style";
 import { Icon } from "../../components";
 import { Colors } from "../../config";
-import { favouriteStatuses, unfavouriteStatuses, reblog, unreblog } from "../../server/status";
+import {
+  favouriteStatuses,
+  unfavouriteStatuses,
+  reblog,
+  unreblog,
+} from "../../server/status";
 import { addBookmark, deleteBookmark } from "../../server/account";
 
 import { Timelines } from "../../config/interface";
@@ -15,9 +20,7 @@ interface ToolBarProps {
 }
 
 const ToolBar: React.FC<ToolBarProps> = (props) => {
-  const {
-    item,
-  } = props;
+  const { item } = props;
   const {
     favourited = false,
     favourites_count = 0,
@@ -35,7 +38,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
   const [favouritesCount, setFavouritesCount] = useState(favourites_count);
 
   const [isBookmark, setIsBookmark] = useState(bookmarked);
-  
+
   // 转发和取消转发
   const handleReblog = useCallback(async () => {
     if (isReblog) {
@@ -55,7 +58,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
         setReblogCount(reblogCount - 1);
       }
     }
-  }, [isReblog, reblogCount]);
+  }, [id, isReblog, reblogCount]);
 
   // TODO: 将此类型的操作，抽象成一个hook单独使用
   // 即先改变UI，在经过防抖处理之后，再去调用实际的api，请求成功则不处理，如果失败则UI回退
@@ -96,8 +99,8 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
   }, [isBookmark, id]);
 
   const handleShare = useCallback(() => {
-    systemShare(url)
-  }, [url])
+    systemShare(url);
+  }, [url]);
 
   return (
     <View style={styles.tool}>
@@ -114,9 +117,7 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
               { color: isReblog ? "green" : Colors.commonToolBarText },
             ]}
           >
-            {reblogCount <= 0
-              ? ""
-              : reblogCount}
+            {reblogCount <= 0 ? "" : reblogCount}
           </Text>
         </TouchableOpacity>
       </View>
@@ -124,30 +125,34 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
         <TouchableOpacity style={styles.toolItem}>
           <Icon name="comment" size={20} color={Colors.commonToolBarText} />
           <Text style={styles.toolTitle}>
-            {replies_count <= 0
-              ? ""
-              : replies_count}
+            {replies_count <= 0 ? "" : replies_count}
           </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.toolItem}>
         <TouchableOpacity style={styles.toolItem} onPress={handleLike}>
-        <Icon name={!isFavourited ? "like" : "likeFill"} size={23} color={!isFavourited ? Colors.commonToolBarText : "red"} />
+          <Icon
+            name={!isFavourited ? "like" : "likeFill"}
+            size={23}
+            color={!isFavourited ? Colors.commonToolBarText : "red"}
+          />
           <Text
             style={[
               styles.toolTitle,
               { color: !isFavourited ? Colors.commonToolBarText : "red" },
             ]}
           >
-            {favouritesCount <= 0
-              ? ""
-              : favouritesCount}
+            {favouritesCount <= 0 ? "" : favouritesCount}
           </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.toolItem}>
         <TouchableOpacity style={styles.toolItem} onPress={handleBookmark}>
-          <Icon name={isBookmark ? "bookmarkFill" : "bookmark"} size={18} color={isBookmark ?  "orange" : Colors.commonToolBarText} />
+          <Icon
+            name={isBookmark ? "bookmarkFill" : "bookmark"}
+            size={18}
+            color={isBookmark ? "orange" : Colors.commonToolBarText}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.toolItem} onPress={handleShare}>
           <Icon name={"share"} size={20} color={Colors.commonToolBarText} />

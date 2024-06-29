@@ -25,7 +25,14 @@ interface StatusItemProps {
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
-  const { item, needToolbar = true, sameUser = false, canToDetail = true, isReply = false, deep } = props;
+  const {
+    item,
+    needToolbar = true,
+    sameUser = false,
+    canToDetail = true,
+    isReply = false,
+    deep,
+  } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
   const { i18n } = useI18nStore();
@@ -47,7 +54,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
         acct: showItem.account.acct,
       },
     });
-  }, [item, sameUser]);
+  }, [sameUser, showItem]);
 
   const handleNavigation = useCallback(() => {
     if (!canToDetail) return;
@@ -58,21 +65,38 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           id: showItem.id,
         },
       });
-  }, [needToolbar, item, canToDetail]);
+  }, [canToDetail, needToolbar, showItem]);
 
   return (
-    <View style={[styles.main, { marginBottom: isReply ? 0 : 10 }]} key={showItem.id}>
-      {
-        isReply && deep && deep > 0 ? (
-          <View style={{ position: "absolute", left: 18, top: 0, bottom: 0, height: "100%", flexDirection: "row" }}>
-          {
-            new Array(deep).fill(0).map((_, index) => (
-              <View key={index} style={{ height: "100%", width: 2, backgroundColor: "#ccc", opacity: index === deep - 1 ? 1 : 0.5, marginLeft: 5 }} />
-            ))
-          }
-          </View>
-        ) : null
-      }
+    <View
+      style={[styles.main, { marginBottom: isReply ? 0 : 10 }]}
+      key={showItem.id}
+    >
+      {isReply && deep && deep > 0 ? (
+        <View
+          style={{
+            position: "absolute",
+            left: 18,
+            top: 0,
+            bottom: 0,
+            height: "100%",
+            flexDirection: "row",
+          }}
+        >
+          {new Array(deep).fill(0).map((_, index) => (
+            <View
+              key={index}
+              style={{
+                height: "100%",
+                width: 2,
+                backgroundColor: "#ccc",
+                opacity: index === deep - 1 ? 1 : 0.5,
+                marginLeft: 5,
+              }}
+            />
+          ))}
+        </View>
+      ) : null}
       <TouchableOpacity activeOpacity={1} onPress={handleNavigation}>
         {!isReply && item.reblog ? (
           <ReplyName
@@ -89,7 +113,6 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           />
         ) : null}
         <View style={styles.content}>
-
           <View style={styles.title}>
             <TouchableOpacity onPress={handleAvatar}>
               <Avatar url={showItem.account.avatar} />
@@ -111,7 +134,11 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               </View>
               <View style={styles.sourceContainer}>
                 <View style={styles.sourceView}>
-                  <Text style={styles.mentionText} ellipsizeMode="tail" numberOfLines={1}>
+                  <Text
+                    style={styles.mentionText}
+                    ellipsizeMode="tail"
+                    numberOfLines={1}
+                  >
                     {StringUtil.acctName(showItem.account.acct)}
                   </Text>
                 </View>
@@ -125,7 +152,9 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           <View style={{ marginLeft: isReply ? 55 : 0 }}>
             <HTMLContent
               id={item.id}
-              blur={showItem.sensitive && showItem.media_attachments.length === 0}
+              blur={
+                showItem.sensitive && showItem.media_attachments.length === 0
+              }
               spoilerText={showItem.spoiler_text}
               html={replaceContentEmoji(showItem.content, showItem.emojis)}
               mentions={showItem.mentions}
@@ -146,7 +175,6 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             {showItem.media_attachments.length === 0 ? (
               <WebCard card={showItem.card} />
             ) : null}
-
           </View>
 
           {showItem.application ? (
@@ -169,11 +197,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           <View style={{ marginLeft: isReply ? 55 : 0 }}>
             <SplitLine start={0} end={width - 30} />
 
-            {needToolbar ? (
-              <ToolBar
-                item={showItem}
-              />
-            ) : null}
+            {needToolbar ? <ToolBar item={showItem} /> : null}
           </View>
         </View>
       </TouchableOpacity>

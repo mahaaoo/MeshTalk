@@ -25,9 +25,11 @@ const Users: React.FC<object> = () => {
 
   return (
     <Screen>
-      {
-        !userData ? <DefaultUser /> : <User userData={userData} id={userData.id} />
-      }
+      {!userData ? (
+        <DefaultUser />
+      ) : (
+        <User userData={userData} id={userData.id} />
+      )}
     </Screen>
   );
 };

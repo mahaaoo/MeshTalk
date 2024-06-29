@@ -118,13 +118,13 @@ const UserLine: React.FC<UserLineProps> = (props) => {
     if (aref) {
       arefs.current[index] = aref;
     }
-  }, [aref, index]);
+  }, [aref, arefs, index]);
 
   useEffect(() => {
     if (nativeRef.current) {
       handleChildRef && handleChildRef(nativeRef);
     }
-  }, [nativeRef.current]);
+  }, [handleChildRef]);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll(event) {

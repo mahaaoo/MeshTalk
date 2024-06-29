@@ -1,9 +1,8 @@
 import * as FileSystem from "expo-file-system";
-import { FileInfo } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { openBrowserAsync } from "expo-web-browser";
-import { Linking, Platform, Share } from "react-native";
+import { Platform, Share } from "react-native";
 import { Loading, Toast } from "react-native-ma-modal";
 import { isValidURL } from "./string";
 
@@ -114,4 +113,4 @@ export const openURL = (url: string) => {
     openBrowserAsync(url);
     // Linking.openURL(url);
   }
-}
+};
