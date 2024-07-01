@@ -115,7 +115,7 @@ const Publish: React.FC<PublishProps> = () => {
             router.back();
           }}
         >
-          <Text style={{ fontSize: 18, marginLeft: 15, color: Colors.theme }}>
+          <Text style={{ fontSize: 18, color: Colors.theme }}>
             {i18n.t("new_status_goback_title")}
           </Text>
         </TouchableOpacity>
@@ -152,10 +152,12 @@ const Publish: React.FC<PublishProps> = () => {
 
   const handleClickPic = useCallback(async () => {
     const { ok, fileInfo } = await imageOriginPick();
-    if (ok) {
-      addMedia(fileInfo!);
+    if (ok && fileInfo) {
+      const newMediaList = [...mediaList];
+      newMediaList.unshift(fileInfo!);
+      setMediaList(newMediaList);
     }
-  }, []);
+  }, [mediaList]);
 
   const handleReply = () => {
     Keyboard.dismiss();
@@ -169,12 +171,6 @@ const Publish: React.FC<PublishProps> = () => {
         InputRef && InputRef?.current?.focus();
       },
     });
-  };
-
-  const addMedia = (media: ImagePickerAsset) => {
-    const newMediaList = [...mediaList];
-    newMediaList.push(media);
-    setMediaList(newMediaList);
   };
 
   const deleteMedia = (index: number) => {
@@ -318,7 +314,6 @@ const styles = StyleSheet.create({
     paddingVertical: 0,
     height: 34,
     borderRadius: 17,
-    marginRight: 10,
   },
   header_text: {
     fontSize: 16,
