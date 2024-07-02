@@ -1,4 +1,5 @@
 export const MULTIPLEUSER = "mesh.talk.multiple.user";
+export const WEBTEMPDATA = "mesh.talk.web.temp.data";
 
 export const POPMODALID = "global-pop-options";
 export const IMAGEMODALID = "global-image-preview";

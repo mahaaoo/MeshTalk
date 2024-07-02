@@ -11,6 +11,7 @@ import * as constant from "../config/constant";
 import { getInstanceEmojis, verifyToken } from "../server/app";
 import { api } from "../utils/request";
 import { setItem, getItem, removeItem } from "../utils/storage";
+import useLoginStore from "./useLoginStore";
 
 interface MultipleUserProsp {
   // 为了方便多账号显示，这里的acct拼接上了domain，如：@mesh@m.cmx.im
@@ -139,14 +140,15 @@ const useAppStore = create(
       const multipleUserJSON = await getItem(constant.MULTIPLEUSER);
 
       if (Platform.OS === "web") {
-        // const url = window.location.search;
-        // if (url?.indexOf("code") > 0) {
-        //   const urlList = url.split("?");
-        //   if (urlList.length === 2 && urlList[1].length !== 0) {
-        //     const codeList = urlList[1].split("=");
-        //     useLoginStore.getState().webGetToken(codeList[1]);
-        //   }
-        // }
+        const url = window.location.search;
+        console.log("watch window location", url);
+        if (url?.indexOf("code") > 0) {
+          const urlList = url.split("?");
+          if (urlList.length === 2 && urlList[1].length !== 0) {
+            const codeList = urlList[1].split("=");
+            useLoginStore.getState().webGetToken(codeList[1]);
+          }
+        }
         // 测试web
       }
 
