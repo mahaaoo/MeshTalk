@@ -65,6 +65,9 @@
     },
     "updates": {
       "url": "https://u.expo.dev/90388b51-c330-41dd-88d3-879739927f96"
+    },
+    "experiments": {
+      "baseUrl": "/MeshTalk"
     }
   }
 }
