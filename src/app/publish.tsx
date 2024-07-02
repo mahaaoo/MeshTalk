@@ -26,6 +26,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Platform,
+  Alert,
 } from "react-native";
 import Animated, {
   useAnimatedStyle,
@@ -44,13 +46,17 @@ interface PublishProps {}
 const Publish: React.FC<PublishProps> = () => {
   const navigation = useNavigation();
   const accountStore = useAccountStore();
-  const { postNewStatuses } = usePublishStore();
+  const { postNewStatuses, addToDrafts, delFromDrafts, drafts } =
+    usePublishStore();
   const { i18n } = useI18nStore();
 
   const [isWarn, setIsWarn] = useState(false);
   const [mediaList, setMediaList] = useState<ImagePickerAsset[]>([]);
   const [statusContent, setStatusContent] = useState("");
   const [spoilerText, setSpoilerText] = useState("");
+
+  // 保存草稿的时间戳，作为草稿箱内容的key
+  const [timestamp, setTimestamp] = useState("");
 
   const { insets, width } = useDeviceStore();
   const offsetY = useSharedValue(insets.bottom);
@@ -84,6 +90,10 @@ const Publish: React.FC<PublishProps> = () => {
     [i18n],
   );
 
+  const isEdit = useMemo(() => {
+    return mediaList.length !== 0 || statusContent.length !== 0;
+  }, [mediaList, statusContent]);
+
   const [reply, setReply] = useState(replyObj[0]);
 
   useEffect(() => {
@@ -99,20 +109,56 @@ const Publish: React.FC<PublishProps> = () => {
     () => ({
       mediaList,
       sensitive: isWarn,
-      reply: reply.key,
+      reply: reply,
       status: statusContent,
       spoiler_text: spoilerText,
+      timestamp: timestamp,
     }),
-    [mediaList, isWarn, reply, statusContent, spoilerText],
+    [mediaList, isWarn, reply, statusContent, spoilerText, timestamp],
   );
 
   useEffect(() => {
+    if (Platform.OS === "android") {
+      // android does not respect gestureEnabled flag
+      navigation.addListener("beforeRemove", (nav) => {
+        // Prevent going back on swipe
+        if (nav.data.action.type === "GO_BACK" && !nav.data.action.source) {
+          nav.preventDefault();
+        }
+      });
+    }
     navigation.setOptions({
+      gestureEnabled: false,
       headerLeft: () => (
         <TouchableOpacity
           onPress={() => {
-            Keyboard.dismiss();
-            router.back();
+            if (isEdit) {
+              Alert.alert(i18n.t("new_status_exit_alert"), "", [
+                {
+                  style: "destructive",
+                  text: i18n.t("new_status_exit_alert_delete"),
+                  onPress: () => {
+                    delFromDrafts(timestamp);
+                    Keyboard.dismiss();
+                    router.back();
+                  },
+                },
+                {
+                  text: i18n.t("new_status_exit_alert_save"),
+                  onPress: () => {
+                    addToDrafts(newStatusParams);
+                    Keyboard.dismiss();
+                    router.back();
+                  },
+                },
+                {
+                  text: i18n.t("alert_cancel_text"),
+                },
+              ]);
+            } else {
+              Keyboard.dismiss();
+              router.back();
+            }
           }}
         >
           <Text style={{ fontSize: 18, color: Colors.theme }}>
@@ -131,7 +177,17 @@ const Publish: React.FC<PublishProps> = () => {
         />
       ),
     });
-  }, [newStatusParams, i18n, navigation, postNewStatuses]);
+  }, [
+    newStatusParams,
+    i18n,
+    navigation,
+    postNewStatuses,
+    isEdit,
+    addToDrafts,
+    reply,
+    timestamp,
+    delFromDrafts,
+  ]);
 
   const keyboardWillShow = useCallback((e: any) => {
     offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
@@ -166,6 +222,27 @@ const Publish: React.FC<PublishProps> = () => {
       onSelect: (reply) => {
         setReply(reply);
         ActionsSheet.Reply.hide();
+      },
+      onClose: () => {
+        InputRef && InputRef?.current?.focus();
+      },
+    });
+  };
+
+  const handleDrafts = () => {
+    Keyboard.dismiss();
+    ActionsSheet.Drafts.show({
+      onSelect: (draft) => {
+        const { timestamp, mediaList, status, sensitive, reply, spoiler_text } =
+          draft;
+        setTimestamp(timestamp);
+        setMediaList(mediaList);
+        setStatusContent(status);
+        setIsWarn(sensitive);
+        setReply(reply);
+        setSpoilerText(spoiler_text);
+
+        ActionsSheet.Drafts.hide();
       },
       onClose: () => {
         InputRef && InputRef?.current?.focus();
@@ -242,6 +319,11 @@ const Publish: React.FC<PublishProps> = () => {
                 <Text style={styles.replayText} onPress={handleReply}>
                   {reply.title}
                 </Text>
+                {drafts.length > 0 && !isEdit ? (
+                  <Text style={styles.replayText} onPress={handleDrafts}>
+                    {i18n.t("new_status_draft_text")}
+                  </Text>
+                ) : null}
               </View>
               <SplitLine start={0} end={width} />
             </View>
@@ -343,9 +425,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.defaultLineGreyColor,
   },
   power: {
-    marginLeft: 20,
+    marginHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     flex: 1,
   },
   avatarContainer: {

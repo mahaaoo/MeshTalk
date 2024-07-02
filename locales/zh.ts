@@ -111,6 +111,11 @@ const zh = {
   new_status_ares_direct: "仅提及的人可见",
   new_status_ares_cancel: "取消",
 
+  new_status_draft_text: "草稿箱",
+  new_status_exit_alert: "确认退出发布",
+  new_status_exit_alert_delete: "删除",
+  new_status_exit_alert_save: "保存",
+
   switch_account_add: "添加已有账号",
   switch_account_logout: "退出当前账号",
   switch_account_cancel: "取消",

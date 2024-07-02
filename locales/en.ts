@@ -111,6 +111,11 @@ const en = {
   new_status_ares_direct: "Mentioned Only",
   new_status_ares_cancel: "Cancel",
 
+  new_status_draft_text: "Drafts",
+  new_status_exit_alert: "Confirm sign out",
+  new_status_exit_alert_delete: "Delete",
+  new_status_exit_alert_save: "Save",
+
   switch_account_add: "Add an existing account",
   switch_account_logout: "Sign out",
   switch_account_cancel: "Cancel",

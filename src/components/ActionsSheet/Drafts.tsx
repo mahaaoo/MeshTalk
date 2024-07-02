@@ -3,28 +3,21 @@ import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
 
 import { Colors } from "../../config";
-import { ACTIONMODALIDREPLY } from "../../config/constant";
+import { ACTIONMODALIDDRAFTS } from "../../config/constant";
 import useDeviceStore from "../../store/useDeviceStore";
 import useI18nStore from "../../store/useI18nStore";
-import { Icon } from "../Icon";
-import { Library } from "../Icon/library";
 import SplitLine from "../SplitLine";
-
-export interface ReplyItemProps {
-  title: string;
-  key: string;
-  icon: keyof typeof Library;
-}
+import usePublishStore, { NewStatusParams } from "../../store/usePublishStore";
 
 interface ActionsSheetTyps {
-  params: ReplyItemProps[];
-  onSelect: (reply: ReplyItemProps) => void;
+  onSelect: (draft: NewStatusParams) => void;
   onClose: () => void;
 }
 
-const ReplyComponent: React.FC<ActionsSheetTyps> = (props) => {
-  const { params, onSelect } = props;
+const DraftsComponent: React.FC<ActionsSheetTyps> = (props) => {
+  const { onSelect } = props;
   const { i18n } = useI18nStore();
+  const { drafts } = usePublishStore();
   const { width } = useDeviceStore();
 
   return (
@@ -35,17 +28,16 @@ const ReplyComponent: React.FC<ActionsSheetTyps> = (props) => {
       ]}
     >
       <View style={styles.titleContainer} />
-      <Text style={styles.title}>{i18n.t("new_status_ares_title")}</Text>
-      <View style={[styles.item, { marginTop: 10 }]}>
-        {params.map((param) => {
+      <Text style={styles.title}>{i18n.t("new_status_draft_text")}</Text>
+      <View style={[styles.item, { marginTop: 10, flex: 1 }]}>
+        {drafts.map((draft) => {
           return (
-            <View key={param.key}>
+            <View key={draft.timestamp}>
               <TouchableOpacity
-                onPress={() => onSelect(param)}
-                style={styles.itemContainer}
+                onPress={() => onSelect(draft)}
+                style={styles.sigleDraft}
               >
-                <Text style={styles.itemTitle}>{param.title}</Text>
-                <Icon name={param.icon} color="#333" />
+                <Text>{draft.status}</Text>
               </TouchableOpacity>
               <SplitLine start={0} end={width - 40} />
             </View>
@@ -54,7 +46,7 @@ const ReplyComponent: React.FC<ActionsSheetTyps> = (props) => {
       </View>
       <TouchableOpacity
         onPress={() => {
-          Reply.hide();
+          Drafts.hide();
         }}
         style={[styles.item, styles.cacelButton]}
       >
@@ -65,20 +57,20 @@ const ReplyComponent: React.FC<ActionsSheetTyps> = (props) => {
 };
 
 // TODO: 在replyObj中获取
-const Reply = {
-  key: ACTIONMODALIDREPLY,
-  template: ({ onSelect, onClose, params }: ActionsSheetTyps) => {
+const Drafts = {
+  key: ACTIONMODALIDDRAFTS,
+  template: ({ onSelect, onClose }: ActionsSheetTyps) => {
     return (
       <TranslateContainer onDisappear={onClose} gesture>
-        <ReplyComponent {...{ onSelect, onClose, params }} />
+        <DraftsComponent {...{ onSelect, onClose }} />
       </TranslateContainer>
     );
   },
   show: (params: ActionsSheetTyps) => {
-    ModalUtil.add(Reply.template(params), Reply.key);
+    ModalUtil.add(Drafts.template(params), Drafts.key);
   },
-  hide: () => ModalUtil.remove(Reply.key || ""),
-  isExist: () => ModalUtil.isExist(Reply.key || ""),
+  hide: () => ModalUtil.remove(Drafts.key || ""),
+  isExist: () => ModalUtil.isExist(Drafts.key || ""),
 };
 
 const styles = StyleSheet.create({
@@ -90,6 +82,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f7f7f7",
     width: useDeviceStore.getState().width,
+    height: useDeviceStore.getState().height * 0.8,
   },
   titleContainer: {
     width: 80,
@@ -135,6 +128,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  sigleDraft: {
+    height: 55,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 15,
+  },
 });
 
-export default Reply;
+export default Drafts;

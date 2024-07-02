@@ -6,28 +6,87 @@ import { Loading, Toast } from "react-native-ma-modal";
 import { create } from "zustand";
 
 import { postNewStatuses, media } from "../server/status";
+import { getItem, setItem } from "@utils/storage";
+import * as constant from "../config/constant";
 
-interface NewStatusParams {
+interface ReplyProps {
+  title: string;
+  key: string;
+  icon: string;
+}
+export interface NewStatusParams {
+  timestamp: string;
   mediaList: ImagePickerAsset[];
 
   sensitive: boolean;
-  reply: string; // 需要replyObj转换
+  reply: ReplyProps; // 需要replyObj转换
   status: string;
   spoiler_text: string;
 }
 
 interface PublishStoreState {
+  drafts: NewStatusParams[];
+  initDrafts: () => void;
+  addToDrafts: (draft: NewStatusParams) => void;
+  delFromDrafts: (timestamp: string) => void;
   postNewStatuses: (params: NewStatusParams) => void;
 }
 
 const usePublishStore = create<PublishStoreState>((set, get) => ({
+  drafts: [],
+  initDrafts: async () => {
+    const draftsJson = await getItem(constant.STATUSDRAFTS);
+    const newDraft = JSON.parse(draftsJson || "");
+    console.log(`当前共有${newDraft.length}条嘟文保存在了本地草稿箱`);
+    set({
+      drafts: newDraft,
+    });
+  },
+  addToDrafts: (draft: NewStatusParams) => {
+    let newDraft = get().drafts;
+    if (draft.timestamp.length === 0) {
+      const draftsStatusParams = {
+        ...draft,
+        timestamp: new Date().getTime() + "",
+      };
+      newDraft.unshift(draftsStatusParams);
+    } else {
+      // 修改草稿箱的内容再次保存
+      newDraft = newDraft.map((n) => {
+        if (n.timestamp === draft.timestamp) {
+          return {
+            ...draft,
+            timestamp: new Date().getTime() + "",
+          };
+        }
+        return draft;
+      });
+    }
+    set({
+      drafts: newDraft,
+    });
+    // 草稿箱内容支持保存本地
+    setItem(constant.STATUSDRAFTS, JSON.stringify(newDraft));
+  },
+  delFromDrafts: (timestamp: string) => {
+    const newDraft = get().drafts;
+    const index = newDraft.map((n) => n.timestamp).indexOf(timestamp);
+    if (index !== -1) {
+      newDraft.splice(index, 1);
+      set({
+        drafts: newDraft,
+      });
+      setItem(constant.STATUSDRAFTS, JSON.stringify(newDraft));
+    }
+  },
   postNewStatuses: async (params: NewStatusParams) => {
-    const { reply, mediaList, sensitive, status, spoiler_text } = params;
+    const { reply, mediaList, sensitive, status, spoiler_text, timestamp } =
+      params;
 
     let buildParams: any = {
       sensitive,
       status,
-      visibility: reply,
+      visibility: reply.key,
     };
 
     // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容
@@ -78,6 +137,8 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
     const { data, ok } = await postNewStatuses(buildParams);
     Loading.hide();
     if (data && ok) {
+      // 如果是草稿箱的内容，发表成功之后删除
+      get().delFromDrafts(timestamp);
       Toast.show("发表成功");
       router.back();
     } else {

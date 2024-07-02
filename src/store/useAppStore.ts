@@ -12,6 +12,7 @@ import { getInstanceEmojis, verifyToken } from "../server/app";
 import { api } from "../utils/request";
 import { setItem, getItem, removeItem } from "../utils/storage";
 import useLoginStore from "./useLoginStore";
+import usePublishStore from "./usePublishStore";
 
 interface MultipleUserProsp {
   // 为了方便多账号显示，这里的acct拼接上了domain，如：@mesh@m.cmx.im
@@ -138,6 +139,8 @@ const useAppStore = create(
     initApp: async () => {
       console.log("initApp");
       const multipleUserJSON = await getItem(constant.MULTIPLEUSER);
+      // 需要初始化草稿箱，是否有嘟文保存在了本地
+      usePublishStore.getState().initDrafts();
 
       if (Platform.OS === "web") {
         const url = window.location.search;
