@@ -182,53 +182,58 @@ export const removeFollowers = (id: string): Response<Relationship> => {
 };
 
 // 获取书签内容
-export const bookmarks = (params?: Partial<FollowAndFansQueryParameters>): Response<Timelines[]> => {
+export const bookmarks = (
+  params?: Partial<FollowAndFansQueryParameters>,
+): Response<Timelines[]> => {
   const url = "/api/v1/bookmarks";
   return get<Timelines[]>(url, params);
-}
+};
 
 // 把推文加入到书签中
 export const addBookmark = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/bookmark`;
-  return post<Timelines>(url)
-}
+  return post<Timelines>(url);
+};
 // 把推文从书签中删除
 export const deleteBookmark = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/unbookmark`;
-  return post<Timelines>(url)
-}
+  return post<Timelines>(url);
+};
 
 // 获取关注的tag列表
 export const followedTags = (params: object): Response<HashTag[]> => {
   const url = "/api/v1/followed_tags";
 
   return get<HashTag[]>(url, params);
-}
+};
 
 // 获取这个tag信息
 export const tagInfo = (id: string): Response<HashTag> => {
   const url = "/api/v1/tags/" + id;
 
   return get<HashTag>(url);
-}
+};
 
 // 获取tag下的嘟文
-export const tagTimelines = (id: string, params: object): Response<Timelines[]> => {
+export const tagTimelines = (
+  id: string,
+  params: object,
+): Response<Timelines[]> => {
   const url = "/api/v1/timelines/tag/" + id;
-  
-  return get<Timelines[]>(url, params); 
-}
+
+  return get<Timelines[]>(url, params);
+};
 
 // 关注一个tag
 export const followTag = (id: string): Response<HashTag> => {
   const url = "/api/v1/tags/" + id + "/follow";
 
   return post<HashTag>(url);
-}
+};
 
 // 取关一个tag
 export const unfollowTag = (id: string): Response<HashTag> => {
   const url = "/api/v1/tags/" + id + "/unfollow";
 
   return post<HashTag>(url);
-}
+};

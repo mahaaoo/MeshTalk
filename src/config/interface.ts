@@ -35,7 +35,7 @@ export interface Mention {
   id: string;
   username: string;
   url: string;
-  acct: string
+  acct: string;
 }
 
 export interface Tag {
@@ -239,8 +239,8 @@ export interface AnnouncementInterface {
 }
 
 export interface StatusContext {
-  ancestors: Timelines[]
-  descendants: Timelines[]
+  ancestors: Timelines[];
+  descendants: Timelines[];
 }
 
 export interface HashTagHistory {
@@ -254,4 +254,9 @@ export interface HashTag {
   url: string;
   history: HashTagHistory[];
   following: boolean;
+}
+
+export interface Suggestion {
+  source: "staff" | "past_interactions" | "global";
+  account: Account;
 }

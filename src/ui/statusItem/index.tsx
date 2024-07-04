@@ -22,6 +22,7 @@ interface StatusItemProps {
   isReply?: boolean; // 是否是回复的嘟文
   deep?: number; // 当前回复深度
   sameUser?: boolean; // 点击的嘟文是否当前用户用户，在user中会用
+  needDivide?: boolean; // 是否需要和下个嘟文分开
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
@@ -32,6 +33,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
     canToDetail = true,
     isReply = false,
     deep,
+    needDivide = true,
   } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
@@ -69,7 +71,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
   return (
     <View
-      style={[styles.main, { marginBottom: isReply ? 0 : 10 }]}
+      style={[styles.main, { marginBottom: isReply || !needDivide ? 0 : 10 }]}
       key={showItem.id}
     >
       {isReply && deep && deep > 0 ? (
@@ -195,13 +197,12 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
           ) : null}
 
           <View style={{ marginLeft: isReply ? 55 : 0 }}>
-            <SplitLine start={0} end={width - 30} />
-
             {needToolbar ? <ToolBar item={showItem} /> : null}
           </View>
         </View>
       </TouchableOpacity>
       <StatusOptions account={showItem.account} item={showItem} />
+      <SplitLine start={isReply ? 55 : 0} end={width} />
     </View>
   );
 };

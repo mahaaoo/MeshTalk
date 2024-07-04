@@ -72,10 +72,11 @@ export const unpinStatus = (id: string): Response<Timelines> => {
   return post<Timelines>(url);
 };
 
-
 // https://mastodon.example/api/v1/statuses/:id
 // 根据id查询一个推文详情
-export const getStatusesContext = (id: string = ""): Response<StatusContext> => {
+export const getStatusesContext = (
+  id: string = "",
+): Response<StatusContext> => {
   const url = "/api/v1/statuses/" + id + "/context";
 
   return get<StatusContext>(url);
@@ -86,11 +87,11 @@ export const reblog = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/reblog`;
 
   return post<Timelines>(url);
-}
+};
 
 // 取消转发嘟文
 export const unreblog = (id: string): Response<Timelines> => {
   const url = `/api/v1/statuses/${id}/unreblog`;
 
   return post<Timelines>(url);
-}
+};

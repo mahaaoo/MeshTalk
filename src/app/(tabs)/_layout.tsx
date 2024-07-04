@@ -36,7 +36,7 @@ const TabRouter: React.FC<object> = () => {
         })}
       />
       <Tabs.Screen
-        name="search"
+        name="explore"
         options={{
           tabBarLabel: i18n.t("tabbar_icon_explore"),
           tabBarIcon: ({ color }) => (
