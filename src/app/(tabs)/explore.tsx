@@ -145,9 +145,9 @@ const Public: React.FC<PublicProps> = () => {
               </View>
 
               <View style={{ backgroundColor: "#fff", padding: 15 }}>
-              {link.map((item, index) => (
-                <WebCard card={item} key={item.url} />
-              ))}
+                {link.map((item, index) => (
+                  <WebCard card={item} key={item.url} />
+                ))}
               </View>
               <TouchableOpacity style={[styles.moreView]}>
                 <Text style={styles.moreText}>查看更多</Text>
