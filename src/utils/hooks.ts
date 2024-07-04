@@ -180,22 +180,6 @@ const useRefreshList = <T>(
     }
   }, [dataSource, fetchApi, limit, link, loadType]);
 
-  // TOOD:移动到具体的页面
-  // 当token发生变动，即切换用户的时候，重新发起请求
-  useEffect(() => {
-    const switchUserSubscribe = useAppStore.subscribe(
-      (state) => state.token,
-      () => {
-        fetchData();
-      },
-      {
-        equalityFn: shallow,
-        fireImmediately: false,
-      },
-    );
-    return switchUserSubscribe;
-  }, [fetchData]);
-
   return {
     dataSource,
     listStatus,
@@ -206,4 +190,26 @@ const useRefreshList = <T>(
   };
 };
 
-export { useDebounce, useRequest, useSetTimeout, useRefreshList };
+const useSubscribeToken = (fetchApi: any) => {
+  useEffect(() => {
+    const switchUserSubscribe = useAppStore.subscribe(
+      (state) => state.token,
+      () => {
+        fetchApi();
+      },
+      {
+        equalityFn: shallow,
+        fireImmediately: false,
+      },
+    );
+    return switchUserSubscribe;
+  }, [fetchApi]);
+};
+
+export {
+  useDebounce,
+  useRequest,
+  useSetTimeout,
+  useRefreshList,
+  useSubscribeToken,
+};

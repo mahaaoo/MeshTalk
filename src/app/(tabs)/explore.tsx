@@ -1,5 +1,5 @@
 import { Icon, Screen } from "@components";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -11,11 +11,18 @@ import {
 
 import { Colors } from "../../config";
 import useI18nStore from "../../store/useI18nStore";
-import { trendsStatuses, trendsTags, suggestions } from "../../server/timeline";
+import {
+  trendsStatuses,
+  trendsTags,
+  suggestions,
+  trendsLinks,
+} from "../../server/timeline";
 import HashTagItem from "@ui/hashtag/HashTagItem";
-import { HashTag, Suggestion, Timelines } from "../../config/interface";
+import { Card, HashTag, Suggestion, Timelines } from "../../config/interface";
 import StatusItem from "@ui/statusItem";
 import UserItem from "@ui/fans/userItem";
+import WebCard from "@ui/statusItem/webCard";
+import { useSubscribeToken } from "@utils/hooks";
 
 interface PublicProps {
   tabLabel: string;
@@ -26,6 +33,8 @@ const Public: React.FC<PublicProps> = () => {
   const [trendTags, setTrendTags] = useState<HashTag[]>([]);
   const [trendStatuse, setTrendStatuse] = useState<Timelines[]>([]);
   const [suggestion, setSuggestion] = useState<Suggestion[]>([]);
+  const [link, setLink] = useState<Card[]>([]);
+
   const [refresh, setRefresh] = useState(false);
 
   const fetchTrendsTag = async () => {
@@ -48,22 +57,33 @@ const Public: React.FC<PublicProps> = () => {
     }
   };
 
+  const fetchLink = async () => {
+    const { data, ok } = await trendsLinks(5);
+    if (data && ok) {
+      setLink(data);
+    }
+  };
+
   useEffect(() => {
     fetchTrendsTag();
     fetchTrendsStatuses();
     fetchSuggestion();
+    fetchLink();
   }, []);
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefresh(true);
     Promise.all([
       fetchTrendsTag(),
       fetchTrendsStatuses(),
       fetchSuggestion(),
+      fetchLink(),
     ]).finally(() => {
       setRefresh(false);
     });
-  };
+  }, []);
+
+  useSubscribeToken(onRefresh);
 
   return (
     <Screen headerShown title={i18n.t("tabbar_icon_explore")}>
@@ -74,48 +94,67 @@ const Public: React.FC<PublicProps> = () => {
         style={[styles.main]}
       >
         <View>
-          <View>
-            <View style={styles.popularView}>
-              <Text style={styles.popularTitle}>当下流行的标签</Text>
-            </View>
-            {trendTags.length > 0 &&
-              trendTags.map((item, index) => (
+          {trendTags.length > 0 ? (
+            <>
+              <View style={styles.popularView}>
+                <Text style={styles.popularTitle}>当下流行的标签</Text>
+              </View>
+              {trendTags.map((item, index) => (
                 <HashTagItem item={item} key={item.url} />
               ))}
-            <TouchableOpacity style={styles.moreView}>
-              <Text style={styles.moreText}>查看更多</Text>
-              <Icon name="arrowRight" color="#777" />
-            </TouchableOpacity>
-          </View>
-          <View>
-            <View style={styles.popularView}>
-              <Text style={styles.popularTitle}>当下流行的嘟文</Text>
-            </View>
+              <TouchableOpacity style={styles.moreView}>
+                <Text style={styles.moreText}>查看更多</Text>
+                <Icon name="arrowRight" color="#777" />
+              </TouchableOpacity>
+            </>
+          ) : null}
+          {trendStatuse.length > 0 ? (
+            <>
+              <View style={styles.popularView}>
+                <Text style={styles.popularTitle}>当下流行的嘟文</Text>
+              </View>
 
-            {trendStatuse.length > 0 &&
-              trendStatuse.map((item, index) => (
+              {trendStatuse.map((item, index) => (
                 <StatusItem item={item} key={item.id} needDivide={false} />
               ))}
-            <TouchableOpacity style={[styles.moreView]}>
-              <Text style={styles.moreText}>查看更多</Text>
-              <Icon name="arrowRight" color="#777" />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity style={[styles.moreView]}>
+                <Text style={styles.moreText}>查看更多</Text>
+                <Icon name="arrowRight" color="#777" />
+              </TouchableOpacity>
+            </>
+          ) : null}
+          {suggestion.length > 0 ? (
+            <>
+              <View style={styles.popularView}>
+                <Text style={styles.popularTitle}>推荐的用户</Text>
+              </View>
 
-          <View>
-            <View style={styles.popularView}>
-              <Text style={styles.popularTitle}>推荐的用户</Text>
-            </View>
-
-            {suggestion.length > 0 &&
-              suggestion.map((item, index) => (
+              {suggestion.map((item, index) => (
                 <UserItem key={item.account.id} item={item.account} />
               ))}
-            <TouchableOpacity style={[styles.moreView]}>
-              <Text style={styles.moreText}>查看更多</Text>
-              <Icon name="arrowRight" color="#777" />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity style={[styles.moreView]}>
+                <Text style={styles.moreText}>查看更多</Text>
+                <Icon name="arrowRight" color="#777" />
+              </TouchableOpacity>
+            </>
+          ) : null}
+          {link.length > 0 ? (
+            <>
+              <View style={styles.popularView}>
+                <Text style={styles.popularTitle}>当下流行的网页</Text>
+              </View>
+
+              <View style={{ backgroundColor: "#fff", padding: 15 }}>
+              {link.map((item, index) => (
+                <WebCard card={item} key={item.url} />
+              ))}
+              </View>
+              <TouchableOpacity style={[styles.moreView]}>
+                <Text style={styles.moreText}>查看更多</Text>
+                <Icon name="arrowRight" color="#777" />
+              </TouchableOpacity>
+            </>
+          ) : null}
         </View>
       </ScrollView>
     </Screen>

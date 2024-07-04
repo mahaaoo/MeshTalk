@@ -4,7 +4,7 @@ import { View } from "react-native";
 
 import DefaultLineItem from "./defaultLineItem";
 import { RefreshList, RefreshListRef } from "../../components";
-import { useRefreshList } from "../../utils/hooks";
+import { useRefreshList, useSubscribeToken } from "../../utils/hooks";
 import StatusItem from "../statusItem";
 import { Timelines, Response } from "../../config/interface";
 
@@ -35,6 +35,8 @@ const TimeLine: React.FC<TimeLineProps> = (props) => {
 
     return unsubscribe;
   }, [navigation, currentIndex, index, ref]);
+
+  useSubscribeToken(fetchData);
 
   useEffect(() => {
     if (dataSource.length === 0 && index === currentIndex) {

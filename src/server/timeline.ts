@@ -1,4 +1,4 @@
-import { Timelines, Response, HashTag, Suggestion } from "../config/interface";
+import { Timelines, Response, HashTag, Suggestion, Card } from "../config/interface";
 import { get } from "../utils/request";
 
 // 获取本人推文以及关注人
@@ -42,6 +42,16 @@ export const trendsStatuses = (limit: number = 10): Response<Timelines[]> => {
   return get<Timelines[]>(url, params);
 };
 
+// 当前趋势-链接
+export const trendsLinks = (limit: number = 10): Response<Card[]> => {
+  const url = "/api/v1/trends/links";
+  const params = {
+    limit,
+  };
+
+  return get<Card[]>(url, params);
+};
+
 // 推荐关注
 export const suggestions = (limit: number = 10): Response<Suggestion[]> => {
   const url = "/api/v2/suggestions";
@@ -51,3 +61,4 @@ export const suggestions = (limit: number = 10): Response<Suggestion[]> => {
 
   return get<Suggestion[]>(url, params);
 };
+
