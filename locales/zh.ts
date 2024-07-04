@@ -5,7 +5,7 @@ const zh = {
   alert_confim_text: "确定",
 
   tabbar_icon_home: "主页",
-  tabbar_icon_public: "跨站",
+  tabbar_icon_explore: "探索",
   tabbar_icon_new: "新嘟文",
   tabbar_icon_notify: "通知",
   tabbar_icon_setting: "设置",
@@ -29,6 +29,7 @@ const zh = {
 
   home_tabview_title1: "推荐",
   home_tabview_title2: "正在关注",
+  home_tabview_title3: "跨站",
 
   // status_tool_bar_turn: "转发",
   // status_tool_bar_comment: "转评",

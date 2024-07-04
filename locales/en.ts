@@ -5,7 +5,7 @@ const en = {
   alert_confim_text: "OK",
 
   tabbar_icon_home: "Home",
-  tabbar_icon_public: "Public",
+  tabbar_icon_explore: "Explore",
   tabbar_icon_new: "New",
   tabbar_icon_notify: "Notify",
   tabbar_icon_setting: "Setting",
@@ -29,6 +29,7 @@ const en = {
 
   home_tabview_title1: "Recommended",
   home_tabview_title2: "Following",
+  home_tabview_title3: "Public",
 
   // status_tool_bar_turn: "retweet",
   // status_tool_bar_comment: "comment",

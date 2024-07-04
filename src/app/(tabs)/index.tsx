@@ -1,13 +1,12 @@
 import { DefaultTabBar, TabView } from "@components";
-import HomeLine from "@ui/home/homeLine";
-import Local from "@ui/home/localLine";
 import React, { useState } from "react";
 import { View, StyleSheet } from "react-native";
 
 import { Colors } from "../../config";
 import useDeviceStore from "../../store/useDeviceStore";
-// import i18n from "../../../locales";
 import useI18nStore from "../../store/useI18nStore";
+import TimeLine from "@ui/home/timeLine";
+import { homeLine, localLine, publicLine } from "../../server/timeline";
 
 const Home: React.FC<object> = () => {
   const [index, setIndex] = useState(0);
@@ -24,13 +23,17 @@ const Home: React.FC<object> = () => {
         }}
       />
       <TabView
-        tabBar={[i18n.t("home_tabview_title1"), i18n.t("home_tabview_title2")]}
+        tabBar={[
+          i18n.t("home_tabview_title1"),
+          i18n.t("home_tabview_title2"),
+          i18n.t("home_tabview_title3"),
+        ]}
         initialPage={0}
         style={{ flex: 1 }}
         onChangeTab={(index) => setIndex(index)}
         renderTabBar={() => (
           <DefaultTabBar
-            tabBarWidth={width / 2}
+            tabBarWidth={width / 3}
             tabBarInactiveTextColor="#333"
             tabBarActiveTextColor={Colors.theme}
             tabBarTextStyle={{
@@ -41,17 +44,14 @@ const Home: React.FC<object> = () => {
               height: 4,
               backgroundColor: Colors.theme,
               width: 50,
-              marginLeft: (width / 2 - 50) / 2,
+              marginLeft: (width / 3 - 50) / 2,
             }}
           />
         )}
       >
-        <View style={styles.main}>
-          <Local index={0} currentIndex={index} />
-        </View>
-        <View style={styles.main}>
-          <HomeLine index={1} currentIndex={index} />
-        </View>
+        <TimeLine index={0} currentIndex={index} fetchTimeLine={localLine} />
+        <TimeLine index={1} currentIndex={index} fetchTimeLine={homeLine} />
+        <TimeLine index={2} currentIndex={index} fetchTimeLine={publicLine} />
       </TabView>
     </View>
   );
