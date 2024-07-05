@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const en = {
   header_back_title: "Back",
   alert_title_text: "Tip",
@@ -165,7 +166,7 @@ const en = {
   meida_sensitive_show: "Show",
 
   html_content_sensitive_show: "Show",
-  
+
   server_card_login_text: "Login",
   server_card_create_text: "Create Account",
   server_card_apply_text: "Apply Account",

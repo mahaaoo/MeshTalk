@@ -17,9 +17,10 @@ import {
   trendsTags,
   suggestions,
   trendsLinks,
+  search,
 } from "../../server/timeline";
 import HashTagItem from "@ui/hashtag/HashTagItem";
-import { Card, HashTag, Suggestion, Timelines } from "../../config/interface";
+import { Account, Card, HashTag, Timelines } from "../../config/interface";
 import StatusItem from "@ui/statusItem";
 import UserItem from "@ui/fans/userItem";
 import WebCard from "@ui/statusItem/webCard";
@@ -33,7 +34,7 @@ const Public: React.FC<PublicProps> = () => {
   const { i18n } = useI18nStore();
   const [trendTags, setTrendTags] = useState<HashTag[]>([]);
   const [trendStatuse, setTrendStatuse] = useState<Timelines[]>([]);
-  const [suggestion, setSuggestion] = useState<Suggestion[]>([]);
+  const [suggestion, setSuggestion] = useState<Account[]>([]);
   const [link, setLink] = useState<Card[]>([]);
 
   const [refresh, setRefresh] = useState(false);
@@ -54,7 +55,8 @@ const Public: React.FC<PublicProps> = () => {
   const fetchSuggestion = async () => {
     const { data, ok } = await suggestions(5);
     if (data && ok) {
-      setSuggestion(data);
+      const suggest = data.map((d) => d.account);
+      setSuggestion(suggest);
     }
   };
 
@@ -86,6 +88,24 @@ const Public: React.FC<PublicProps> = () => {
 
   useSubscribeToken(onRefresh);
 
+  const onSearch = async (text: string) => {
+    if (text.length === 0) {
+      onRefresh();
+      return;
+    }
+
+    const params = {
+      q: text,
+    };
+
+    const { data, ok } = await search(params);
+    if (data && ok) {
+      setTrendTags(data.hashtags);
+      setSuggestion(data.accounts);
+      setTrendStatuse(data.statuses);
+    }
+  };
+
   return (
     <Screen headerShown title={i18n.t("tabbar_icon_explore")}>
       <ScrollView
@@ -102,6 +122,7 @@ const Public: React.FC<PublicProps> = () => {
             placeholderTextColor={"#a3a3a3"}
             placeholder={i18n.t("explore_search_placeholder")}
             style={{ flex: 1, fontSize: 16 }}
+            onChangeText={(text) => onSearch(text)}
           />
         </View>
         <View>
@@ -151,7 +172,7 @@ const Public: React.FC<PublicProps> = () => {
               </View>
 
               {suggestion.map((item, index) => (
-                <UserItem key={item.account.id} item={item.account} />
+                <UserItem key={item.id} item={item} />
               ))}
               <TouchableOpacity style={[styles.moreView]}>
                 <Text style={styles.moreText}>

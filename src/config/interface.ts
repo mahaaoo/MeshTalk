@@ -260,3 +260,9 @@ export interface Suggestion {
   source: "staff" | "past_interactions" | "global";
   account: Account;
 }
+
+export interface Search {
+  accounts: Account[];
+  statuses: Timelines[];
+  hashtags: HashTag[];
+}

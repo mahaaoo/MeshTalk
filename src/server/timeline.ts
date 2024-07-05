@@ -1,4 +1,4 @@
-import { Timelines, Response, HashTag, Suggestion, Card } from "../config/interface";
+import { Timelines, Response, HashTag, Suggestion, Card, Search } from "../config/interface";
 import { get } from "../utils/request";
 
 // 获取本人推文以及关注人
@@ -62,4 +62,9 @@ export const suggestions = (limit: number = 10): Response<Suggestion[]> => {
   return get<Suggestion[]>(url, params);
 };
 
-// /api/v2/search
+// 根据关键字搜索
+export const search = (params: object): Response<Search> => {
+  const url = "/api/v2/search";
+
+  return get<Search>(url, params);
+};

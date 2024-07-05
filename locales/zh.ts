@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 const zh = {
   header_back_title: "返回",
   alert_title_text: "提示",
@@ -184,4 +185,5 @@ const zh = {
   explore_popular_link: "当下流行的网页",
   explore_view_more: "查看更多",
 };
+
 export default zh;
