@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  TextInput,
 } from "react-native";
 
 import { Colors } from "../../config";
@@ -93,17 +94,31 @@ const Public: React.FC<PublicProps> = () => {
         }
         style={[styles.main]}
       >
+        <View style={styles.textInputContainer}>
+          <View style={{ marginHorizontal: 8 }}>
+            <Icon name="search" color="#a3a3a3" size={18} />
+          </View>
+          <TextInput
+            placeholderTextColor={"#a3a3a3"}
+            placeholder={i18n.t("explore_search_placeholder")}
+            style={{ flex: 1, fontSize: 16 }}
+          />
+        </View>
         <View>
           {trendTags.length > 0 ? (
             <>
               <View style={styles.popularView}>
-                <Text style={styles.popularTitle}>当下流行的标签</Text>
+                <Text style={styles.popularTitle}>
+                  {i18n.t("explore_popular_tag")}
+                </Text>
               </View>
               {trendTags.map((item, index) => (
                 <HashTagItem item={item} key={item.url} />
               ))}
               <TouchableOpacity style={styles.moreView}>
-                <Text style={styles.moreText}>查看更多</Text>
+                <Text style={styles.moreText}>
+                  {i18n.t("explore_view_more")}
+                </Text>
                 <Icon name="arrowRight" color="#777" />
               </TouchableOpacity>
             </>
@@ -111,14 +126,18 @@ const Public: React.FC<PublicProps> = () => {
           {trendStatuse.length > 0 ? (
             <>
               <View style={styles.popularView}>
-                <Text style={styles.popularTitle}>当下流行的嘟文</Text>
+                <Text style={styles.popularTitle}>
+                  {i18n.t("explore_popular_status")}
+                </Text>
               </View>
 
               {trendStatuse.map((item, index) => (
                 <StatusItem item={item} key={item.id} needDivide={false} />
               ))}
               <TouchableOpacity style={[styles.moreView]}>
-                <Text style={styles.moreText}>查看更多</Text>
+                <Text style={styles.moreText}>
+                  {i18n.t("explore_view_more")}
+                </Text>
                 <Icon name="arrowRight" color="#777" />
               </TouchableOpacity>
             </>
@@ -126,14 +145,18 @@ const Public: React.FC<PublicProps> = () => {
           {suggestion.length > 0 ? (
             <>
               <View style={styles.popularView}>
-                <Text style={styles.popularTitle}>推荐的用户</Text>
+                <Text style={styles.popularTitle}>
+                  {i18n.t("explore_popular_user")}
+                </Text>
               </View>
 
               {suggestion.map((item, index) => (
                 <UserItem key={item.account.id} item={item.account} />
               ))}
               <TouchableOpacity style={[styles.moreView]}>
-                <Text style={styles.moreText}>查看更多</Text>
+                <Text style={styles.moreText}>
+                  {i18n.t("explore_view_more")}
+                </Text>
                 <Icon name="arrowRight" color="#777" />
               </TouchableOpacity>
             </>
@@ -141,7 +164,9 @@ const Public: React.FC<PublicProps> = () => {
           {link.length > 0 ? (
             <>
               <View style={styles.popularView}>
-                <Text style={styles.popularTitle}>当下流行的网页</Text>
+                <Text style={styles.popularTitle}>
+                  {i18n.t("explore_popular_link")}
+                </Text>
               </View>
 
               <View style={{ backgroundColor: "#fff", padding: 15 }}>
@@ -150,7 +175,9 @@ const Public: React.FC<PublicProps> = () => {
                 ))}
               </View>
               <TouchableOpacity style={[styles.moreView]}>
-                <Text style={styles.moreText}>查看更多</Text>
+                <Text style={styles.moreText}>
+                  {i18n.t("explore_view_more")}
+                </Text>
                 <Icon name="arrowRight" color="#777" />
               </TouchableOpacity>
             </>
@@ -185,6 +212,14 @@ const styles = StyleSheet.create({
   moreText: {
     fontSize: 16,
     color: Colors.theme,
+  },
+  textInputContainer: {
+    flexDirection: "row",
+    margin: 15,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: "#e7e7e7",
+    alignItems: "center",
   },
 });
 

@@ -176,6 +176,13 @@ const en = {
 
   hash_info_follow_text: "Follow",
   hash_info_following_text: "Following",
+
+  explore_search_placeholder: "Search user, post or tag",
+  explore_popular_tag: "Popular Tag",
+  explore_popular_status: "Popular Post",
+  explore_popular_user: "Suggest User",
+  explore_popular_link: "Popular Link",
+  explore_view_more: "More",
 };
 
 export default en;

@@ -62,3 +62,4 @@ export const suggestions = (limit: number = 10): Response<Suggestion[]> => {
   return get<Suggestion[]>(url, params);
 };
 
+// /api/v2/search

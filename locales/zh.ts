@@ -176,5 +176,12 @@ const zh = {
 
   hash_info_follow_text: "关注",
   hash_info_following_text: "正在关注",
+
+  explore_search_placeholder: "搜索用户、嘟文或标签",
+  explore_popular_tag: "当下流行的标签",
+  explore_popular_status: "当下流行的嘟文",
+  explore_popular_user: "推荐的用户",
+  explore_popular_link: "当下流行的网页",
+  explore_view_more: "查看更多",
 };
 export default zh;
