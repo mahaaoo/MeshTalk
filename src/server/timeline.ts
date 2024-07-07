@@ -23,41 +23,29 @@ export const localLine = (params: object): Response<Timelines[]> => {
 };
 
 // 当前趋势-标签
-export const trendsTags = (limit: number = 10): Response<HashTag[]> => {
+export const trendsTags = (params: object): Response<HashTag[]> => {
   const url = "/api/v1/trends/tags";
-  const params = {
-    limit,
-  };
 
   return get<HashTag[]>(url, params);
 };
 
 // 当前趋势-嘟文
-export const trendsStatuses = (limit: number = 10): Response<Timelines[]> => {
+export const trendsStatuses = (params: object): Response<Timelines[]> => {
   const url = "/api/v1/trends/statuses";
-  const params = {
-    limit,
-  };
 
   return get<Timelines[]>(url, params);
 };
 
 // 当前趋势-链接
-export const trendsLinks = (limit: number = 10): Response<Card[]> => {
+export const trendsLinks = (params: object): Response<Card[]> => {
   const url = "/api/v1/trends/links";
-  const params = {
-    limit,
-  };
 
   return get<Card[]>(url, params);
 };
 
 // 推荐关注
-export const suggestions = (limit: number = 10): Response<Suggestion[]> => {
+export const suggestions = (params: object): Response<Suggestion[]> => {
   const url = "/api/v2/suggestions";
-  const params = {
-    limit,
-  };
 
   return get<Suggestion[]>(url, params);
 };

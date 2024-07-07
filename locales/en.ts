@@ -184,6 +184,11 @@ const en = {
   explore_popular_user: "Suggest User",
   explore_popular_link: "Popular Link",
   explore_view_more: "More",
+
+  explore_tag_title: "Popular Tag",
+  explore_status_title: "Popular Post",
+  explore_suggest_title: "Suggest User",
+  explore_link_title: "Popular Link",
 };
 
 export default en;

@@ -184,6 +184,11 @@ const zh = {
   explore_popular_user: "推荐的用户",
   explore_popular_link: "当下流行的网页",
   explore_view_more: "查看更多",
+
+  explore_tag_title: "当下流行的标签",
+  explore_status_title: "当下流行的嘟文",
+  explore_suggest_title: "推荐的用户",
+  explore_link_title: "当下流行的网页",
 };
 
 export default zh;

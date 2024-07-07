@@ -24,7 +24,8 @@ import { Account, Card, HashTag, Timelines } from "../../config/interface";
 import StatusItem from "@ui/statusItem";
 import UserItem from "@ui/fans/userItem";
 import WebCard from "@ui/statusItem/webCard";
-import { useSubscribeToken } from "@utils/hooks";
+import { useDebounce, useSubscribeToken } from "@utils/hooks";
+import { router } from "expo-router";
 
 interface PublicProps {
   tabLabel: string;
@@ -40,20 +41,20 @@ const Public: React.FC<PublicProps> = () => {
   const [refresh, setRefresh] = useState(false);
 
   const fetchTrendsTag = async () => {
-    const { data, ok } = await trendsTags(5);
+    const { data, ok } = await trendsTags({ limit: 5 });
     if (data && ok) {
       setTrendTags(data);
     }
   };
   const fetchTrendsStatuses = async () => {
-    const { data, ok } = await trendsStatuses(3);
+    const { data, ok } = await trendsStatuses({ limit: 3 });
     if (data && ok) {
       setTrendStatuse(data);
     }
   };
 
   const fetchSuggestion = async () => {
-    const { data, ok } = await suggestions(5);
+    const { data, ok } = await suggestions({ limit: 5 });
     if (data && ok) {
       const suggest = data.map((d) => d.account);
       setSuggestion(suggest);
@@ -61,7 +62,7 @@ const Public: React.FC<PublicProps> = () => {
   };
 
   const fetchLink = async () => {
-    const { data, ok } = await trendsLinks(5);
+    const { data, ok } = await trendsLinks({ limit: 5 });
     if (data && ok) {
       setLink(data);
     }
@@ -90,7 +91,10 @@ const Public: React.FC<PublicProps> = () => {
 
   const onSearch = async (text: string) => {
     if (text.length === 0) {
-      onRefresh();
+      fetchTrendsTag();
+      fetchTrendsStatuses();
+      fetchSuggestion();
+      fetchLink();
       return;
     }
 
@@ -105,6 +109,9 @@ const Public: React.FC<PublicProps> = () => {
       setTrendStatuse(data.statuses);
     }
   };
+
+  // 防抖
+  const onDebounceSearch = useDebounce((text: string) => onSearch(text), 1000);
 
   return (
     <Screen headerShown title={i18n.t("tabbar_icon_explore")}>
@@ -122,7 +129,7 @@ const Public: React.FC<PublicProps> = () => {
             placeholderTextColor={"#a3a3a3"}
             placeholder={i18n.t("explore_search_placeholder")}
             style={{ flex: 1, fontSize: 16 }}
-            onChangeText={(text) => onSearch(text)}
+            onChangeText={(text) => onDebounceSearch(text)}
           />
         </View>
         <View>
@@ -136,7 +143,10 @@ const Public: React.FC<PublicProps> = () => {
               {trendTags.map((item, index) => (
                 <HashTagItem item={item} key={item.url} />
               ))}
-              <TouchableOpacity style={styles.moreView}>
+              <TouchableOpacity
+                style={styles.moreView}
+                onPress={() => router.push("/explore/tags")}
+              >
                 <Text style={styles.moreText}>
                   {i18n.t("explore_view_more")}
                 </Text>
@@ -155,7 +165,9 @@ const Public: React.FC<PublicProps> = () => {
               {trendStatuse.map((item, index) => (
                 <StatusItem item={item} key={item.id} needDivide={false} />
               ))}
-              <TouchableOpacity style={[styles.moreView]}>
+              <TouchableOpacity style={[styles.moreView]}
+                onPress={() => router.push("/explore/statuses")}
+              >
                 <Text style={styles.moreText}>
                   {i18n.t("explore_view_more")}
                 </Text>
@@ -174,7 +186,9 @@ const Public: React.FC<PublicProps> = () => {
               {suggestion.map((item, index) => (
                 <UserItem key={item.id} item={item} />
               ))}
-              <TouchableOpacity style={[styles.moreView]}>
+              <TouchableOpacity style={[styles.moreView]}
+                onPress={() => router.push("/explore/suggestion")}
+              >
                 <Text style={styles.moreText}>
                   {i18n.t("explore_view_more")}
                 </Text>
