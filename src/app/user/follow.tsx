@@ -5,16 +5,14 @@ import React, { useEffect } from "react";
 import { View, StyleSheet, Text } from "react-native";
 
 import { Colors } from "../../config";
-import { getFollowingById, unfollowById } from "../../server/account";
-import useAccountStore from "../../store/useAccountStore";
+import { getFollowingById } from "../../server/account";
 import useI18nStore from "../../store/useI18nStore";
-import { useRefreshList } from "../../utils/hooks";
+import { useRefreshList, useRelationships } from "../../utils/hooks";
 
 interface UserFollowProps {}
 
 const UserFollow: React.FC<UserFollowProps> = (props) => {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { currentAccount } = useAccountStore();
   const { i18n } = useI18nStore();
 
   const { dataSource, listStatus, onLoadMore, onRefresh, err } = useRefreshList(
@@ -27,14 +25,7 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
     onRefresh();
   }, []);
 
-  const handleUnFollow = async (userId: string) => {
-    if (currentAccount?.id === id) {
-      const { data, ok } = await unfollowById(userId);
-      if (data && ok) {
-        console.log("取消关注成功");
-      }
-    }
-  };
+  const { mergeDataSource } = useRelationships(dataSource, 40);
 
   return (
     <Screen headerShown title={i18n.t("page_title_following")}>
@@ -54,16 +45,9 @@ const UserFollow: React.FC<UserFollowProps> = (props) => {
       ) : (
         <View style={styles.main}>
           <RefreshList
-            data={dataSource}
+            data={mergeDataSource}
             renderItem={({ item }) => (
-              <UserItem
-                item={item}
-                showButton={currentAccount?.id === id}
-                buttonOption={{
-                  onPress: () => handleUnFollow(item.id),
-                  title: "取消关注",
-                }}
-              />
+              <UserItem item={item.account} relationship={item.relationship} />
             )}
             scrollEventThrottle={1}
             refreshState={listStatus}

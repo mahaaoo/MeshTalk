@@ -21,11 +21,12 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
     "Normal",
     40,
   );
-  const [relationships, setRelationships] = useState<Relationship[]>([]);
 
   useEffect(() => {
     onRefresh();
   }, []);
+
+  const [relationships, setRelationships] = useState<Relationship[]>([]);
 
   const fetchRelationships = async () => {
     if (dataSource.length === 0) return;

@@ -1,10 +1,11 @@
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useCallback, useState, useMemo } from "react";
 import { Loading } from "react-native-ma-modal";
 import { shallow } from "zustand/shallow";
 
 import { RefreshState } from "../components/RefreshList";
-import { Response } from "../config/interface";
+import { Account, Relationship, Response } from "../config/interface";
 import useAppStore from "../store/useAppStore";
+import { getRelationships } from "../server/account";
 
 // 防抖hooks
 const useDebounce = (fn: any, delay: number = 1000, dep: any[] = []) => {
@@ -190,6 +191,7 @@ const useRefreshList = <T>(
   };
 };
 
+// 订阅token
 const useSubscribeToken = (fetchApi: any) => {
   useEffect(() => {
     const switchUserSubscribe = useAppStore.subscribe(
@@ -206,10 +208,56 @@ const useSubscribeToken = (fetchApi: any) => {
   }, [fetchApi]);
 };
 
+// 获取relationship，基本和批量获取用户信息绑定
+const useRelationships = (dataSource: Account[], limit: number) => {
+  const [relationships, setRelationships] = useState<Relationship[]>([]);
+
+  const fetchRelationships = async () => {
+    if (dataSource.length === 0) return;
+    if (dataSource.length > 0 && dataSource.length <= limit) {
+      // 一次请求回来的
+      const ids = dataSource.map((item) => item.id);
+      const { data, ok } = await getRelationships(ids);
+      if (ok && data) {
+        setRelationships(data);
+      }
+    } else {
+      const ids = dataSource
+        .slice(dataSource.length - relationships.length)
+        .map((item) => item.id);
+      const { data, ok } = await getRelationships(ids);
+      if (ok && data) {
+        setRelationships(relationships.concat(data));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (dataSource.length > relationships.length) {
+      fetchRelationships();
+    }
+  }, [dataSource, relationships]);
+
+  const mergeDataSource = useMemo(() => {
+    if (dataSource.length === relationships.length) {
+      return dataSource.map((data, index) => ({
+        account: data,
+        relationship: relationships[index],
+      }));
+    }
+    return [];
+  }, [dataSource, relationships]);
+
+  return {
+    mergeDataSource,
+  };
+};
+
 export {
   useDebounce,
   useRequest,
   useSetTimeout,
   useRefreshList,
   useSubscribeToken,
+  useRelationships,
 };

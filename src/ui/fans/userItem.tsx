@@ -3,9 +3,9 @@ import { router } from "expo-router";
 import React, { useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-import { Avatar, Button, SplitLine } from "../../components";
+import { Avatar, Button, FollowButton, SplitLine } from "../../components";
 import { Colors } from "../../config";
-import { Account } from "../../config/interface";
+import { Account, Relationship } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import UserName from "../home/userName";
 
@@ -13,14 +13,16 @@ interface ButtonOption {
   onPress: () => void;
   title: string;
 }
+
 interface UserItemProps {
   item: Account;
+  relationship?: Relationship;
   showButton?: boolean;
   buttonOption?: ButtonOption;
 }
 
 const UserItem: React.FC<UserItemProps> = (props) => {
-  const { item, showButton = false, buttonOption } = props;
+  const { item, relationship, showButton, buttonOption } = props;
   const { width } = useDeviceStore();
 
   const handleNavigation = useCallback(() => {
@@ -66,7 +68,9 @@ const UserItem: React.FC<UserItemProps> = (props) => {
               color: Colors.grayTextColor,
             }}
           />
-        ) : null}
+        ) : (
+          <FollowButton relationship={relationship} />
+        )}
       </View>
       <SplitLine start={0} end={width} />
     </TouchableOpacity>

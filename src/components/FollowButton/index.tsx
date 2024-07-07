@@ -31,12 +31,13 @@ export enum FollowButtonStatus {
 }
 
 interface FollowButtonProps {
-  id: string;
-  locked: boolean; // 是否已锁定
+  id?: string;
+  locked?: boolean; // 是否已锁定
+  relationship?: Relationship;
 }
 
 const FollowButton: React.FC<FollowButtonProps> = (props) => {
-  const { id, locked } = props;
+  const { id, locked, relationship } = props;
   const { i18n } = useI18nStore();
   // 获取上一次渲染的组件样式
   const prevContentRef: any = useRef();
@@ -50,15 +51,20 @@ const FollowButton: React.FC<FollowButtonProps> = (props) => {
   });
 
   useEffect(() => {
-    const fetchRelation = async () => {
-      const { data, ok } = await getRelationships(id);
-      if (ok && data) {
-        handleRelate(data[0]);
-      }
-    };
+    if (relationship) {
+      handleRelate(relationship);
+    } else {
+      const fetchRelation = async () => {
+        console.log("FollowButton 获取relationship");
+        const { data, ok } = await getRelationships(id || "");
+        if (ok && data) {
+          handleRelate(data[0]);
+        }
+      };
 
-    fetchRelation();
-  }, [id]);
+      fetchRelation();
+    }
+  }, [id, relationship]);
 
   const handleRelate = useCallback((relationship: Relationship) => {
     const followedBy = relationship?.followed_by;

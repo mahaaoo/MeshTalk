@@ -24,7 +24,7 @@ import { Account, Card, HashTag, Timelines } from "../../config/interface";
 import StatusItem from "@ui/statusItem";
 import UserItem from "@ui/fans/userItem";
 import WebCard from "@ui/statusItem/webCard";
-import { useDebounce, useSubscribeToken } from "@utils/hooks";
+import { useDebounce, useRelationships, useSubscribeToken } from "@utils/hooks";
 import { router } from "expo-router";
 
 interface PublicProps {
@@ -112,6 +112,8 @@ const Public: React.FC<PublicProps> = () => {
 
   // 防抖
   const onDebounceSearch = useDebounce((text: string) => onSearch(text), 1000);
+  const { mergeDataSource } = useRelationships(suggestion, 5);
+
 
   return (
     <Screen headerShown title={i18n.t("tabbar_icon_explore")}>
@@ -165,7 +167,8 @@ const Public: React.FC<PublicProps> = () => {
               {trendStatuse.map((item, index) => (
                 <StatusItem item={item} key={item.id} needDivide={false} />
               ))}
-              <TouchableOpacity style={[styles.moreView]}
+              <TouchableOpacity
+                style={[styles.moreView]}
                 onPress={() => router.push("/explore/statuses")}
               >
                 <Text style={styles.moreText}>
@@ -175,7 +178,7 @@ const Public: React.FC<PublicProps> = () => {
               </TouchableOpacity>
             </>
           ) : null}
-          {suggestion.length > 0 ? (
+          {mergeDataSource.length > 0 ? (
             <>
               <View style={styles.popularView}>
                 <Text style={styles.popularTitle}>
@@ -183,10 +186,15 @@ const Public: React.FC<PublicProps> = () => {
                 </Text>
               </View>
 
-              {suggestion.map((item, index) => (
-                <UserItem key={item.id} item={item} />
+              {mergeDataSource.map((item, index) => (
+                <UserItem
+                  key={item.account.id}
+                  item={item.account}
+                  relationship={item.relationship}
+                />
               ))}
-              <TouchableOpacity style={[styles.moreView]}
+              <TouchableOpacity
+                style={[styles.moreView]}
                 onPress={() => router.push("/explore/suggestion")}
               >
                 <Text style={styles.moreText}>

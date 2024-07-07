@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 
 import { Colors } from "../../config";
 import useI18nStore from "../../store/useI18nStore";
-import { useRefreshList } from "../../utils/hooks";
+import { useRefreshList, useRelationships } from "../../utils/hooks";
 
 import { suggestions } from "../../server/timeline";
 import UserItem from "@ui/fans/userItem";
@@ -23,13 +23,22 @@ const Suggestion: React.FC<SuggestionProps> = (props) => {
     onRefresh();
   }, []);
 
+  const { mergeDataSource } = useRelationships(
+    dataSource.map((data) => data.account),
+    80,
+  );
+
   return (
     <Screen headerShown title={i18n.t("explore_suggest_title")}>
       <View style={styles.main}>
         <RefreshList
-          data={dataSource}
+          data={mergeDataSource}
           renderItem={({ item }) => (
-            <UserItem key={item.account.id} item={item.account} />
+            <UserItem
+              key={item.account.id}
+              item={item.account}
+              relationship={item.relationship}
+            />
           )}
           scrollEventThrottle={1}
           refreshState={listStatus}
