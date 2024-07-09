@@ -102,6 +102,7 @@ const en = {
   new_status_goback_title: "Cancel",
   new_status_header_title: "New Post",
   new_status_header_submit: "Submit",
+  new_status_replay_header_title: "Reply",
 
   new_status_content_placeholder: "What's happening?",
   new_status_warning_placeholder: "Warning messages",

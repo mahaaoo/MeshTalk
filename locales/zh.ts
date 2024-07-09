@@ -102,6 +102,7 @@ const zh = {
   new_status_goback_title: "取消",
   new_status_header_title: "新嘟文",
   new_status_header_submit: "发送",
+  new_status_replay_header_title: "发表评论",
 
   new_status_content_placeholder: "有什么新鲜事",
   new_status_warning_placeholder: "警告信息",

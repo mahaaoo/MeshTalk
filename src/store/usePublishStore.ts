@@ -22,6 +22,8 @@ export interface NewStatusParams {
   reply: ReplyProps; // 需要replyObj转换
   status: string;
   spoiler_text: string;
+
+  in_reply_to_id: string;
 }
 
 interface PublishStoreState {
@@ -80,13 +82,21 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
     }
   },
   postNewStatuses: async (params: NewStatusParams) => {
-    const { reply, mediaList, sensitive, status, spoiler_text, timestamp } =
-      params;
+    const {
+      reply,
+      mediaList,
+      sensitive,
+      status,
+      spoiler_text,
+      timestamp,
+      in_reply_to_id,
+    } = params;
 
     let buildParams: any = {
       sensitive,
       status,
       visibility: reply.key,
+      in_reply_to_id: in_reply_to_id.length > 0 ? in_reply_to_id : "",
     };
 
     // 没有文字信息也没有媒体信息，则认为是无效的文字发表内容

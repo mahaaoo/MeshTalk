@@ -14,6 +14,7 @@ import { addBookmark, deleteBookmark } from "../../server/account";
 
 import { Timelines } from "../../config/interface";
 import { systemShare } from "@utils/media";
+import { router } from "expo-router";
 
 interface ToolBarProps {
   item: Timelines;
@@ -122,7 +123,18 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
         </TouchableOpacity>
       </View>
       <View style={styles.toolItem}>
-        <TouchableOpacity style={styles.toolItem}>
+        <TouchableOpacity
+          style={styles.toolItem}
+          onPress={() => {
+            console.log("id", id);
+            router.push({
+              pathname: "/publish",
+              params: {
+                id: id,
+              },
+            });
+          }}
+        >
           <Icon name="comment" size={20} color={Colors.commonToolBarText} />
           <Text style={styles.toolTitle}>
             {replies_count <= 0 ? "" : replies_count}

@@ -10,7 +10,7 @@ import EmojiDisplay from "@ui/publish/emojiDisplay";
 import MediaDisplay from "@ui/publish/mediaDisplay";
 import { imageOriginPick } from "@utils/media";
 import { ImagePickerAsset } from "expo-image-picker";
-import { router, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import React, {
   useEffect,
   useRef,
@@ -44,6 +44,10 @@ import usePublishStore from "../store/usePublishStore";
 interface PublishProps {}
 
 const Publish: React.FC<PublishProps> = () => {
+  // 如果是回复某个嘟文，则id有值
+  const { id = "" } = useLocalSearchParams<{ id: string }>();
+  console.log("publish", id);
+
   const navigation = useNavigation();
   const accountStore = useAccountStore();
   const { postNewStatuses, addToDrafts, delFromDrafts, drafts } =
@@ -105,6 +109,16 @@ const Publish: React.FC<PublishProps> = () => {
     };
   }, []);
 
+  const keyboardWillShow = useCallback((e: any) => {
+    offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
+  }, []);
+
+  const keyboardWillHide = useCallback(() => {
+    if (!pressEmoji.value) {
+      offsetY.value = withTiming(insets.bottom, { duration: 250 });
+    }
+  }, []);
+
   const newStatusParams = useMemo(
     () => ({
       mediaList,
@@ -113,8 +127,9 @@ const Publish: React.FC<PublishProps> = () => {
       status: statusContent,
       spoiler_text: spoilerText,
       timestamp: timestamp,
+      in_reply_to_id: id,
     }),
-    [mediaList, isWarn, reply, statusContent, spoilerText, timestamp],
+    [mediaList, isWarn, reply, statusContent, spoilerText, timestamp, id],
   );
 
   useEffect(() => {
@@ -189,16 +204,6 @@ const Publish: React.FC<PublishProps> = () => {
     delFromDrafts,
   ]);
 
-  const keyboardWillShow = useCallback((e: any) => {
-    offsetY.value = withTiming(e.endCoordinates.height, { duration: 250 });
-  }, []);
-
-  const keyboardWillHide = useCallback(() => {
-    if (!pressEmoji.value) {
-      offsetY.value = withTiming(insets.bottom, { duration: 250 });
-    }
-  }, []);
-
   const handleClickEmojis = useCallback(() => {
     pressEmoji.value = !pressEmoji.value;
     Keyboard.dismiss();
@@ -233,6 +238,7 @@ const Publish: React.FC<PublishProps> = () => {
     Keyboard.dismiss();
     ActionsSheet.Drafts.show({
       onSelect: (draft) => {
+        // TODO: maybe i need useReduce
         const { timestamp, mediaList, status, sensitive, reply, spoiler_text } =
           draft;
         setTimestamp(timestamp);
@@ -263,7 +269,14 @@ const Publish: React.FC<PublishProps> = () => {
   });
 
   return (
-    <Screen headerShown title={i18n.t("new_status_header_title")}>
+    <Screen
+      headerShown
+      title={
+        id.length > 0
+          ? i18n.t("new_status_replay_header_title")
+          : i18n.t("new_status_header_title")
+      }
+    >
       <View style={styles.main}>
         <ScrollView>
           <View style={{ flexDirection: "row" }}>
