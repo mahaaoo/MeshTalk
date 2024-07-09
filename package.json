@@ -12,7 +12,8 @@
     "ts:check": "tsc",
     "test": "jest",
     "deploy": "gh-pages -t -d dist",
-    "predeploy": "expo export -p web"  
+    "predeploy": "expo export -p web",
+    "update-eas": "./update-eas.sh"
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.1.3",
