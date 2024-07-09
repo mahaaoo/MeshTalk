@@ -31,7 +31,7 @@ export enum FollowButtonStatus {
 }
 
 interface FollowButtonProps {
-  id?: string;
+  id: string;
   locked?: boolean; // 是否已锁定
   relationship?: Relationship;
 }

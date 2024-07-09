@@ -69,7 +69,7 @@ const UserItem: React.FC<UserItemProps> = (props) => {
             }}
           />
         ) : (
-          <FollowButton relationship={relationship} />
+          <FollowButton id={item.id} relationship={relationship} />
         )}
       </View>
       <SplitLine start={0} end={width} />
