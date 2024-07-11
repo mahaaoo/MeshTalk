@@ -75,6 +75,7 @@ const en = {
   setting_lanuage: "Language",
   setting_logout: "Logout/Switch Account",
   setting_tag: "Hashtags",
+  setting_preferences: "Preferences",
 
   user_post: "Posts",
   user_folloing: "Following",
@@ -98,6 +99,8 @@ const en = {
   page_block_null: "You haven't blocked anyone.",
 
   page_title_announce: "Announcements",
+
+  page_title_preferences: "Preferences",
 
   new_status_goback_title: "Cancel",
   new_status_header_title: "New Post",

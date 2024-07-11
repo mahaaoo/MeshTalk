@@ -38,7 +38,7 @@ const renderRightIcon = (props: ListRowProps) => {
   const { rightIcon = <Icon name="arrowRight" size={18} color="#333" /> } =
     props;
   if (!rightIcon || rightIcon === null) {
-    return <View />;
+    return null;
   }
   return rightIcon;
 };
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   rightContainer: {
-    marginRight: 10,
+    marginRight: 0,
   },
 });
 

@@ -75,6 +75,7 @@ const zh = {
   setting_lanuage: "语言",
   setting_logout: "退出/切换账号",
   setting_tag: "话题标签",
+  setting_preferences: "偏好设置",
 
   user_post: "嘟文",
   user_folloing: "正在关注",
@@ -98,6 +99,8 @@ const zh = {
   page_block_null: "没有拉黑任何人",
 
   page_title_announce: "站点公告",
+
+  page_title_preferences: "偏好设置",
 
   new_status_goback_title: "取消",
   new_status_header_title: "新嘟文",

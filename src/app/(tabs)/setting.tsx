@@ -51,7 +51,7 @@ const Setting: React.FC<object> = () => {
         id: currentAccount?.id,
       },
     });
-  }, []);
+  }, [currentAccount]);
 
   const handleNavigateToFollowing = useCallback(() => {
     router.push({
@@ -60,7 +60,7 @@ const Setting: React.FC<object> = () => {
         id: currentAccount?.id,
       },
     });
-  }, []);
+  }, [currentAccount]);
 
   const handleToDetail = useCallback(() => {
     router.push({
@@ -69,7 +69,7 @@ const Setting: React.FC<object> = () => {
         acct: currentAccount?.acct,
       },
     });
-  }, []);
+  }, [currentAccount]);
 
   const onScroll = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -181,10 +181,10 @@ const Setting: React.FC<object> = () => {
           }}
         />
         <ListRow
-          leftIcon={<Icon name="language" size={24} color="#333" />}
-          title={i18n.t("setting_lanuage")}
+          leftIcon={<Icon name="preferences" size={24} color="#333" />}
+          title={i18n.t("setting_preferences")}
           onPress={() => {
-            switchLocale(i18n.locale === "zh" ? "en" : "zh");
+            router.push("/preferences");
           }}
         />
         <ListRow
