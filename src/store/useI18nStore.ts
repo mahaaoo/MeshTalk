@@ -2,35 +2,52 @@ import { getLocales } from "expo-localization";
 import { I18n } from "i18n-js";
 import { create } from "zustand";
 
-import translations, { SupportLocale } from "../../locales";
-
-// 隐私内容已经点击过显示，则记录下来，避免因为list重用而导致的错误渲染
-
+import { SupportLocaleProps, translations, support } from "../../locales";
 interface I18nState {
   i18n: I18n;
   initI18n: () => void;
-  local: string;
-  switchLocale: (local: SupportLocale) => void;
+  local: SupportLocaleProps | undefined;
+  switchLocale: (local: SupportLocaleProps) => void;
+  getSupportLocale: () => SupportLocaleProps[];
 }
 
 const useI18nStore = create<I18nState>((set, get) => ({
   i18n: new I18n(translations),
-  local: "",
+  local: undefined,
   initI18n: () => {
     const i18n = get().i18n;
-    const local = getLocales()[0].languageCode ?? "en";
-    i18n.locale = local;
+    let languageCode = getLocales()[0].languageCode ?? "en";
+    let local;
+
+    if (support.map((sup) => sup.locale).indexOf(languageCode) === -1) {
+      // app不支持当前地区语言，默认en
+      languageCode = "en";
+    }
+
+    i18n.locale = languageCode;
+
+    support.forEach((sup) => {
+      if (sup.locale === languageCode) {
+        local = { ...sup };
+      }
+    });
+
     i18n.enableFallback = true;
     set({
       i18n,
       local,
     });
   },
-  switchLocale: (local: SupportLocale) => {
+  getSupportLocale: () => {
+    return support;
+  },
+  switchLocale: (local: SupportLocaleProps) => {
     const i18n = get().i18n;
-    i18n.locale = local;
+    i18n.locale = local.locale;
+
     set({
       i18n,
+      local,
     });
   },
 }));

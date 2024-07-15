@@ -1,5 +1,8 @@
 /* eslint-disable prettier/prettier */
 const zh = {
+  language: "简体中文",
+  locale: "zh",
+
   header_back_title: "返回",
   alert_title_text: "提示",
   alert_cancel_text: "取消",
@@ -193,6 +196,8 @@ const zh = {
   explore_status_title: "当下流行的嘟文",
   explore_suggest_title: "推荐的用户",
   explore_link_title: "当下流行的网页",
+
+  switch_language_title: "展示语言",
 };
 
 export default zh;

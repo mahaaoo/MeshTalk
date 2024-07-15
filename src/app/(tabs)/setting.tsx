@@ -30,7 +30,7 @@ const Setting: React.FC<object> = () => {
   const scrollY = useSharedValue(0);
   const { currentAccount, verifyToken } = useAccountStore();
   const { width, insets } = useDeviceStore();
-  const { i18n, switchLocale } = useI18nStore();
+  const { i18n } = useI18nStore();
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
 
   const handleEdit = useCallback(() => {

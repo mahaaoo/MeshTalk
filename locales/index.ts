@@ -1,11 +1,21 @@
 import en from "./en";
 import zh from "./zh";
 
-const translations = {
+export interface SupportLocaleProps {
+  language: string;
+  locale: string;
+}
+
+export const translations = {
   en,
   zh,
 };
 
-export type SupportLocale = "en" | "zh";
+export const support = Object.values(translations).map((values) => {
+  return {
+    language: values.language,
+    locale: values.locale,
+  };
+}) as SupportLocaleProps[];
 
 export default translations;

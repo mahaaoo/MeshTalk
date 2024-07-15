@@ -1,5 +1,8 @@
 /* eslint-disable prettier/prettier */
 const en = {
+  language: "English",
+  locale: "en",
+
   header_back_title: "Back",
   alert_title_text: "Tip",
   alert_cancel_text: "Cancel",
@@ -193,6 +196,8 @@ const en = {
   explore_status_title: "Popular Post",
   explore_suggest_title: "Suggest User",
   explore_link_title: "Popular Link",
+
+  switch_language_title: "Display Language",
 };
 
 export default en;
