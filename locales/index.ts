@@ -2,8 +2,8 @@ import en from "./en";
 import zh from "./zh";
 
 export interface SupportLocaleProps {
-  language: string;
-  locale: string;
+  language: string; // 简体中文
+  locale: string; // zh
 }
 
 export const translations = {

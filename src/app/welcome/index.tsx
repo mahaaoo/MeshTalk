@@ -33,7 +33,7 @@ const Guide: React.FC<object> = () => {
         setRecommend(data);
       }
     };
-    fetch(local);
+    fetch(local?.locale!);
   }, [local]);
 
   return (
