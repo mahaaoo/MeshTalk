@@ -1,6 +1,7 @@
 export const MULTIPLEUSER = "mesh.talk.multiple.user";
 export const WEBTEMPDATA = "mesh.talk.web.temp.data";
 export const STATUSDRAFTS = "mesh.talk.status.drafts";
+export const PREFERENCES = "mesh.talk.user.preferences";
 
 export const POPMODALID = "global-pop-options";
 export const IMAGEMODALID = "global-image-preview";

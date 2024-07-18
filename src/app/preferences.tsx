@@ -10,9 +10,9 @@ interface PreferencesProps {}
 
 const Preferences: React.FC<PreferencesProps> = (props) => {
   const {} = props;
-  const { i18n, local } = useI18nStore();
-  const [currentLocal, setCurrentLocal] = useState(local?.language || "");
-  const { sensitive, autoPlayGif } = usePreferenceStore();
+  const { i18n } = useI18nStore();
+  // const [currentLocal, setCurrentLocal] = useState(local?.language || "");
+  const { sensitive, autoPlayGif, switchLocal, local } = usePreferenceStore();
 
   return (
     <Screen headerShown title={i18n.t("page_title_preferences")}>
@@ -21,13 +21,13 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           title={i18n.t("setting_lanuage")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-              {currentLocal}
+              {local?.language}
             </Text>
           }
           onPress={() => {
             ActionsSheet.Language.show({
               onSelect: (local) => {
-                setCurrentLocal(local.language);
+                switchLocal(local);
               },
             });
           }}
@@ -38,6 +38,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           rightView={
             <Switch
               value={sensitive}
+              trackColor={{ false: "#fff", true: Colors.theme }}
               onValueChange={(value) => {
                 usePreferenceStore.setState({ sensitive: value });
               }}
@@ -69,6 +70,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           rightView={
             <Switch
               value={autoPlayGif}
+              trackColor={{ false: "#fff", true: Colors.theme }}
               onValueChange={(value) => {
                 usePreferenceStore.setState({ autoPlayGif: value });
               }}
