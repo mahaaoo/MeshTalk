@@ -75,7 +75,6 @@ const en = {
   setting_mute: "Mute",
   setting_block: "Block",
   setting_announce: "Announcements",
-  setting_lanuage: "Language",
   setting_logout: "Logout/Switch Account",
   setting_tag: "Hashtags",
   setting_preferences: "Preferences",
@@ -198,6 +197,11 @@ const en = {
   explore_link_title: "Popular Link",
 
   switch_language_title: "Support Language",
+  perferences_language_text: 'Language',
+  perferences_sensitive_text: 'Always show sensitive content',
+  perferences_brower_text: 'Opening Link',
+  perferences_dodo_text: 'Default posting visibility',
+  perferences_gif_text: 'Autoplay GIF',
 };
 
 export default en;

@@ -75,7 +75,6 @@ const zh = {
   setting_mute: "屏蔽",
   setting_block: "拉黑",
   setting_announce: "站点公告",
-  setting_lanuage: "语言",
   setting_logout: "退出/切换账号",
   setting_tag: "话题标签",
   setting_preferences: "偏好设置",
@@ -197,7 +196,12 @@ const zh = {
   explore_suggest_title: "推荐的用户",
   explore_link_title: "当下流行的网页",
 
-  switch_language_title: " 支持的语言",
+  switch_language_title: "支持的语言",
+  perferences_language_text: "语言",
+  perferences_sensitive_text: '敏感信息是否显示',
+  perferences_brower_text: '链接打开方式',
+  perferences_dodo_text: '默认嘟文可见性',
+  perferences_gif_text: '自动播放gif',
 };
 
 export default zh;

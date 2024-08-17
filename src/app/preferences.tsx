@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text } from "react-native";
 import { Screen, ListRow, ActionsSheet } from "@components";
 import useI18nStore from "../store/useI18nStore";
@@ -9,7 +9,6 @@ import usePreferenceStore from "../store/usePreferenceStore";
 interface PreferencesProps {}
 
 const Preferences: React.FC<PreferencesProps> = (props) => {
-  const {} = props;
   const { i18n } = useI18nStore();
   // const [currentLocal, setCurrentLocal] = useState(local?.language || "");
   const { sensitive, autoPlayGif, switchLocal, local } = usePreferenceStore();
@@ -18,7 +17,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
     <Screen headerShown title={i18n.t("page_title_preferences")}>
       <View>
         <ListRow
-          title={i18n.t("setting_lanuage")}
+          title={i18n.t("perferences_language_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
               {local?.language}
@@ -33,7 +32,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           }}
         />
         <ListRow
-          title={"敏感信息是否显示"}
+          title={i18n.t("perferences_sensitive_text")}
           rightIcon={null}
           rightView={
             <Switch
@@ -47,7 +46,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           onPress={() => {}}
         />
         <ListRow
-          title={"浏览器打开方式"}
+          title={i18n.t("perferences_brower_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
               app内打开
@@ -56,7 +55,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           onPress={() => {}}
         />
         <ListRow
-          title={"默认嘟文可见性"}
+          title={i18n.t("perferences_dodo_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
               全部
@@ -65,7 +64,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           onPress={() => {}}
         />
         <ListRow
-          title={"自动播放gif"}
+          title={i18n.t("perferences_gif_text")}
           rightIcon={null}
           rightView={
             <Switch
