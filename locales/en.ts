@@ -197,7 +197,7 @@ const en = {
   explore_suggest_title: "Suggest User",
   explore_link_title: "Popular Link",
 
-  switch_language_title: "Display Language",
+  switch_language_title: "Support Language",
 };
 
 export default en;

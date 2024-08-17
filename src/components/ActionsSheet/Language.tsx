@@ -6,7 +6,7 @@ import {
   Text,
   InteractionManager,
 } from "react-native";
-import { TranslateContainer, ModalUtil } from "react-native-ma-modal";
+import { TranslateContainer, ModalUtil, Loading } from "react-native-ma-modal";
 
 import { Colors } from "../../config";
 import { ACTIONMODALIDREPLY } from "../../config/constant";
@@ -15,6 +15,7 @@ import useI18nStore from "../../store/useI18nStore";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
 import { SupportLocaleProps } from "../../../locales";
+import usePreferenceStore from "../../store/usePreferenceStore";
 
 interface ActionsSheetTyps {
   onSelect: (loacl: SupportLocaleProps) => void;
@@ -22,7 +23,8 @@ interface ActionsSheetTyps {
 
 const LanguageComponent: React.FC<ActionsSheetTyps> = (props) => {
   const { onSelect } = props;
-  const { i18n, getSupportLocale, switchLocale, local } = useI18nStore();
+  const { i18n, getSupportLocale } = useI18nStore();
+  const { switchLocal, local } = usePreferenceStore();
   const { width } = useDeviceStore();
 
   const support = useMemo(() => {
@@ -44,7 +46,7 @@ const LanguageComponent: React.FC<ActionsSheetTyps> = (props) => {
             <View key={param.locale}>
               <TouchableOpacity
                 onPress={() => {
-                  switchLocale(param);
+                  switchLocal(param);
                   onSelect(param);
                   // TIPS: 切换语言对象对于js线程负担太大，直接调用hide方法不会显示动画效果
                   // 放入交互器中之后好很多

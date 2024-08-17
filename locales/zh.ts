@@ -197,7 +197,7 @@ const zh = {
   explore_suggest_title: "推荐的用户",
   explore_link_title: "当下流行的网页",
 
-  switch_language_title: "展示语言",
+  switch_language_title: " 支持的语言",
 };
 
 export default zh;

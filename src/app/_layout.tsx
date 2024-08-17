@@ -11,6 +11,7 @@ import { Colors } from "../config";
 import useAppStore from "../store/useAppStore";
 import useDeviceStore from "../store/useDeviceStore";
 import useI18nStore from "../store/useI18nStore";
+import usePreferenceStore from "../store/usePreferenceStore";
 
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 // SENTRY_AUTH_TOKEN 已存入eas环境变量中
@@ -31,7 +32,8 @@ Sentry.init({
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
   const insets = useSafeAreaInsets();
-  const { initI18n, i18n } = useI18nStore();
+  const { i18n } = useI18nStore();
+  const { initPreference } = usePreferenceStore();
 
   const ref = useNavigationContainerRef();
 
@@ -43,8 +45,8 @@ const App: React.FC<object> = () => {
 
   useEffect(() => {
     initApp();
-    // 初始化i18n
-    initI18n();
+    // 初始化i18n等偏好设置
+    initPreference();
   }, []);
 
   useEffect(() => {

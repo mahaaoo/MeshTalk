@@ -26,6 +26,7 @@ interface PreferenceStoreState {
   initPreference: () => void;
 }
 
+// 初始化本地信息
 const initLocale = () => {
   let languageCode = getLocales()[0].languageCode ?? "en";
   let local;
@@ -53,6 +54,12 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
   replyPermission: {},
   autoPlayGif: true,
   switchLocal: (local: SupportLocaleProps) => {
+    const i18n = useI18nStore.getState().i18n;
+    i18n.locale = local.locale;
+
+    useI18nStore.setState({
+      i18n,
+    });
     set({
       local,
     });
