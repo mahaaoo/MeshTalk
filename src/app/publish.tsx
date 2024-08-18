@@ -40,6 +40,7 @@ import useAccountStore from "../store/useAccountStore";
 import useDeviceStore from "../store/useDeviceStore";
 import useI18nStore from "../store/useI18nStore";
 import usePublishStore from "../store/usePublishStore";
+import { getPostVisibility } from "@config/i18nText";
 
 interface PublishProps {}
 
@@ -68,31 +69,7 @@ const Publish: React.FC<PublishProps> = () => {
   const pressEmoji = useSharedValue(false);
   const InputRef: any = useRef();
 
-  const replyObj = useMemo(
-    () => [
-      {
-        title: i18n.t("new_status_ares_public"),
-        key: "public",
-        icon: "unlock",
-      },
-      {
-        title: i18n.t("new_status_ares_unlist"),
-        key: "unlisted",
-        icon: "replyLock",
-      },
-      {
-        title: i18n.t("new_status_ares_follow_only"),
-        key: "private",
-        icon: "replyFollow",
-      },
-      {
-        title: i18n.t("new_status_ares_direct"),
-        key: "direct",
-        icon: "replyAite",
-      },
-    ],
-    [i18n],
-  );
+  const replyObj = getPostVisibility(i18n);
 
   const isEdit = useMemo(() => {
     return mediaList.length !== 0 || statusContent.length !== 0;

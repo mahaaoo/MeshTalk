@@ -1,21 +1,23 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { Text, ScrollView } from "react-native";
 import { Screen, ListRow, ActionsSheet } from "@components";
 import useI18nStore from "../store/useI18nStore";
 import { Switch } from "react-native-gesture-handler";
 import { Colors } from "../config";
 import usePreferenceStore from "../store/usePreferenceStore";
+import { getPostVisibility } from "@config/i18nText";
 
 interface PreferencesProps {}
 
 const Preferences: React.FC<PreferencesProps> = (props) => {
   const { i18n } = useI18nStore();
-  // const [currentLocal, setCurrentLocal] = useState(local?.language || "");
-  const { sensitive, autoPlayGif, switchLocal, local } = usePreferenceStore();
+  const { sensitive, autoPlayGif, switchLocal, local, replyVisibility } =
+    usePreferenceStore();
+  const replyObj = getPostVisibility(i18n);
 
   return (
     <Screen headerShown title={i18n.t("page_title_preferences")}>
-      <View>
+      <ScrollView>
         <ListRow
           title={i18n.t("perferences_language_text")}
           rightView={
@@ -58,10 +60,21 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           title={i18n.t("perferences_dodo_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-              全部
+              {replyVisibility.title}
             </Text>
           }
-          onPress={() => {}}
+          onPress={() => {
+            ActionsSheet.Reply.show({
+              params: replyObj as never,
+              onSelect: (reply) => {
+                usePreferenceStore.setState({
+                  replyVisibility: reply
+                })
+                ActionsSheet.Reply.hide();
+              },
+              onClose: () => {},
+            });
+          }}
         />
         <ListRow
           title={i18n.t("perferences_gif_text")}
@@ -77,7 +90,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           }
           onPress={() => {}}
         />
-      </View>
+      </ScrollView>
     </Screen>
   );
 };
