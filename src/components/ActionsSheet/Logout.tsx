@@ -1,12 +1,12 @@
-import UserName from "@ui/home/userName";
-import { acctName } from "@utils/string";
 import { router } from "expo-router";
 import React from "react";
 import { View, StyleSheet, Text, TouchableOpacity, Alert } from "react-native";
-import { TranslateContainer, ModalUtil, Loading } from "react-native-ma-modal";
+import { Loading } from "react-native-ma-modal";
+
+import UserName from "@ui/home/userName";
+import { acctName } from "@utils/string";
 
 import { Colors } from "../../config";
-import { ACTIONMODALIDLOGOUT } from "../../config/constant";
 import useAccountStore from "../../store/useAccountStore";
 import useAppStore from "../../store/useAppStore";
 import useDeviceStore from "../../store/useDeviceStore";
@@ -14,6 +14,7 @@ import useI18nStore from "../../store/useI18nStore";
 import Avatar from "../Avatar";
 import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
+import OptionSheet from "./OptionSheet";
 
 const LogoutComponent: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
@@ -21,136 +22,93 @@ const LogoutComponent: React.FC<object> = () => {
   const { i18n } = useI18nStore();
 
   return (
-    <View
-      style={[
-        styles.scrollViewContainer,
-        { paddingBottom: useDeviceStore.getState().insets.bottom },
-      ]}
-    >
-      <View style={styles.titleContainer} />
-      <View style={styles.item}>
-        {multipleUser.map((user) => {
-          return (
-            <View key={user.acct}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (user.acct !== acctName(currentAccount?.acct)) {
-                    // 切换账号
-                    Loading.show();
-                    Logout.hide();
-                    switchUser(user, true);
-                    router.replace("/");
-                  }
-                }}
-                style={styles.itemContainer}
-              >
-                <View style={{ flexDirection: "row", flex: 1 }}>
-                  <Avatar url={user.avatar} />
-                  <View
-                    style={{
-                      marginHorizontal: 10,
-                      flex: 1,
-                      justifyContent: "center",
-                    }}
-                  >
-                    <UserName displayname={user.displayName} fontSize={16} />
-                    <Text style={styles.acct}>{user.acct}</Text>
-                  </View>
+    <>
+      {multipleUser.map((user) => {
+        return (
+          <View key={user.acct}>
+            <TouchableOpacity
+              onPress={() => {
+                if (user.acct !== acctName(currentAccount?.acct)) {
+                  // 切换账号
+                  Loading.show();
+                  Logout.hide();
+                  switchUser(user, true);
+                  router.replace("/");
+                }
+              }}
+              style={styles.itemContainer}
+            >
+              <View style={{ flexDirection: "row", flex: 1 }}>
+                <Avatar url={user.avatar} />
+                <View
+                  style={{
+                    marginHorizontal: 10,
+                    flex: 1,
+                    justifyContent: "center",
+                  }}
+                >
+                  <UserName displayname={user.displayName} fontSize={16} />
+                  <Text style={styles.acct}>{user.acct}</Text>
                 </View>
-                {user.acct === acctName(currentAccount?.acct) ? (
-                  <Icon name="check" color={Colors.theme} />
-                ) : null}
-              </TouchableOpacity>
-              <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-            </View>
-          );
-        })}
-        <TouchableOpacity
-          onPress={() => {
-            Logout.hide();
-            router.push("/welcome");
-          }}
-          style={styles.functionContainer}
-        >
-          <Text style={styles.itemTitle}>{i18n.t("switch_account_add")}</Text>
-        </TouchableOpacity>
-        <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-        <TouchableOpacity
-          onPress={() => {
-            Alert.alert(
-              i18n.t("alert_title_text"),
-              i18n.t("switch_account_alert"),
-              [
-                {
-                  text: i18n.t("alert_cancel_text"),
-                },
-                {
-                  style: "destructive",
-                  text: i18n.t("alert_confim_text"),
-                  onPress: () => {
-                    Logout.hide();
-                    Loading.show();
-                    exitCurrentAccount(acctName(currentAccount?.acct));
-                  },
-                },
-              ],
-            );
-          }}
-          style={styles.functionContainer}
-        >
-          <Text style={styles.itemTitle}>
-            {i18n.t("switch_account_logout")}
-          </Text>
-        </TouchableOpacity>
-      </View>
+              </View>
+              {user.acct === acctName(currentAccount?.acct) ? (
+                <Icon name="check" color={Colors.theme} />
+              ) : null}
+            </TouchableOpacity>
+            <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+          </View>
+        );
+      })}
       <TouchableOpacity
         onPress={() => {
           Logout.hide();
+          router.push("/welcome");
         }}
-        style={[styles.item, styles.cacelButton]}
+        style={styles.functionContainer}
       >
-        <Text style={styles.itemTitle}>{i18n.t("switch_account_cancel")}</Text>
+        <Text style={styles.itemTitle}>{i18n.t("switch_account_add")}</Text>
       </TouchableOpacity>
-    </View>
+      <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
+      <TouchableOpacity
+        onPress={() => {
+          Alert.alert(
+            i18n.t("alert_title_text"),
+            i18n.t("switch_account_alert"),
+            [
+              {
+                text: i18n.t("alert_cancel_text"),
+              },
+              {
+                style: "destructive",
+                text: i18n.t("alert_confim_text"),
+                onPress: () => {
+                  Logout.hide();
+                  Loading.show();
+                  exitCurrentAccount(acctName(currentAccount?.acct));
+                },
+              },
+            ],
+          );
+        }}
+        style={styles.functionContainer}
+      >
+        <Text style={styles.itemTitle}>{i18n.t("switch_account_logout")}</Text>
+      </TouchableOpacity>
+    </>
   );
 };
 
 const Logout = {
-  key: ACTIONMODALIDLOGOUT,
-  template: () => {
-    return (
-      <TranslateContainer onDisappear={() => {}} gesture>
-        <LogoutComponent />
-      </TranslateContainer>
-    );
-  },
   show: () => {
-    ModalUtil.add(Logout.template(), Logout.key);
+    OptionSheet.show({
+      needCancle: true,
+      items: <LogoutComponent />,
+    });
   },
-  hide: () => ModalUtil.remove(Logout.key || ""),
-  isExist: () => ModalUtil.isExist(Logout.key || ""),
+  hide: OptionSheet.hide,
 };
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    flex: 1,
-    alignItems: "center",
-    backgroundColor: "#f7f7f7",
-    width: useDeviceStore.getState().width,
-  },
-  titleContainer: {
-    width: 80,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.defaultLineGreyColor,
-    marginVertical: 10,
-  },
-  item: {
-    width: useDeviceStore.getState().width - 40,
-    marginHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-  },
   itemContainer: {
     paddingVertical: 10,
     flexDirection: "row",
@@ -171,12 +129,6 @@ const styles = StyleSheet.create({
   acct: {
     fontSize: 13,
     color: Colors.grayTextColor,
-  },
-  cacelButton: {
-    marginTop: 15,
-    height: 50,
-    justifyContent: "center",
-    alignItems: "center",
   },
 });
 

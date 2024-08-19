@@ -61,7 +61,6 @@ const LanguageComponent: React.FC<LanguageSheetProps> = (props) => {
   );
 };
 
-// TODO: 在replyObj中获取
 const Language = {
   show: (params: LanguageSheetProps) => {
     OptionSheet.show({
