@@ -54,7 +54,11 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
               app内打开
             </Text>
           }
-          onPress={() => {}}
+          onPress={() => {
+            ActionsSheet.LinkType.show({
+              onSelect: () => {},
+            });
+          }}
         />
         <ListRow
           title={i18n.t("perferences_dodo_text")}
@@ -68,8 +72,8 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
               params: replyObj as never,
               onSelect: (reply) => {
                 usePreferenceStore.setState({
-                  replyVisibility: reply
-                })
+                  replyVisibility: reply,
+                });
                 ActionsSheet.Reply.hide();
               },
               onClose: () => {},

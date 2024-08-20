@@ -202,6 +202,10 @@ const en = {
   perferences_brower_text: 'Opening Link',
   perferences_dodo_text: 'Default posting visibility',
   perferences_gif_text: 'Autoplay GIF',
+
+  sheet_link_type_title: "Opening Link Type",
+  open_link_in_app: "Open in app",
+  open_link_in_browser: "Open in browser",
 };
 
 export default en;

@@ -3,6 +3,7 @@ import PicMore from "./PicMore";
 import Reply from "./Reply";
 import Drafts from "./Drafts";
 import Language from "./Language";
+import LinkType from "./LinkType";
 
 const ActionsSheet = {
   Reply,
@@ -10,6 +11,7 @@ const ActionsSheet = {
   Logout,
   Drafts,
   Language,
+  LinkType,
 };
 
 export default ActionsSheet;

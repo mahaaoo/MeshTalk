@@ -202,6 +202,10 @@ const zh = {
   perferences_brower_text: '链接打开方式',
   perferences_dodo_text: '默认嘟文可见性',
   perferences_gif_text: '自动播放gif',
+
+  sheet_link_type_title: "链接打开方式",
+  open_link_in_app: "在app内打开",
+  open_link_in_browser: "在浏览器打开",
 };
 
 export default zh;

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, TouchableOpacity, StyleSheet, Text, InteractionManager } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Text } from "react-native";
 
 import useDeviceStore from "../../store/useDeviceStore";
 import { Icon } from "../Icon";
