@@ -1,5 +1,10 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, Text } from "react-native";
+import {
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  InteractionManager,
+} from "react-native";
 
 import useDeviceStore from "../../store/useDeviceStore";
 import useI18nStore from "../../store/useI18nStore";
@@ -7,9 +12,10 @@ import { Icon } from "../Icon";
 import SplitLine from "../SplitLine";
 
 import OptionSheet from "./OptionSheet";
+import { OpenURLType } from "../../store/usePreferenceStore";
 
 interface LinkTypeComponentProps {
-  onSelect: () => void;
+  onSelect: (i18Text: OpenURLType) => void;
 }
 
 const LinkTypeComponent: React.FC<LinkTypeComponentProps> = (props) => {
@@ -18,14 +24,30 @@ const LinkTypeComponent: React.FC<LinkTypeComponentProps> = (props) => {
 
   return (
     <>
-      <TouchableOpacity onPress={onSelect} style={styles.itemContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          onSelect("open_link_in_app");
+          InteractionManager.runAfterInteractions(() => {
+            LinkType.hide();
+          });
+        }}
+        style={styles.itemContainer}
+      >
         <Text style={styles.itemTitle}>{i18n.t("open_link_in_app")}</Text>
-        <Icon name="download" />
+        <Icon name="inapp" />
       </TouchableOpacity>
       <SplitLine start={0} end={useDeviceStore.getState().width - 40} />
-      <TouchableOpacity onPress={onSelect} style={styles.itemContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          onSelect("open_link_in_browser");
+          InteractionManager.runAfterInteractions(() => {
+            LinkType.hide();
+          });
+        }}
+        style={styles.itemContainer}
+      >
         <Text style={styles.itemTitle}>{i18n.t("open_link_in_browser")}</Text>
-        <Icon name="share" />
+        <Icon name="browser" />
       </TouchableOpacity>
     </>
   );

@@ -12,10 +12,12 @@ type PreferenceStorage = Pick<
   "local" | "sensitive" | "openURLType" | "replyVisibility" | "autoPlayGif"
 >;
 
+export type OpenURLType = "open_link_in_app" | "open_link_in_browser";
+
 interface PreferenceStoreState {
   local: SupportLocaleProps | undefined;
   sensitive: boolean;
-  openURLType: "app" | "brower";
+  openURLType: OpenURLType;
   replyVisibility: PostVisibility;
   autoPlayGif: boolean;
   switchLocal: (local: SupportLocaleProps) => void;
@@ -46,7 +48,7 @@ const initLocale = () => {
 const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
   local: undefined,
   sensitive: false,
-  openURLType: "app",
+  openURLType: "open_link_in_app",
   replyVisibility: {} as PostVisibility,
   autoPlayGif: true,
   switchLocal: (local: SupportLocaleProps) => {
@@ -65,6 +67,7 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
     i18n.enableFallback = true;
     let initLocal;
     let replyVisibility;
+    let openURLType: OpenURLType = "open_link_in_app";
     const preferenceJson = await getItem(PREFERENCES);
     if (preferenceJson) {
       const preference = JSON.parse(preferenceJson) as PreferenceStorage;
@@ -78,11 +81,15 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
         i18n.locale = languageCode;
         initLocal = local;
       }
-
+      // 初始化默认回复可见范围
       if (!!preference?.replyVisibility) {
-        replyVisibility = preference?.replyVisibility;
+        replyVisibility = preference.replyVisibility;
       } else {
         replyVisibility = getPostVisibility(i18n)[0];
+      }
+      // 初始化链接打开方式
+      if (!!preference?.openURLType) {
+        openURLType = preference.openURLType;
       }
     } else {
       const { languageCode, local } = initLocale();
@@ -97,6 +104,7 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
     set({
       local: initLocal,
       replyVisibility,
+      openURLType,
     });
   },
 }));

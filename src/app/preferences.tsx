@@ -11,8 +11,14 @@ interface PreferencesProps {}
 
 const Preferences: React.FC<PreferencesProps> = (props) => {
   const { i18n } = useI18nStore();
-  const { sensitive, autoPlayGif, switchLocal, local, replyVisibility } =
-    usePreferenceStore();
+  const {
+    sensitive,
+    autoPlayGif,
+    switchLocal,
+    local,
+    replyVisibility,
+    openURLType,
+  } = usePreferenceStore();
   const replyObj = getPostVisibility(i18n);
 
   return (
@@ -51,12 +57,14 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           title={i18n.t("perferences_brower_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-              app内打开
+              {i18n.t(openURLType)}
             </Text>
           }
           onPress={() => {
             ActionsSheet.LinkType.show({
-              onSelect: () => {},
+              onSelect: (i18nText) => {
+                usePreferenceStore.setState({ openURLType: i18nText });
+              },
             });
           }}
         />
