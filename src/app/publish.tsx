@@ -69,7 +69,7 @@ const Publish: React.FC<PublishProps> = () => {
   const pressEmoji = useSharedValue(false);
   const InputRef: any = useRef();
 
-  const replyObj = getPostVisibility(i18n);
+  const replyObj = getPostVisibility();
 
   const isEdit = useMemo(() => {
     return mediaList.length !== 0 || statusContent.length !== 0;
@@ -307,7 +307,7 @@ const Publish: React.FC<PublishProps> = () => {
             <View style={styles.toolBar}>
               <View style={styles.power}>
                 <Text style={styles.replayText} onPress={handleReply}>
-                  {reply.title}
+                  {i18n.t(reply.title)}
                 </Text>
                 {drafts.length > 0 && !isEdit ? (
                   <Text style={styles.replayText} onPress={handleDrafts}>

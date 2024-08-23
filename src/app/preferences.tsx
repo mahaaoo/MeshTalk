@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Text, ScrollView } from "react-native";
 import { Screen, ListRow, ActionsSheet } from "@components";
 import useI18nStore from "../store/useI18nStore";
@@ -19,7 +19,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
     replyVisibility,
     openURLType,
   } = usePreferenceStore();
-  const replyObj = getPostVisibility(i18n);
+  const replyObj = getPostVisibility();
 
   return (
     <Screen headerShown title={i18n.t("page_title_preferences")}>
@@ -72,7 +72,7 @@ const Preferences: React.FC<PreferencesProps> = (props) => {
           title={i18n.t("perferences_dodo_text")}
           rightView={
             <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-              {replyVisibility.title}
+              {i18n.t(replyVisibility.title)}
             </Text>
           }
           onPress={() => {

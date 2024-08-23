@@ -8,18 +8,14 @@ import { create } from "zustand";
 import { postNewStatuses, media } from "../server/status";
 import { getItem, setItem } from "@utils/storage";
 import * as constant from "../config/constant";
+import { PostVisibility } from "@config/i18nText";
 
-interface ReplyProps {
-  title: string;
-  key: string;
-  icon: string;
-}
 export interface NewStatusParams {
   timestamp: string;
   mediaList: ImagePickerAsset[];
 
   sensitive: boolean;
-  reply: ReplyProps; // 需要replyObj转换
+  reply: PostVisibility; // 需要replyObj转换
   status: string;
   spoiler_text: string;
 

@@ -7,6 +7,7 @@ import { Library } from "../Icon/library";
 import SplitLine from "../SplitLine";
 
 import OptionSheet from "./OptionSheet";
+import useI18nStore from "../../store/useI18nStore";
 
 export interface ReplyItemProps {
   title: string;
@@ -23,6 +24,7 @@ interface ReplyComponentProps {
 const ReplyComponent: React.FC<ReplyComponentProps> = (props) => {
   const { params, onSelect } = props;
   const { width } = useDeviceStore();
+  const { i18n } = useI18nStore();
 
   return (
     <>
@@ -33,7 +35,7 @@ const ReplyComponent: React.FC<ReplyComponentProps> = (props) => {
               onPress={() => onSelect(param)}
               style={styles.itemContainer}
             >
-              <Text style={styles.itemTitle}>{param.title}</Text>
+              <Text style={styles.itemTitle}>{i18n.t(param.title)}</Text>
               <Icon name={param.icon} color="#333" />
             </TouchableOpacity>
             <SplitLine start={0} end={width - 40} />

@@ -85,7 +85,7 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
       if (!!preference?.replyVisibility) {
         replyVisibility = preference.replyVisibility;
       } else {
-        replyVisibility = getPostVisibility(i18n)[0];
+        replyVisibility = getPostVisibility()[0];
       }
       // 初始化链接打开方式
       if (!!preference?.openURLType) {
@@ -95,7 +95,7 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
       const { languageCode, local } = initLocale();
       i18n.locale = languageCode;
       initLocal = local;
-      replyVisibility = getPostVisibility(i18n)[0];
+      replyVisibility = getPostVisibility()[0];
     }
 
     useI18nStore.setState({
