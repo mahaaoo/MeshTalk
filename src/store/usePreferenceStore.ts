@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { I18n } from "i18n-js";
 import { SupportLocaleProps, translations, support } from "../../locales";
 import { getLocales } from "expo-localization";
-import { getItem } from "@utils/storage";
+import { getItem, setItem } from "@utils/storage";
 import { PREFERENCES } from "../config/constant";
 import useI18nStore from "./useI18nStore";
 import { getPostVisibility, PostVisibility } from "@config/i18nText";
@@ -66,58 +66,59 @@ const usePreferenceStore = create<PreferenceStoreState>((set, get) => ({
     const i18n = new I18n(translations);
     i18n.enableFallback = true;
     let initLocal;
-    let replyVisibility;
+    let replyVisibility = getPostVisibility()[0];
     let openURLType: OpenURLType = "open_link_in_app";
+    let sensitive = false;
+    let autoPlayGif = true;
     const preferenceJson = await getItem(PREFERENCES);
+
+    const { languageCode, local } = initLocale();
+    i18n.locale = languageCode;
+    initLocal = local;
+
     if (preferenceJson) {
       const preference = JSON.parse(preferenceJson) as PreferenceStorage;
-
       if (!!preference?.local) {
         i18n.locale = preference.local.locale;
         initLocal = preference.local;
-      } else {
-        // 初始化偏好设置
-        const { languageCode, local } = initLocale();
-        i18n.locale = languageCode;
-        initLocal = local;
       }
-      // 初始化默认回复可见范围
       if (!!preference?.replyVisibility) {
         replyVisibility = preference.replyVisibility;
-      } else {
-        replyVisibility = getPostVisibility()[0];
       }
-      // 初始化链接打开方式
       if (!!preference?.openURLType) {
         openURLType = preference.openURLType;
       }
-    } else {
-      const { languageCode, local } = initLocale();
-      i18n.locale = languageCode;
-      initLocal = local;
-      replyVisibility = getPostVisibility()[0];
+      if (!!preference?.sensitive) {
+        sensitive = preference.sensitive;
+      }
+      if (!!preference?.autoPlayGif) {
+        autoPlayGif = preference.autoPlayGif;
+      }
     }
-
     useI18nStore.setState({
       i18n,
     });
+
     set({
       local: initLocal,
       replyVisibility,
       openURLType,
+      sensitive,
+      autoPlayGif,
     });
   },
 }));
 
 usePreferenceStore.subscribe((state) => {
   const { local, sensitive, openURLType, replyVisibility, autoPlayGif } = state;
-  console.log("state发生改变", {
+  const preferenceJson = JSON.stringify({
     local,
     sensitive,
     openURLType,
     replyVisibility,
     autoPlayGif,
   });
+  setItem(PREFERENCES, preferenceJson);
 });
 
 export default usePreferenceStore;
