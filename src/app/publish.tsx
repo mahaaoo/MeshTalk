@@ -41,19 +41,20 @@ import useDeviceStore from "../store/useDeviceStore";
 import useI18nStore from "../store/useI18nStore";
 import usePublishStore from "../store/usePublishStore";
 import { getPostVisibility } from "@config/i18nText";
+import usePreferenceStore from "../store/usePreferenceStore";
 
 interface PublishProps {}
 
 const Publish: React.FC<PublishProps> = () => {
   // 如果是回复某个嘟文，则id有值
   const { id = "" } = useLocalSearchParams<{ id: string }>();
-  console.log("publish", id);
 
   const navigation = useNavigation();
   const accountStore = useAccountStore();
   const { postNewStatuses, addToDrafts, delFromDrafts, drafts } =
     usePublishStore();
   const { i18n } = useI18nStore();
+  const { replyVisibility } = usePreferenceStore();
 
   const [isWarn, setIsWarn] = useState(false);
   const [mediaList, setMediaList] = useState<ImagePickerAsset[]>([]);
@@ -75,7 +76,7 @@ const Publish: React.FC<PublishProps> = () => {
     return mediaList.length !== 0 || statusContent.length !== 0;
   }, [mediaList, statusContent]);
 
-  const [reply, setReply] = useState(replyObj[0]);
+  const [reply, setReply] = useState(replyVisibility);
 
   useEffect(() => {
     Keyboard.addListener("keyboardWillShow", keyboardWillShow);

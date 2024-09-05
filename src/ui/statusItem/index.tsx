@@ -14,6 +14,7 @@ import { Timelines } from "../../config/interface";
 import useDeviceStore from "../../store/useDeviceStore";
 import useI18nStore from "../../store/useI18nStore";
 import UserName from "../home/userName";
+import usePreferenceStore from "../../store/usePreferenceStore";
 
 interface StatusItemProps {
   item: Timelines;
@@ -38,6 +39,9 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
   const { i18n } = useI18nStore();
+  const { sensitive } = usePreferenceStore();
+
+  console.log('sensitive', sensitive);
 
   const units = useMemo(() => {
     return {
@@ -155,7 +159,10 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
             <HTMLContent
               id={item.id}
               blur={
-                showItem.sensitive && showItem.media_attachments.length === 0
+                sensitive === true
+                  ? false
+                  : showItem.sensitive &&
+                    showItem.media_attachments.length === 0
               }
               spoilerText={showItem.spoiler_text}
               html={replaceContentEmoji(showItem.content, showItem.emojis)}
@@ -167,7 +174,8 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
                 sensitive={
                   // D：如果设置为了敏感内容，并且无敏感提示词，则认为媒体信息为敏感信息
                   // 只要设置了敏感信息，则隐藏
-                  showItem.sensitive
+                  // 需要和本地存储的偏好设置一起判断
+                  sensitive === true ? false : showItem.sensitive
                 }
                 id={item.id}
                 imageList={showItem.media_attachments}

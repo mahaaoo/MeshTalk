@@ -118,6 +118,7 @@ usePreferenceStore.subscribe((state) => {
     replyVisibility,
     autoPlayGif,
   });
+  console.log(preferenceJson);
   setItem(PREFERENCES, preferenceJson);
 });
 

@@ -2,9 +2,11 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import { openBrowserAsync } from "expo-web-browser";
+import * as Linking from "expo-linking";
 import { Platform, Share } from "react-native";
 import { Loading, Toast } from "react-native-ma-modal";
 import { isValidURL } from "./string";
+import usePreferenceStore from "../store/usePreferenceStore";
 
 // 获取缩小版尺寸的图片，上传头像等
 export const imagePick = async () => {
@@ -110,7 +112,11 @@ export const fileSave = async (url: string) => {
 export const openURL = (url: string) => {
   // 根据用户偏好，选择在app内打开还是在浏览器打开
   if (isValidURL(url)) {
-    openBrowserAsync(url);
-    // Linking.openURL(url);
+    const type = usePreferenceStore.getState().openURLType;
+    if (type === "open_link_in_app") {
+      openBrowserAsync(url);
+    } else if (type === "open_link_in_browser") {
+      Linking.openURL(url);
+    }
   }
 };
