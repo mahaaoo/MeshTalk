@@ -39,6 +39,7 @@ const Announcement: React.FC<AnnouncementProps> = (props) => {
         <FlatList
           pagingEnabled
           snapToInterval={width}
+          decelerationRate={"fast"}
           style={styles.main}
           data={announcement}
           showsHorizontalScrollIndicator={false}

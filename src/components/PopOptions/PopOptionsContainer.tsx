@@ -106,7 +106,7 @@ export const PopOptionsContainer = forwardRef<
         },
         {
           translateY: popHeight / 2,
-        }
+        },
       ],
     };
   }, [pageX, pageY, popHeight]);

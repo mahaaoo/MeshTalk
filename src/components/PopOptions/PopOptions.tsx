@@ -1,19 +1,33 @@
-import { BlurView } from 'expo-blur';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, TouchableOpacity, View, StyleSheet, Text } from 'react-native';
-import { Toast } from 'react-native-ma-modal';
-import * as Clipboard from 'expo-clipboard';
+import { BlurView } from "expo-blur";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Text,
+} from "react-native";
+import { Toast } from "react-native-ma-modal";
+import * as Clipboard from "expo-clipboard";
 
-import { PopOptonsUtil } from '.';
-import { Account, Relationship, Timelines } from '../../config/interface';
-import { getRelationships, unfollowById, followById, unmute, mute, unblock, block } from '../../server/account';
-import { deleteStatus, pinStatus, unpinStatus } from '../../server/status';
-import useAccountStore from '../../store/useAccountStore';
-import useI18nStore from '../../store/useI18nStore';
-import { Icon } from '../Icon';
-import SpacingBox from '../SpacingBox';
-import SplitLine from '../SplitLine';
-import { openURL } from '@utils/media';
+import { PopOptonsUtil } from ".";
+import { Account, Relationship, Timelines } from "../../config/interface";
+import {
+  getRelationships,
+  unfollowById,
+  followById,
+  unmute,
+  mute,
+  unblock,
+  block,
+} from "../../server/account";
+import { deleteStatus, pinStatus, unpinStatus } from "../../server/status";
+import useAccountStore from "../../store/useAccountStore";
+import useI18nStore from "../../store/useI18nStore";
+import { Icon } from "../Icon";
+import SpacingBox from "../SpacingBox";
+import SplitLine from "../SplitLine";
+import { openURL } from "@utils/media";
 
 export interface PopOptionsProps {
   account: Account;
@@ -40,7 +54,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
     };
 
     !isSelf && fetchRelation();
-  }, [account]);
+  }, [account, isSelf]);
 
   const unfollow = async () => {
     setRelation(undefined);
@@ -101,25 +115,25 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
       const { ok, data } = await unpinStatus(item.id);
       if (ok && data) {
         Toast.show("取消置顶嘟文成功");
-      }  
+      }
     } else {
       const { ok, data } = await pinStatus(item.id);
       if (ok && data) {
         Toast.show("置顶嘟文成功");
-      }  
+      }
     }
     PopOptonsUtil.hide();
-  }
+  };
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(item.url);
     PopOptonsUtil.hide();
     Toast.show("已复制到粘贴板");
-  }
+  };
 
   const handleBrowser = async () => {
     openURL(item.url);
-  }
+  };
 
   return (
     <View style={styles.container}>
@@ -162,7 +176,9 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
         {isSelf ? (
           <TouchableOpacity style={styles.item} onPress={handlePin}>
             <Text style={styles.text}>
-              {item.pinned ? i18n.t("status_options_item_unpin") : i18n.t("status_options_item_pin")}
+              {item.pinned
+                ? i18n.t("status_options_item_unpin")
+                : i18n.t("status_options_item_pin")}
             </Text>
             <Icon name="pin" color="#333" />
           </TouchableOpacity>
