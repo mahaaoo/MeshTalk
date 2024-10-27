@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Text, ScrollView } from "react-native";
 import { Screen, ListRow, ActionsSheet } from "@components";
 import useI18nStore from "../store/useI18nStore";

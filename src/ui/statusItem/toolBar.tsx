@@ -86,13 +86,13 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
   const handleBookmark = useCallback(async () => {
     if (isBookmark) {
       setIsBookmark(false);
-      const { ok } = await addBookmark(id);
+      const { ok } = await deleteBookmark(id);
       if (!ok) {
         setIsBookmark(true);
       }
     } else {
       setIsBookmark(true);
-      const { ok } = await deleteBookmark(id);
+      const { ok } = await addBookmark(id);
       if (!ok) {
         setIsBookmark(false);
       }
