@@ -19,7 +19,7 @@ import useStatusStore from "../../store/useStatusStore";
 import useI18nStore from "../../store/useI18nStore";
 import { openURL } from "@utils/media";
 import { Mention, Tag } from "../../config/interface";
-import { getAcctFromUrl } from "@utils/string";
+import { containsHTMLTags, getAcctFromUrl } from "@utils/string";
 import { router } from "expo-router";
 
 const defaultTagsStyles = {
@@ -60,13 +60,21 @@ interface HTMLContentProps {
   tagsStyles?: any;
   blur?: boolean;
   spoilerText?: string;
-  id?: string;  // 该条嘟文的id，为了记录是否已经展示过敏感信息set记录
+  id?: string; // 该条嘟文的id，为了记录是否已经展示过敏感信息set记录
   mentions?: Mention[];
   tags?: Tag[];
 }
 
 const HTMLContent: React.FC<HTMLContentProps> = (props) => {
-  const { html, tagsStyles, blur = false, spoilerText = "", id = "", mentions, tags } = props;
+  const {
+    html,
+    tagsStyles,
+    blur = false,
+    spoilerText = "",
+    id = "",
+    mentions,
+    tags,
+  } = props;
   const { width } = useWindowDimensions();
   const { checkSensitive, addSensitive } = useStatusStore();
   const { i18n } = useI18nStore();
@@ -75,12 +83,18 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
     return blur;
   });
 
+  let totalHtml = html;
+  if (!containsHTMLTags(html)) {
+    // 如果是纯文本内容，则手动添加上一个p标签，以便走相同的处理逻辑
+    totalHtml = "<p>" + html + "</p>";
+  }
+
   // TODO: 过长的内容，需要有一个max-height来省略过多的内容，类似于展开全文
   // 可以考虑自行拆解 目前有<a> <p> <img> <span> <br />
   return (
     <View>
       <HTML
-        source={{ html }}
+        source={{ html: totalHtml }}
         tagsStyles={tagsStyles || defaultTagsStyles}
         contentWidth={width}
         renderers={renderers}
@@ -95,7 +109,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
                 const splitList = href.split("/");
                 const last = splitList[splitList.length - 1];
 
-                const matchTag = tags?.filter(tag => {
+                const matchTag = tags?.filter((tag) => {
                   const tagUrls = tag.url.split("/");
                   const tagLast = tagUrls[tagUrls.length - 1];
                   return tagLast === last;
@@ -107,7 +121,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
                     params: {
                       id: matchTag[0].name,
                     },
-                  });              
+                  });
                 }
 
                 console.log("是一个非法的tag或者匹配失败");
@@ -115,14 +129,15 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
                 // console.log(mentions)
                 const getAcct = getAcctFromUrl(href);
 
-                const user = mentions?.filter(m => m.username === getAcct) || [];
+                const user =
+                  mentions?.filter((m) => m.username === getAcct) || [];
                 if (user?.length > 0) {
                   return router.push({
                     pathname: "/user/[id]",
                     params: {
                       acct: user[0].acct,
                     },
-                  });              
+                  });
                 }
               }
               openURL(href);

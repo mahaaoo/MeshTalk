@@ -23,6 +23,8 @@ const Favourities: React.FC<FavouritiesProps> = (props) => {
     onRefresh();
   }, []);
 
+  console.log(dataSource);
+
   return (
     <Screen headerShown title={i18n.t("page_title_bookmark")}>
       <View style={styles.main}>

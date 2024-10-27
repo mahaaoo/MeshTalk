@@ -63,3 +63,9 @@ export const getAcctFromUrl = (url: string): string => {
 
   return "";
 };
+
+// 判断字符串是否包含html标签
+export const containsHTMLTags = (html: string) => {
+  const htmlTagRegex = /<\/?[^>]+(>|$)/g;
+  return htmlTagRegex.test(html);
+};

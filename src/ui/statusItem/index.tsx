@@ -41,8 +41,6 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
   const { i18n } = useI18nStore();
   const { sensitive } = usePreferenceStore();
 
-  console.log('sensitive', sensitive);
-
   const units = useMemo(() => {
     return {
       days: i18n.t("status_time_days"),
