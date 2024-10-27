@@ -55,6 +55,8 @@ const ImageRenderer: CustomBlockRenderer = (props) => {
 
 const renderers = { img: ImageRenderer };
 
+const MAX_HEIGHT = 28 + 23 * 6;
+
 interface HTMLContentProps {
   html: string;
   tagsStyles?: any;
@@ -82,6 +84,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
     if (checkSensitive(id)) return false;
     return blur;
   });
+  const [more, setMore] = useState(false);
 
   let totalHtml = html;
   if (!containsHTMLTags(html)) {
@@ -89,63 +92,84 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
     totalHtml = "<p>" + html + "</p>";
   }
 
+  const rendererAPress = (event: any, href: string) => {
+    console.log("HTMLContent <a>", href);
+    if (href.indexOf("/tags/") !== -1) {
+      // 打开相应的tag
+      console.log("打开相应的tag", tags);
+      const splitList = href.split("/");
+      const last = splitList[splitList.length - 1];
+
+      const matchTag = tags?.filter((tag) => {
+        const tagUrls = tag.url.split("/");
+        const tagLast = tagUrls[tagUrls.length - 1];
+        return tagLast === last;
+      });
+      if (matchTag && matchTag?.length > 0) {
+        // 是一个合理的tag值
+        return router.push({
+          pathname: "/tag/[id]",
+          params: {
+            id: matchTag[0].name,
+          },
+        });
+      }
+
+      console.log("是一个非法的tag或者匹配失败");
+    } else if (href.indexOf("@") !== -1) {
+      // console.log(mentions)
+      const getAcct = getAcctFromUrl(href);
+
+      const user = mentions?.filter((m) => m.username === getAcct) || [];
+      if (user?.length > 0) {
+        return router.push({
+          pathname: "/user/[id]",
+          params: {
+            acct: user[0].acct,
+          },
+        });
+      }
+    }
+    openURL(href);
+    // console.log("123", href)
+  };
+
   // TODO: 过长的内容，需要有一个max-height来省略过多的内容，类似于展开全文
   // 可以考虑自行拆解 目前有<a> <p> <img> <span> <br />
   return (
     <View>
-      <HTML
-        source={{ html: totalHtml }}
-        tagsStyles={tagsStyles || defaultTagsStyles}
-        contentWidth={width}
-        renderers={renderers}
-        customHTMLElementModels={customHTMLElementModels}
-        renderersProps={{
-          a: {
-            onPress: (_, href) => {
-              console.log("HTMLContent <a>", href);
-              if (href.indexOf("/tags/") !== -1) {
-                // 打开相应的tag
-                console.log("打开相应的tag", tags);
-                const splitList = href.split("/");
-                const last = splitList[splitList.length - 1];
-
-                const matchTag = tags?.filter((tag) => {
-                  const tagUrls = tag.url.split("/");
-                  const tagLast = tagUrls[tagUrls.length - 1];
-                  return tagLast === last;
-                });
-                if (matchTag && matchTag?.length > 0) {
-                  // 是一个合理的tag值
-                  return router.push({
-                    pathname: "/tag/[id]",
-                    params: {
-                      id: matchTag[0].name,
-                    },
-                  });
-                }
-
-                console.log("是一个非法的tag或者匹配失败");
-              } else if (href.indexOf("@") !== -1) {
-                // console.log(mentions)
-                const getAcct = getAcctFromUrl(href);
-
-                const user =
-                  mentions?.filter((m) => m.username === getAcct) || [];
-                if (user?.length > 0) {
-                  return router.push({
-                    pathname: "/user/[id]",
-                    params: {
-                      acct: user[0].acct,
-                    },
-                  });
-                }
-              }
-              openURL(href);
-              // console.log("123", href)
-            },
-          },
+      <View
+        style={{ maxHeight: MAX_HEIGHT, overflow: "hidden" }}
+        onLayout={(e) => {
+          const { height } = e.nativeEvent.layout;
+          console.log(height);
+          if (height >= MAX_HEIGHT - 23) {
+            setMore(true);
+          }
         }}
-      />
+      >
+        <HTML
+          baseStyle={{ marginTop: 0 }}
+          source={{ html: totalHtml }}
+          tagsStyles={tagsStyles || defaultTagsStyles}
+          contentWidth={width}
+          renderers={renderers}
+          customHTMLElementModels={customHTMLElementModels}
+          renderersProps={{
+            a: {
+              onPress: rendererAPress,
+            },
+          }}
+        />
+      </View>
+      {!!more && (
+        <Text
+          onPress={() => console.log("load more")}
+          style={{ fontSize: 16, lineHeight: 23, color: Colors.linkTagColor }}
+        >
+          ...查看全文
+        </Text>
+      )}
       {showBlur ? (
         <BlurView
           intensity={95}
