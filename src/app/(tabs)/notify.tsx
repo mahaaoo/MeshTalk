@@ -28,31 +28,31 @@ const AllNotify: React.FC<AllNotifyProps> = () => {
 
   const [relationships, setRelationships] = useState<Relationship[]>([]);
 
-  const fetchRelationships = async () => {
-    if (dataSource.length === 0) return;
-    if (dataSource.length > 0 && dataSource.length <= 40) {
-      // 一次请求回来的
-      const ids = dataSource.map((item) => item.account.id);
-      const { data, ok } = await getRelationships(ids);
-      if (ok && data) {
-        setRelationships(data);
-      }
-    } else {
-      const ids = dataSource
-        .slice(dataSource.length - relationships.length)
-        .map((item) => item.account.id);
-      const { data, ok } = await getRelationships(ids);
-      if (ok && data) {
-        setRelationships(relationships.concat(data));
-      }
-    }
-  };
+  // const fetchRelationships = async () => {
+  //   if (dataSource.length === 0) return;
+  //   if (dataSource.length > 0 && dataSource.length <= 40) {
+  //     // 一次请求回来的
+  //     const ids = dataSource.map((item) => item.account.id);
+  //     const { data, ok } = await getRelationships(ids);
+  //     if (ok && data) {
+  //       setRelationships(data);
+  //     }
+  //   } else {
+  //     const ids = dataSource
+  //       .slice(dataSource.length - relationships.length)
+  //       .map((item) => item.account.id);
+  //     const { data, ok } = await getRelationships(ids);
+  //     if (ok && data) {
+  //       setRelationships(relationships.concat(data));
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    if (dataSource.length > relationships.length) {
-      fetchRelationships();
-    }
-  }, [dataSource, relationships]);
+  // useEffect(() => {
+  //   if (dataSource.length > relationships.length) {
+  //     fetchRelationships();
+  //   }
+  // }, [dataSource, relationships]);
 
   return (
     <Screen title={i18n.t("tabbar_icon_notify")} headerShown>

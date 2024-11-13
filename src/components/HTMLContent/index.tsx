@@ -142,7 +142,6 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
         style={{ maxHeight: MAX_HEIGHT, overflow: "hidden" }}
         onLayout={(e) => {
           const { height } = e.nativeEvent.layout;
-          console.log(height);
           if (height >= MAX_HEIGHT - 23) {
             setMore(true);
           }
