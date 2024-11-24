@@ -169,6 +169,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           ...查看全文
         </Text>
       )}
+      */}
       {showBlur ? (
         <BlurView
           intensity={95}
@@ -204,7 +205,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
             </Text>
           </TouchableOpacity>
         </BlurView>
-      ) : null} */}
+      ) : null}
     </View>
   );
 };
