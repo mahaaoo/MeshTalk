@@ -1,5 +1,5 @@
-// import * as Sentry from "@sentry/react-native";
-// import { isRunningInExpoGo } from "expo";
+import * as Sentry from "@sentry/react-native";
+import { isRunningInExpoGo } from "expo";
 import { Stack, useNavigationContainerRef } from "expo-router";
 import React, { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -13,21 +13,23 @@ import useDeviceStore from "../store/useDeviceStore";
 import useI18nStore from "../store/useI18nStore";
 import usePreferenceStore from "../store/usePreferenceStore";
 
+const navigationIntegration = Sentry.reactNavigationIntegration({
+  enableTimeToInitialDisplay: !isRunningInExpoGo(),
+});
+
 // const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 // // SENTRY_AUTH_TOKEN 已存入eas环境变量中
 // // eas secret:list查看
-// Sentry.init({
-//   dsn: "https://ce3fd62d9888701f518d5e619bab9ae1@o4507417812992000.ingest.us.sentry.io/4507417816334336",
-//   debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
-//   integrations: [
-//     new Sentry.ReactNativeTracing({
-//       // Pass instrumentation to be used as `routingInstrumentation`
-//       routingInstrumentation,
-//       enableNativeFramesTracking: !isRunningInExpoGo(),
-//       // ...
-//     }),
-//   ],
-// });
+Sentry.init({
+  dsn: "https://ce3fd62d9888701f518d5e619bab9ae1@o4507417812992000.ingest.us.sentry.io/4507417816334336",
+  debug: false, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  tracesSampleRate: 1.0, // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing. Adjusting this value in production.
+  integrations: [
+    // Pass integration
+    navigationIntegration,
+  ],
+  enableNativeFramesTracking: !isRunningInExpoGo(), // Tracks slow and frozen frames in the application
+});
 
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
@@ -37,11 +39,11 @@ const App: React.FC<object> = () => {
 
   const ref = useNavigationContainerRef();
 
-  // useEffect(() => {
-  //   if (ref) {
-  //     routingInstrumentation.registerNavigationContainer(ref);
-  //   }
-  // }, [ref]);
+  useEffect(() => {
+    if (ref?.current) {
+      navigationIntegration.registerNavigationContainer(ref);
+    }
+  }, [ref]);
 
   useEffect(() => {
     initApp();
@@ -84,4 +86,4 @@ const App: React.FC<object> = () => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

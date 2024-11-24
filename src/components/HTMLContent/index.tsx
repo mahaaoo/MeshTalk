@@ -139,13 +139,13 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
   return (
     <View>
       <View
-        style={{ maxHeight: MAX_HEIGHT, overflow: "hidden" }}
-        onLayout={(e) => {
-          const { height } = e.nativeEvent.layout;
-          if (height >= MAX_HEIGHT - 23) {
-            setMore(true);
-          }
-        }}
+        // style={{ maxHeight: MAX_HEIGHT, overflow: "hidden" }}
+        // onLayout={(e) => {
+        //   const { height } = e.nativeEvent.layout;
+        //   if (height >= MAX_HEIGHT - 23) {
+        //     setMore(true);
+        //   }
+        // }}
       >
         <HTML
           baseStyle={{ marginTop: 0 }}
@@ -161,7 +161,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           }}
         />
       </View>
-      {!!more && (
+      {/* {!!more && (
         <Text
           onPress={() => console.log("load more")}
           style={{ fontSize: 16, lineHeight: 23, color: Colors.linkTagColor }}
@@ -204,7 +204,7 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
             </Text>
           </TouchableOpacity>
         </BlurView>
-      ) : null}
+      ) : null} */}
     </View>
   );
 };
