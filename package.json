@@ -48,6 +48,7 @@
     "react-native": "0.76.1",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-ma-modal": "^0.6.0",
+    "react-native-maui": "0.1.1",
     "react-native-reanimated": "~3.16.1",
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "4.12.0",

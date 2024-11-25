@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,26 +6,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, {
-  useSharedValue,
-  useAnimatedRef,
-  useAnimatedReaction,
-  useAnimatedScrollHandler,
-  scrollTo,
-  useAnimatedProps,
-  withTiming,
-  runOnJS,
-  runOnUI,
-} from "react-native-reanimated";
 
-import {
-  useHeadTabView,
-  HEADER_HEIGHT,
-  RESET_TIMING_EASING,
-  NestedScrollStatus,
-  NUMBER_AROUND,
-} from "./type";
+import { HEADER_HEIGHT } from "./type";
 import { Error, RefreshState } from "../../components";
 import { Colors } from "../../config";
 import { Response, Timelines } from "../../config/interface";
@@ -33,6 +15,7 @@ import useDeviceStore from "../../store/useDeviceStore";
 import { useRefreshList } from "../../utils/hooks";
 import DefaultLineItem from "../home/defaultLineItem";
 import StatusItem from "../statusItem";
+import { Nested } from "react-native-maui";
 
 interface UserLineProps {
   acct: string;
@@ -42,109 +25,16 @@ interface UserLineProps {
 }
 
 const UserLine: React.FC<UserLineProps> = (props) => {
-  const { index, fetchApi, acct } = props;
-  const {
-    currentIndex,
-    scrollY,
-    handleChildRef,
-    enable,
-    arefs,
-    stickyHeight,
-    refreshing,
-    nestedScrollStatus,
-  } = useHeadTabView();
+  const { index, fetchApi, acct, ...restProps } = props;
   const { dataSource, onRefresh, err, fetchData, onLoadMore, listStatus } =
     useRefreshList(fetchApi, "Normal", 20);
   const { width, height } = useDeviceStore();
 
-  const scroll = useSharedValue(0);
-  const aref = useAnimatedRef<any>();
-  const nativeRef = useRef();
-
-  useAnimatedReaction(
-    () => currentIndex.value,
-    () => {
-      if (dataSource.length === 0 && index === currentIndex.value) {
-        runOnJS(fetchData)();
-      }
-
-      if (scroll.value > 0) {
-        nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
-      } else {
-        nestedScrollStatus.value = NestedScrollStatus.OutScrolling;
-      }
-    },
-    [scroll, dataSource, index],
-  );
-
-  const move = () => {
-    "worklet";
-    refreshing.value = false;
-    scrollY.value = withTiming(-stickyHeight.value, {
-      duration: 500,
-      easing: RESET_TIMING_EASING,
-    });
-  };
-
-  const handleRefresh = async () => {
-    await onRefresh();
-    runOnUI(move)();
-  };
-
-  useAnimatedReaction(
-    () => refreshing.value,
-    (value) => {
-      if (value && index === currentIndex.value) {
-        console.log("触发下拉刷新");
-        runOnJS(handleRefresh)();
-      }
-    },
-    [index, currentIndex],
-  );
-
-  // 当某一个tab滑到顶，所有重置所有tab
-  useAnimatedReaction(
-    () => scrollY.value,
-    (value) => {
-      if (value > -stickyHeight.value + NUMBER_AROUND && scroll.value > 0) {
-        console.log("reset");
-        scrollTo(aref, 0, 0, false);
-      }
-    },
-    [scroll],
-  );
-
   useEffect(() => {
-    if (aref) {
-      arefs.current[index] = aref;
+    if (dataSource.length === 0) {
+      fetchData();
     }
-  }, [aref, arefs, index]);
-
-  useEffect(() => {
-    if (nativeRef.current) {
-      handleChildRef && handleChildRef(nativeRef);
-    }
-  }, [handleChildRef]);
-
-  const onScroll = useAnimatedScrollHandler({
-    onScroll(event) {
-      scroll.value = event.contentOffset.y;
-      if (scroll.value < NUMBER_AROUND) {
-        scrollTo(aref, 0, 0, false);
-        enable.value = false;
-      } else {
-        nestedScrollStatus.value = NestedScrollStatus.InnerScrolling;
-      }
-    },
-  });
-
-  const nativeGesture = Gesture.Native().withRef(nativeRef);
-
-  const animatedProps = useAnimatedProps(() => {
-    return {
-      scrollEnabled: enable.value,
-    };
-  });
+  }, []);
 
   const renderFooter = useCallback(() => {
     let footer = null;
@@ -230,28 +120,24 @@ const UserLine: React.FC<UserLineProps> = (props) => {
   }
 
   return (
-    <GestureDetector key={index} gesture={nativeGesture}>
-      <Animated.FlatList
-        ref={aref}
-        bounces={false}
-        onScroll={onScroll}
-        // 计算FlatList高度，需要减去吸顶高度和tabbar的高度
-        style={{ height: height - HEADER_HEIGHT - 50 }}
-        scrollEventThrottle={16}
-        data={dataSource}
-        renderItem={({ item }) => {
-          const showItem = item.reblog || item;
-          return (
-            <StatusItem item={item} sameUser={showItem.account.acct === acct} />
-          );
-        }}
-        keyExtractor={(item, index) => item?.id || index.toString()}
-        animatedProps={animatedProps}
-        onEndReached={onLoadMore}
-        ListFooterComponent={renderFooter}
-        onEndReachedThreshold={0.1}
-      />
-    </GestureDetector>
+    <Nested.FlatList
+      bounces={false}
+      // 计算FlatList高度，需要减去吸顶高度和tabbar的高度
+      style={{ flex: 1 }}
+      scrollEventThrottle={16}
+      data={dataSource}
+      renderItem={({ item }) => {
+        const showItem = item.reblog || item;
+        return (
+          <StatusItem item={item} sameUser={showItem.account.acct === acct} />
+        );
+      }}
+      keyExtractor={(item, index) => item?.id || index.toString()}
+      onEndReached={onLoadMore}
+      ListFooterComponent={renderFooter}
+      onEndReachedThreshold={0.1}
+      {...restProps}
+    />
   );
 };
 
