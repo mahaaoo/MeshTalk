@@ -34,11 +34,13 @@ const usePublishStore = create<PublishStoreState>((set, get) => ({
   drafts: [],
   initDrafts: async () => {
     const draftsJson = await getItem(constant.STATUSDRAFTS);
-    const newDraft = JSON.parse(draftsJson || "");
-    console.log(`当前共有${newDraft.length}条嘟文保存在了本地草稿箱`);
-    set({
-      drafts: newDraft,
-    });
+    if (draftsJson) {
+      const newDraft = JSON.parse(draftsJson || "");
+      console.log(`当前共有${newDraft.length}条嘟文保存在了本地草稿箱`);
+      set({
+        drafts: newDraft,
+      });
+    }
   },
   addToDrafts: (draft: NewStatusParams) => {
     let newDraft = get().drafts;
