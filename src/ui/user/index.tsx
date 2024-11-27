@@ -110,6 +110,8 @@ const User: React.FC<UserProps> = (props) => {
         tabs={tabViewConfig?.map((item) => item.title)}
         inactiveTextColor="#333"
         activeTextColor={Colors.theme}
+        tabStyle={{ borderBottomColor: "#eee", borderBottomWidth: 1 }}
+        tabScrollEnabled={false}
         tabBarItemTitleStyle={{
           fontSize: 16,
           fontWeight: "bold",
