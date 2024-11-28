@@ -137,7 +137,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
 
   return (
     <View style={styles.container}>
-      <BlurView intensity={98} tint="light">
+      <BlurView style={{ borderRadius: 10 }} intensity={98} tint="light">
         {isSelf ? null : (
           <>
             {!relation ? (
@@ -149,14 +149,14 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
                 <Text style={styles.text}>
                   {i18n.t("status_options_item_unfollow")}
                 </Text>
-                <Icon name="unfollow" color="#333" />
+                <Icon name="unfollow" color="#444" />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity style={styles.item} onPress={follow}>
                 <Text style={styles.text}>
                   {i18n.t("status_options_item_follow")}
                 </Text>
-                <Icon name="follow" color="#333" />
+                <Icon name="follow" color="#444" />
               </TouchableOpacity>
             )}
             <SpacingBox height={5} color="#e9e9e9" />
@@ -168,7 +168,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
               <Text style={styles.text}>
                 {i18n.t("status_options_item_delete")}
               </Text>
-              <Icon name="delete" color="#333" />
+              <Icon name="delete" color="#444" />
             </TouchableOpacity>
             <SpacingBox height={5} color="#e9e9e9" />
           </>
@@ -180,26 +180,26 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
                 ? i18n.t("status_options_item_unpin")
                 : i18n.t("status_options_item_pin")}
             </Text>
-            <Icon name="pin" color="#333" />
+            <Icon name="pin" color="#444" />
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity style={styles.item} onPress={handleCopy}>
           <Text style={styles.text}>
             {i18n.t("status_options_item_copy_link")}
           </Text>
-          <Icon name="link" color="#333" size={20} />
+          <Icon name="link" color="#444" size={20} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.item} onPress={handleBrowser}>
           <Text style={styles.text}>
             {i18n.t("status_options_item_open_link")}
           </Text>
-          <Icon name="browser" color="#333" size={22} />
+          <Icon name="browser" color="#444" size={22} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.item}>
           <Text style={styles.text}>
             {i18n.t("status_options_item_mention")}
           </Text>
-          <Icon name="aite" color="#333" />
+          <Icon name="aite" color="#444" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item} onPress={handleMute}>
@@ -208,7 +208,7 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
               ? i18n.t("status_options_item_unmute")
               : i18n.t("status_options_item_mute")}
           </Text>
-          <Icon name="mute" size={22} color="#333" />
+          <Icon name="mute" size={22} color="#444" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item} onPress={handleBlock}>
@@ -217,14 +217,14 @@ const PopOptions: React.FC<PopOptionsProps> = (props) => {
               ? i18n.t("status_options_item_unblock")
               : i18n.t("status_options_item_block")}
           </Text>
-          <Icon name="block" size={20} color="#333" />
+          <Icon name="block" size={20} color="#444" />
         </TouchableOpacity>
         <SplitLine start={10} end={210} />
         <TouchableOpacity style={styles.item}>
           <Text style={[styles.text, { color: "red" }]}>
             {i18n.t("status_options_item_report")}
           </Text>
-          <Icon name="report" size={20} color="#333" />
+          <Icon name="report" size={20} color="#444" />
         </TouchableOpacity>
       </BlurView>
     </View>
@@ -235,7 +235,13 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 10,
     width: 240,
-    overflow: "hidden",
+    shadowColor: "#666",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   item: {
     paddingVertical: 15,

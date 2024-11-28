@@ -282,7 +282,7 @@ const EditInfo: React.FC<EditInfoProps> = (props) => {
           <View
             style={[styles.itemContainer, { justifyContent: "space-between" }]}
           >
-            <View>
+            <View style={{ flex: 1 }}>
               <Text style={styles.title}>
                 {i18n.t("edit_info_profile_metadata")}
               </Text>
