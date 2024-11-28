@@ -126,11 +126,11 @@ const ToolBar: React.FC<ToolBarProps> = (props) => {
         <TouchableOpacity
           style={styles.toolItem}
           onPress={() => {
-            console.log("id", id);
             router.push({
               pathname: "/publish",
               params: {
                 id: id,
+                acct: item.account.acct,
               },
             });
           }}

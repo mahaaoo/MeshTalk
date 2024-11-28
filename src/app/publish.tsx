@@ -47,7 +47,10 @@ interface PublishProps {}
 
 const Publish: React.FC<PublishProps> = () => {
   // 如果是回复某个嘟文，则id有值
-  const { id = "" } = useLocalSearchParams<{ id: string }>();
+  const { id = "", acct = "" } = useLocalSearchParams<{
+    id: string;
+    acct: string;
+  }>();
 
   const navigation = useNavigation();
   const accountStore = useAccountStore();
@@ -58,7 +61,12 @@ const Publish: React.FC<PublishProps> = () => {
 
   const [isWarn, setIsWarn] = useState(false);
   const [mediaList, setMediaList] = useState<ImagePickerAsset[]>([]);
-  const [statusContent, setStatusContent] = useState("");
+  const [statusContent, setStatusContent] = useState(() => {
+    if (acct.length > 0) {
+      return "@" + acct + " ";
+    }
+    return "";
+  });
   const [spoilerText, setSpoilerText] = useState("");
 
   // 保存草稿的时间戳，作为草稿箱内容的key
