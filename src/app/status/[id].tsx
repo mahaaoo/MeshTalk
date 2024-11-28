@@ -60,6 +60,7 @@ const StatusDetail: React.FC<StatusDetailProps> = (props) => {
           item={treeNode.node}
           deep={treeNode.deep}
           canToDetail={treeNode.deep > 0}
+          limit={false}
         />,
       );
       treeNode.children.forEach((tree) => {

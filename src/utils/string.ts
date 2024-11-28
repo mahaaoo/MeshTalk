@@ -69,3 +69,8 @@ export const containsHTMLTags = (html: string) => {
   const htmlTagRegex = /<\/?[^>]+(>|$)/g;
   return htmlTagRegex.test(html);
 };
+
+// 使用正则表达式匹配并去除HTML标签
+export const stripHTMLTags = (str: string) => {
+  return str.replace(/<\/?[^>]+(>|$)/g, "");
+};

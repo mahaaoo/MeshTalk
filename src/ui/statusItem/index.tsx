@@ -24,6 +24,7 @@ interface StatusItemProps {
   deep?: number; // 当前回复深度
   sameUser?: boolean; // 点击的嘟文是否当前用户用户，在user中会用
   needDivide?: boolean; // 是否需要和下个嘟文分开
+  limit?: boolean;
 }
 
 const StatusItem: React.FC<StatusItemProps> = (props) => {
@@ -35,6 +36,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
     isReply = false,
     deep,
     needDivide = true,
+    limit = true,
   } = props;
   const showItem = item.reblog || item;
   const { width } = useDeviceStore();
@@ -166,6 +168,8 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
               html={replaceContentEmoji(showItem.content, showItem.emojis)}
               mentions={showItem.mentions}
               tags={showItem.tags}
+              onReadMore={handleNavigation}
+              limit={limit}
             />
             <View style={{ paddingVertical: 8 }}>
               <NinePicture

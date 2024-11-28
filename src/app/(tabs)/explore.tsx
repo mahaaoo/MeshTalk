@@ -114,7 +114,6 @@ const Public: React.FC<PublicProps> = () => {
   const onDebounceSearch = useDebounce((text: string) => onSearch(text), 1000);
   const { mergeDataSource } = useRelationships(suggestion, 5);
 
-
   return (
     <Screen headerShown title={i18n.t("tabbar_icon_explore")}>
       <ScrollView

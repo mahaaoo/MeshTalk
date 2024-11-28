@@ -206,6 +206,8 @@ const zh = {
   sheet_link_type_title: "链接打开方式",
   open_link_in_app: "在app内打开",
   open_link_in_browser: "在浏览器打开",
+
+  status_item_read_more: "查看更多",
 };
 
 export default zh;

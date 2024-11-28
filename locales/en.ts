@@ -10,7 +10,7 @@ const en = {
 
   tabbar_icon_home: "Home",
   tabbar_icon_explore: "Explore",
-  tabbar_icon_new: "New",
+  tabbar_icon_new: "Post",
   tabbar_icon_notify: "Notify",
   tabbar_icon_setting: "Setting",
 
@@ -31,7 +31,7 @@ const en = {
   page_server_detail_title: "Servers Detail",
   page_status_detail: "Detail",
 
-  home_tabview_title1: "Recommended",
+  home_tabview_title1: "For you",
   home_tabview_title2: "Following",
   home_tabview_title3: "Public",
 
@@ -206,6 +206,8 @@ const en = {
   sheet_link_type_title: "Opening Link Type",
   open_link_in_app: "Open in app",
   open_link_in_browser: "Open in browser",
+
+  status_item_read_more: "Read More",
 };
 
 export default en;

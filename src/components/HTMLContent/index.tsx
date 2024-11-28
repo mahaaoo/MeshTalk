@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   useWindowDimensions,
   View,
@@ -13,14 +13,14 @@ import HTML, {
   HTMLContentModel,
   useInternalRenderer,
 } from "react-native-render-html";
+import { router } from "expo-router";
 
 import Colors from "../../config/colors";
 import useStatusStore from "../../store/useStatusStore";
 import useI18nStore from "../../store/useI18nStore";
 import { openURL } from "@utils/media";
 import { Mention, Tag } from "../../config/interface";
-import { containsHTMLTags, getAcctFromUrl } from "@utils/string";
-import { router } from "expo-router";
+import { containsHTMLTags, getAcctFromUrl, stripHTMLTags } from "@utils/string";
 
 const defaultTagsStyles = {
   p: {
@@ -55,8 +55,6 @@ const ImageRenderer: CustomBlockRenderer = (props) => {
 
 const renderers = { img: ImageRenderer };
 
-const MAX_HEIGHT = 28 + 23 * 6;
-
 interface HTMLContentProps {
   html: string;
   tagsStyles?: any;
@@ -65,6 +63,8 @@ interface HTMLContentProps {
   id?: string; // 该条嘟文的id，为了记录是否已经展示过敏感信息set记录
   mentions?: Mention[];
   tags?: Tag[];
+  limit?: boolean;
+  onReadMore?: () => void;
 }
 
 const HTMLContent: React.FC<HTMLContentProps> = (props) => {
@@ -76,6 +76,8 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
     id = "",
     mentions,
     tags,
+    limit,
+    onReadMore,
   } = props;
   const { width } = useWindowDimensions();
   const { checkSensitive, addSensitive } = useStatusStore();
@@ -84,13 +86,23 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
     if (checkSensitive(id)) return false;
     return blur;
   });
-  const [more, setMore] = useState(false);
 
-  let totalHtml = html;
-  if (!containsHTMLTags(html)) {
-    // 如果是纯文本内容，则手动添加上一个p标签，以便走相同的处理逻辑
-    totalHtml = "<p>" + html + "</p>";
-  }
+  const totalHtml = useMemo(() => {
+    let preHtml = html;
+    if (!containsHTMLTags(preHtml)) {
+      preHtml = "<p>" + preHtml + "</p>";
+    }
+
+    if (!limit) return preHtml;
+    const strip = stripHTMLTags(html);
+    if (strip.length <= 140) return preHtml;
+    return (
+      "<p>" +
+      strip.substring(0, 140) +
+      `<a href="meshtalk/more" class="mention hashtag" target="_blank">...<span>${i18n.t("status_item_read_more")}</span></a>` +
+      "</p>"
+    );
+  }, [limit, html, i18n]);
 
   const rendererAPress = (event: any, href: string) => {
     console.log("HTMLContent <a>", href);
@@ -129,47 +141,29 @@ const HTMLContent: React.FC<HTMLContentProps> = (props) => {
           },
         });
       }
+    } else if (href.indexOf("meshtalk/more") !== -1) {
+      return onReadMore && onReadMore();
     }
     openURL(href);
-    // console.log("123", href)
   };
 
   // TODO: 过长的内容，需要有一个max-height来省略过多的内容，类似于展开全文
   // 可以考虑自行拆解 目前有<a> <p> <img> <span> <br />
   return (
     <View>
-      <View
-        // style={{ maxHeight: MAX_HEIGHT, overflow: "hidden" }}
-        // onLayout={(e) => {
-        //   const { height } = e.nativeEvent.layout;
-        //   if (height >= MAX_HEIGHT - 23) {
-        //     setMore(true);
-        //   }
-        // }}
-      >
-        <HTML
-          baseStyle={{ marginTop: 0 }}
-          source={{ html: totalHtml }}
-          tagsStyles={tagsStyles || defaultTagsStyles}
-          contentWidth={width}
-          renderers={renderers}
-          customHTMLElementModels={customHTMLElementModels}
-          renderersProps={{
-            a: {
-              onPress: rendererAPress,
-            },
-          }}
-        />
-      </View>
-      {/* {!!more && (
-        <Text
-          onPress={() => console.log("load more")}
-          style={{ fontSize: 16, lineHeight: 23, color: Colors.linkTagColor }}
-        >
-          ...查看全文
-        </Text>
-      )}
-      */}
+      <HTML
+        baseStyle={{ marginTop: 0 }}
+        source={{ html: totalHtml }}
+        tagsStyles={tagsStyles || defaultTagsStyles}
+        contentWidth={width}
+        renderers={renderers}
+        customHTMLElementModels={customHTMLElementModels}
+        renderersProps={{
+          a: {
+            onPress: rendererAPress,
+          },
+        }}
+      />
       {showBlur ? (
         <BlurView
           intensity={95}
