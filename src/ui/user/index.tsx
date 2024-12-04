@@ -8,7 +8,7 @@ import { StringUtil } from "@utils/index";
 import { router } from "expo-router";
 import React, { useCallback, useMemo } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import { useDerivedValue, useSharedValue } from "react-native-reanimated";
 
 import { IMAGE_HEIGHT, HEADER_HEIGHT } from "./type";
 import UserHead from "./userHead";
@@ -44,6 +44,8 @@ const User: React.FC<UserProps> = (props) => {
 
   const scrollY = useSharedValue(0); // 最外层View的Y方向偏移量
   const refreshing = useSharedValue(false); // 是否处于下拉加载的状态
+
+  const imageScrollY = useDerivedValue(() => -scrollY.value);
 
   // 返回上一页
   const handleBack = useCallback(() => router.back(), []);
@@ -124,7 +126,7 @@ const User: React.FC<UserProps> = (props) => {
           <>
             <StretchableImage
               isblur={refreshing.value === true}
-              scrollY={scrollY}
+              scrollY={imageScrollY}
               url={userData?.header}
               imageHeight={IMAGE_HEIGHT}
             />
