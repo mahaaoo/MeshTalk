@@ -1,8 +1,8 @@
 import * as Sentry from "@sentry/react-native";
 import { isRunningInExpoGo } from "expo";
-import { Stack, useNavigationContainerRef } from "expo-router";
+import { Redirect, Stack, useNavigationContainerRef } from "expo-router";
 import React, { useEffect } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, Dimensions, Platform, View, useWindowDimensions } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ModalProvider, modalRef } from "react-native-ma-modal";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -12,6 +12,8 @@ import useAppStore from "../store/useAppStore";
 import useDeviceStore from "../store/useDeviceStore";
 import useI18nStore from "../store/useI18nStore";
 import usePreferenceStore from "../store/usePreferenceStore";
+
+import { ResponsiveNavigator } from '../layout/navigator';
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
@@ -31,11 +33,24 @@ Sentry.init({
   enableNativeFramesTracking: !isRunningInExpoGo(), // Tracks slow and frozen frames in the application
 });
 
+const resopnseWidth = (originWidth: number) => {
+  let width = originWidth;
+  if (width < 768) {
+    width = width;
+  } else if (width < 1264) {
+    width = width - 72;
+  } else {
+    width = width - 244;
+  }
+  return width;
+}
+
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
   const insets = useSafeAreaInsets();
   const { i18n } = useI18nStore();
   const { initPreference } = usePreferenceStore();
+  const { width: originWidth } = useWindowDimensions();
 
   const ref = useNavigationContainerRef();
 
@@ -49,38 +64,60 @@ const App: React.FC<object> = () => {
     initApp();
     // 初始化i18n等偏好设置
     initPreference();
+    Dimensions.addEventListener('change', (event) => {
+      if (Platform.OS !== 'web') return;
+      const width = resopnseWidth(event.window.width);
+      useDeviceStore.setState({ width })
+    })
   }, []);
 
   useEffect(() => {
-    useDeviceStore.setState({
-      insets,
-    });
-  }, [insets]);
+    if (insets) {
+      useDeviceStore.setState({
+        insets,
+      });  
+    }
+    if (originWidth) {
+      if (Platform.OS !== 'web') return;
+      const width = resopnseWidth(originWidth);
+      useDeviceStore.setState({ width })
+    }
+  }, [insets, originWidth]);
+
+  const renderChildren = () => {
+    if (Platform.OS === 'web') {
+      return <ResponsiveNavigator />
+    }
+
+    return (
+      <Stack
+        screenOptions={{
+          headerBackTitle: i18n.t("header_back_title"),
+        }}
+      >
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    )
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ModalProvider ref={modalRef}>
-        {!isReady ? (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#fff",
-            }}
-          >
-            <ActivityIndicator animating color={Colors.theme} />
-          </View>
-        ) : (
-          <Stack
-            screenOptions={{
-              headerBackTitle: i18n.t("header_back_title"),
-            }}
-          >
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        )}
+        {
+          !isReady ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#fff",
+              }}
+            >
+              <ActivityIndicator animating color={Colors.theme} />
+            </View>
+          ) : renderChildren()
+        }
       </ModalProvider>
     </GestureHandlerRootView>
   );
