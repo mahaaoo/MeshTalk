@@ -1,24 +1,34 @@
 import { Redirect, Tabs, router } from "expo-router";
-import React from "react";
+import React, { useMemo } from "react";
 
 import ActionsSheet from "../../components/ActionsSheet";
 import { Icon } from "../../components/Icon";
 import useI18nStore from "../../store/useI18nStore";
 import { Platform } from "react-native";
 import useAccountStore from "../../store/useAccountStore";
+import useDeviceStore from "../../store/useDeviceStore";
 
 const TabRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
   const { i18n } = useI18nStore();
+  const { width } = useDeviceStore();
   if (!currentAccount && Platform.OS !== 'web') {
     return <Redirect href="/welcome" />;
   }
+
+  const display = useMemo(() => {
+    if (Platform.OS === 'web') {
+      if (width < 768) return 'flex';
+      return 'none';
+    }
+    return 'flex';
+  }, [width])
 
   return (
     <Tabs
       screenOptions={{
         tabBarStyle: {
-          display: Platform.OS === 'web' ? 'none' : 'flex',
+          display: display,
         },
         headerShown: false,
         tabBarActiveTintColor: "#2593FC",

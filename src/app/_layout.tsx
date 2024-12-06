@@ -14,6 +14,7 @@ import useI18nStore from "../store/useI18nStore";
 import usePreferenceStore from "../store/usePreferenceStore";
 
 import { ResponsiveNavigator } from '../layout/navigator';
+import { resopnseWidth } from "@utils/math";
 
 const navigationIntegration = Sentry.reactNavigationIntegration({
   enableTimeToInitialDisplay: !isRunningInExpoGo(),
@@ -32,18 +33,6 @@ Sentry.init({
   ],
   enableNativeFramesTracking: !isRunningInExpoGo(), // Tracks slow and frozen frames in the application
 });
-
-const resopnseWidth = (originWidth: number) => {
-  let width = originWidth;
-  if (width < 768) {
-    width = width;
-  } else if (width < 1264) {
-    width = width - 72;
-  } else {
-    width = width - 244;
-  }
-  return width;
-}
 
 const App: React.FC<object> = () => {
   const { initApp, isReady } = useAppStore();
