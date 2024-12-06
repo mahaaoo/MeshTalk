@@ -5,15 +5,19 @@ import React from "react";
 import {
   Platform,
   Text,
-  useWindowDimensions,
   View,
   ViewStyle,
   Pressable,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from "react-native";
 import { Icon } from "../components/Icon";
 import useAccountStore from "../store/useAccountStore";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import useI18nStore from "../store/useI18nStore";
+import Avatar from "../components/Avatar";
+import UserName from "@ui/home/userName";
+import { Colors } from "../config";
+import ActionsSheet from "../components/ActionsSheet";
 
 const cns = (
   ...classes: (string | false | undefined | null)[]
@@ -22,16 +26,6 @@ const cns = (
   _: classes.filter(Boolean).join(" ") as unknown as string[],
 });
 
-function useWidth(size: number) {
-  if (typeof window === "undefined") {
-    return true;
-  }
-  const { width } = useWindowDimensions();
-  if (Platform.OS === "ios" || Platform.OS === "android") {
-    return false;
-  }
-  return width >= size;
-}
 
 function SideBarTabItem({
   children,
@@ -117,6 +111,9 @@ function SideBarTabItem({
 }
 
 function SideBar() {
+  const { i18n } = useI18nStore();
+  const { currentAccount } = useAccountStore();
+
   return (
     <View
       style={[
@@ -142,25 +139,45 @@ function SideBar() {
             }),
           ]}
         >
-          <View style={{ gap: 4, flex: 1 }}>
+          <View style={{ gap: 5, flex: 1 }}>
             <SideBarTabItem name="/" icon={() => <Icon name="elephant" size={28} color={'#2593FC'} />}>
-              Home
+              {i18n.t("tabbar_icon_home")}
             </SideBarTabItem>
             <SideBarTabItem name="/explore" icon={() => <Icon name="search" size={20} color={'#2593FC'} />}>
-              Explore
+              {i18n.t("tabbar_icon_explore")}
             </SideBarTabItem>
             <SideBarTabItem name="/notify" icon={() => <Icon name="notify" size={22} color={'#2593FC'} />}>
-              Notify
+              {i18n.t("tabbar_icon_notify")}
             </SideBarTabItem>
             <SideBarTabItem name="/setting" icon={() => <Icon name="user" size={22} color={'#2593FC'} />}>
-              More
+              {i18n.t("tabbar_icon_setting")}
             </SideBarTabItem>
-          </View>
-          <View>
             <SideBarTabItem name="/publish" icon={() => <Icon name="plane" size={22} color={'#2593FC'} />}>
-              Post
+              {i18n.t("tabbar_icon_new")}
             </SideBarTabItem>
           </View>
+          <TouchableOpacity onPress={() => ActionsSheet.Logout.show()}>
+            <View style={[{ flexDirection: "row", flex: 1 }]}>
+              <Avatar url={currentAccount?.avatar} />
+              <View
+                style={{
+                  marginHorizontal: 10,
+                  flex: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <UserName displayname={currentAccount?.display_name || ""} fontSize={16} />
+                <Text 
+                  style={{
+                    fontSize: 13,
+                    color: Colors.grayTextColor,                  
+                  }}
+                >
+                  {currentAccount?.acct}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -212,10 +229,10 @@ function TabBarItem({
 
 
 export function ResponsiveNavigator() {
-  // const { currentAccount } = useAccountStore();
-  // if (!currentAccount) {
-  //   return <Redirect href="/welcome" />;
-  // }
+  const { currentAccount } = useAccountStore();
+  if (!currentAccount) {
+    return <Redirect href="/welcome" />;
+  }
 
   return (
     <TabbedNavigator
@@ -239,11 +256,6 @@ export function ResponsiveNavigator() {
   );
 }
 
-const Colors = {
-  lightGray: "rgba(230, 230, 230, 1)",
-  dark: "rgba(41, 41, 41, 1)",
-};
-
 const jsStyles = StyleSheet.create({
   sideBar: {
     minWidth: 72,
@@ -255,7 +267,7 @@ const jsStyles = StyleSheet.create({
     maxHeight: "100%",
     alignItems: "stretch",
     borderRightWidth: 1,
-    borderRightColor: Colors.lightGray,
+    borderRightColor: "rgba(230, 230, 230, 1)",
     minWidth: 72,
     width: 72,
     paddingTop: 8,
@@ -263,20 +275,6 @@ const jsStyles = StyleSheet.create({
     paddingBottom: 20,
   },
   flex1: { flex: 1, backgroundColor: '#fff' },
-  appHeader: {
-    zIndex: 10,
-    backgroundColor: "white",
-    position: Platform.select({ web: "fixed", default: "absolute" }),
-    top: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGray,
-  },
   sidebarInner2: {
     flex: 1,
     alignItems: "stretch",
@@ -286,7 +284,7 @@ const jsStyles = StyleSheet.create({
   nav: {
     flexDirection: "row",
     borderTopWidth: 1,
-    borderTopColor: Colors.lightGray,
+    borderTopColor: "rgba(230, 230, 230, 1)",
     justifyContent: "space-around",
     alignItems: "center",
     height: 49,
