@@ -75,7 +75,7 @@ const StatusItem: React.FC<StatusItemProps> = (props) => {
 
   return (
     <View
-      style={[styles.main, { marginBottom: isReply || !needDivide ? 0 : 10 }]}
+      style={[styles.main, { marginBottom: isReply || !needDivide ? 0 : 10, width }]}
       key={showItem.id}
     >
       {isReply && deep && deep > 0 ? (

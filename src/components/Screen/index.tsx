@@ -1,11 +1,14 @@
 import { Stack, router } from "expo-router";
+import { Header } from "@react-navigation/elements";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 
 import { Colors } from "../../config";
 import useI18nStore from "../../store/useI18nStore";
 import Error from "../Error";
 import { ErrorBoundary } from "../ErrorBoundary";
+import { Icon } from "../Icon";
+import useDeviceStore from "../../store/useDeviceStore";
 
 interface ScreenProps {
   headerShown?: boolean;
@@ -16,10 +19,33 @@ interface ScreenProps {
 const Screen: React.FC<ScreenProps> = (props) => {
   const { headerShown = false, children, title } = props;
   const { i18n } = useI18nStore();
+  const { isColumnLayout } = useDeviceStore();
+
+  const renderHeader = () => {
+    if (isColumnLayout) {
+      return (
+        <>
+          <Stack.Screen options={{ headerShown: false }} />
+          {headerShown && (
+            <Header
+              headerLeft={() => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Icon name="arrowLeft" color="#2593FC" />
+                </TouchableOpacity>
+              )}
+              title={title || ""}
+              headerTintColor="#2593FC"
+            />
+          )}
+        </>
+      );
+    }
+    return <Stack.Screen options={{ headerShown, title }} />;
+  };
 
   return (
     <View style={{ flex: 1 }}>
-      <Stack.Screen options={{ headerShown, title }} />
+      {renderHeader()}
       <ErrorBoundary
         onError={(error, info) => {
           console.log("ErrorBoundary Catch Error", error, info);

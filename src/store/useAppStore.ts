@@ -73,7 +73,8 @@ const useAppStore = create(
       console.log("验证token是否有效，并返回当前账户信息", accountOk);
       if (!accountOk || !account) {
         Toast.show("验证用户信息失败，请重新登录");
-        router.replace("/");
+        set({ isReady: true });
+        return;
       }
       // 保存account信息，并设置为currentAccount
       useAccountStore.getState().setCurrentAccount(account!);

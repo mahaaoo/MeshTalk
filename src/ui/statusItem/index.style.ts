@@ -14,7 +14,6 @@ export const styles = StyleSheet.create({
   main: {
     backgroundColor: Colors.defaultWhite,
     marginBottom: 10,
-    width: useDeviceStore.getState().width,
   },
   title: {
     flex: 1,

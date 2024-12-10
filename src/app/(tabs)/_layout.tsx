@@ -1,21 +1,35 @@
-import { Tabs, Redirect, router } from "expo-router";
-import React from "react";
+import { Redirect, Tabs, router } from "expo-router";
+import React, { useMemo } from "react";
 
 import ActionsSheet from "../../components/ActionsSheet";
 import { Icon } from "../../components/Icon";
-import useAccountStore from "../../store/useAccountStore";
 import useI18nStore from "../../store/useI18nStore";
+import useAccountStore from "../../store/useAccountStore";
+import useDeviceStore from "../../store/useDeviceStore";
 
 const TabRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
   const { i18n } = useI18nStore();
-  if (!currentAccount) {
+  const { width, isColumnLayout } = useDeviceStore();
+
+  const display = useMemo(() => {
+    if (isColumnLayout) {
+      if (width < 768) return "flex";
+      return "none";
+    }
+    return "flex";
+  }, [width, isColumnLayout]);
+
+  if (!currentAccount && !isColumnLayout) {
     return <Redirect href="/welcome" />;
   }
 
   return (
     <Tabs
       screenOptions={{
+        tabBarStyle: {
+          display: display,
+        },
         headerShown: false,
         tabBarActiveTintColor: "#2593FC",
         tabBarInactiveTintColor: "#999999",
