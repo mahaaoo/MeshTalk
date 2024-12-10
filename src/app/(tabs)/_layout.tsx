@@ -12,17 +12,18 @@ const TabRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
   const { i18n } = useI18nStore();
   const { width } = useDeviceStore();
-  if (!currentAccount && Platform.OS !== 'web') {
-    return <Redirect href="/welcome" />;
-  }
 
   const display = useMemo(() => {
-    if (Platform.OS === 'web') {
-      if (width < 768) return 'flex';
-      return 'none';
+    if (Platform.OS === "web") {
+      if (width < 768) return "flex";
+      return "none";
     }
-    return 'flex';
-  }, [width])
+    return "flex";
+  }, [width]);
+
+  if (!currentAccount && Platform.OS !== "web") {
+    return <Redirect href="/welcome" />;
+  }
 
   return (
     <Tabs
