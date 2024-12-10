@@ -4,24 +4,23 @@ import React, { useMemo } from "react";
 import ActionsSheet from "../../components/ActionsSheet";
 import { Icon } from "../../components/Icon";
 import useI18nStore from "../../store/useI18nStore";
-import { Platform } from "react-native";
 import useAccountStore from "../../store/useAccountStore";
 import useDeviceStore from "../../store/useDeviceStore";
 
 const TabRouter: React.FC<object> = () => {
   const { currentAccount } = useAccountStore();
   const { i18n } = useI18nStore();
-  const { width } = useDeviceStore();
+  const { width, isColumnLayout } = useDeviceStore();
 
   const display = useMemo(() => {
-    if (Platform.OS === "web") {
+    if (isColumnLayout) {
       if (width < 768) return "flex";
       return "none";
     }
     return "flex";
-  }, [width]);
+  }, [width, isColumnLayout]);
 
-  if (!currentAccount && Platform.OS !== "web") {
+  if (!currentAccount && !isColumnLayout) {
     return <Redirect href="/welcome" />;
   }
 

@@ -17,7 +17,7 @@ function useNavigatorContext() {
       )
     ) {
       throw new Error(
-        "useTabbedSlot must be used inside a Navigator with a tab router: <Navigator route={TabRouter} />"
+        "useTabbedSlot must be used inside a Navigator with a tab router: <Navigator route={TabRouter} />",
       );
     }
   }
@@ -103,7 +103,7 @@ function useContextRoute(name: string) {
     console.warn(
       `Could not find route with name: ${name}. Options: ${state.routes
         .map((r) => r.name)
-        .join(", ")}`
+        .join(", ")}`,
     );
   }
 
@@ -158,12 +158,7 @@ export function TabLink({
   };
 
   return (
-    <Link
-      {...props}
-      href={name}
-      onPress={onPress}
-      onLongPress={onLongPress}
-    />
+    <Link {...props} href={name} onPress={onPress} onLongPress={onLongPress} />
   );
 }
 

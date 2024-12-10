@@ -3,13 +3,12 @@ import cssStyles from "../styles/root-layout.module.scss";
 import { Link, Redirect } from "expo-router";
 import React from "react";
 import {
-  Platform,
   Text,
   View,
   ViewStyle,
   Pressable,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Icon } from "../components/Icon";
 import useAccountStore from "../store/useAccountStore";
@@ -25,7 +24,6 @@ const cns = (
   $$css: true,
   _: classes.filter(Boolean).join(" ") as unknown as string[],
 });
-
 
 function SideBarTabItem({
   children,
@@ -43,7 +41,7 @@ function SideBarTabItem({
       style={{
         height: 50,
         width: "100%",
-        justifyContent: 'center',
+        justifyContent: "center",
       }}
     >
       {({ focused, hovered }) => (
@@ -66,8 +64,8 @@ function SideBarTabItem({
             style={[
               {
                 width: 25,
-                justifyContent: 'center',
-                alignItems: 'center',
+                justifyContent: "center",
+                alignItems: "center",
               },
               {
                 transitionTimingFunction: "cubic-bezier(0.17, 0.17, 0, 1)",
@@ -80,7 +78,7 @@ function SideBarTabItem({
             ]}
           >
             {icon({
-              focused
+              focused,
             })}
           </View>
 
@@ -93,11 +91,9 @@ function SideBarTabItem({
                 marginRight: 16,
                 lineHeight: 24,
               },
-              Platform.select({
-                web: cns(cssStyles.sideBarTabItemText),
-              }),
+              cns(cssStyles.sideBarTabItemText),
               focused && {
-                color: '#fff',
+                color: "#fff",
                 fontWeight: "bold",
               },
             ]}
@@ -116,43 +112,39 @@ function SideBar() {
 
   return (
     <View
-      style={[
-        jsStyles.sideBar,
-        Platform.select({
-          web: [cns(cssStyles.largeVisible, cssStyles.sideBar)],
-        }),
-      ]}
+      style={[jsStyles.sideBar, cns(cssStyles.largeVisible, cssStyles.sideBar)]}
     >
-      <View
-        style={[
-          jsStyles.sidebarInner,
-          ...Platform.select({
-            web: [cns(cssStyles.sideBarInner)],
-          }),
-        ]}
-      >
-        <View
-          style={[
-            jsStyles.sidebarInner2,
-            Platform.select({
-              web: cns(cssStyles.sideBarHeader),
-            }),
-          ]}
-        >
+      <View style={[jsStyles.sidebarInner, cns(cssStyles.sideBarInner)]}>
+        <View style={[jsStyles.sidebarInner2, cns(cssStyles.sideBarHeader)]}>
           <View style={{ gap: 5, flex: 1 }}>
-            <SideBarTabItem name="/" icon={() => <Icon name="elephant" size={28} color={'#2593FC'} />}>
+            <SideBarTabItem
+              name="/"
+              icon={() => <Icon name="elephant" size={28} color={"#2593FC"} />}
+            >
               {i18n.t("tabbar_icon_home")}
             </SideBarTabItem>
-            <SideBarTabItem name="/explore" icon={() => <Icon name="search" size={20} color={'#2593FC'} />}>
+            <SideBarTabItem
+              name="/explore"
+              icon={() => <Icon name="search" size={20} color={"#2593FC"} />}
+            >
               {i18n.t("tabbar_icon_explore")}
             </SideBarTabItem>
-            <SideBarTabItem name="/notify" icon={() => <Icon name="notify" size={22} color={'#2593FC'} />}>
+            <SideBarTabItem
+              name="/notify"
+              icon={() => <Icon name="notify" size={22} color={"#2593FC"} />}
+            >
               {i18n.t("tabbar_icon_notify")}
             </SideBarTabItem>
-            <SideBarTabItem name="/setting" icon={() => <Icon name="user" size={22} color={'#2593FC'} />}>
+            <SideBarTabItem
+              name="/setting"
+              icon={() => <Icon name="user" size={22} color={"#2593FC"} />}
+            >
               {i18n.t("tabbar_icon_setting")}
             </SideBarTabItem>
-            <SideBarTabItem name="/publish" icon={() => <Icon name="plane" size={22} color={'#2593FC'} />}>
+            <SideBarTabItem
+              name="/publish"
+              icon={() => <Icon name="plane" size={22} color={"#2593FC"} />}
+            >
               {i18n.t("tabbar_icon_new")}
             </SideBarTabItem>
           </View>
@@ -166,11 +158,14 @@ function SideBar() {
                   justifyContent: "center",
                 }}
               >
-                <UserName displayname={currentAccount?.display_name || ""} fontSize={16} />
-                <Text 
+                <UserName
+                  displayname={currentAccount?.display_name || ""}
+                  fontSize={16}
+                />
+                <Text
                   style={{
                     fontSize: 13,
-                    color: Colors.grayTextColor,                  
+                    color: Colors.grayTextColor,
                   }}
                 >
                   {currentAccount?.acct}
@@ -184,7 +179,6 @@ function SideBar() {
   );
 }
 
-
 function useIsTabSelected(name: string): boolean {
   const { navigation } = TabbedNavigator.useContext();
 
@@ -193,7 +187,7 @@ function useIsTabSelected(name: string): boolean {
 
   console.log({
     name,
-    state
+    state,
   });
 
   return current?.name === name;
@@ -227,7 +221,6 @@ function TabBarItem({
   );
 }
 
-
 export function ResponsiveNavigator() {
   const { currentAccount } = useAccountStore();
   if (!currentAccount) {
@@ -236,19 +229,13 @@ export function ResponsiveNavigator() {
 
   return (
     <TabbedNavigator
-    screenOptions={{
-      tabBarShowLabel: false,
-      headerShown: true,
-      tabBarActiveTintColor: "black",
-    }}>
-      <View
-        style={[
-          jsStyles.flex1,
-          Platform.select({
-            web: cns(cssStyles.container),
-          }),
-        ]}
-      >
+      screenOptions={{
+        tabBarShowLabel: false,
+        headerShown: true,
+        tabBarActiveTintColor: "black",
+      }}
+    >
+      <View style={[jsStyles.flex1, cns(cssStyles.container)]}>
         <SideBar />
         <TabbedNavigator.Slot />
       </View>
@@ -262,7 +249,7 @@ const jsStyles = StyleSheet.create({
     width: 72,
   },
   sidebarInner: {
-    position: Platform.select({ web: "fixed", default: "absolute" }),
+    position: "fixed",
     height: "100%",
     maxHeight: "100%",
     alignItems: "stretch",
@@ -274,7 +261,7 @@ const jsStyles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 20,
   },
-  flex1: { flex: 1, backgroundColor: '#fff' },
+  flex1: { flex: 1, backgroundColor: "#fff" },
   sidebarInner2: {
     flex: 1,
     alignItems: "stretch",

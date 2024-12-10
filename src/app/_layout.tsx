@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  Platform,
   View,
   useWindowDimensions,
 } from "react-native";
@@ -46,6 +45,7 @@ const App: React.FC<object> = () => {
   const { i18n } = useI18nStore();
   const { initPreference } = usePreferenceStore();
   const { width: originWidth } = useWindowDimensions();
+  const { isColumnLayout } = useDeviceStore();
 
   const ref = useNavigationContainerRef();
 
@@ -60,7 +60,7 @@ const App: React.FC<object> = () => {
     // 初始化i18n等偏好设置
     initPreference();
     Dimensions.addEventListener("change", (event) => {
-      if (Platform.OS !== "web") return;
+      if (!isColumnLayout) return;
       const width = resopnseWidth(event.window.width);
       useDeviceStore.setState({ width });
     });
@@ -73,14 +73,14 @@ const App: React.FC<object> = () => {
       });
     }
     if (originWidth) {
-      if (Platform.OS !== "web") return;
+      if (!isColumnLayout) return;
       const width = resopnseWidth(originWidth);
       useDeviceStore.setState({ width });
     }
-  }, [insets, originWidth]);
+  }, [insets, originWidth, isColumnLayout]);
 
   const renderChildren = () => {
-    if (Platform.OS === "web") {
+    if (isColumnLayout) {
       return <ResponsiveNavigator />;
     }
 
