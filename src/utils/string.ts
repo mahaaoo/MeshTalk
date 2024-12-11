@@ -64,10 +64,9 @@ export const getAcctFromUrl = (url: string): string => {
   return "";
 };
 
-// 判断字符串是否包含html标签
+// 判断字符串是否p标签
 export const containsHTMLTags = (html: string) => {
-  const htmlTagRegex = /<\/?[^>]+(>|$)/g;
-  return htmlTagRegex.test(html);
+  return html.startsWith("<p>");
 };
 
 // 使用正则表达式匹配并去除HTML标签

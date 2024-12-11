@@ -95,27 +95,31 @@ const UserLine: React.FC<UserLineProps> = (props) => {
 
   if (err) {
     return (
-      <View
-        style={{
-          height: height - HEADER_HEIGHT,
-          width,
-          backgroundColor: Colors.defaultWhite,
-          alignItems: "center",
-        }}
-      >
-        <Error type="NoData" style={{ marginTop: 50 }} />
-        <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
-          暂时没有数据
-        </Text>
-      </View>
+      <Nested.ScrollView style={{ flex: 1 }}>
+        <View
+          style={{
+            height: height - HEADER_HEIGHT,
+            width,
+            backgroundColor: Colors.defaultWhite,
+            alignItems: "center",
+          }}
+        >
+          <Error type="NoData" style={{ marginTop: 50 }} />
+          <Text style={{ fontSize: 16, color: Colors.grayTextColor }}>
+            暂时没有数据
+          </Text>
+        </View>
+      </Nested.ScrollView>
     );
   }
 
   if (!dataSource || dataSource.length === 0) {
     return (
-      <View style={{ height: height - HEADER_HEIGHT, width }}>
-        <DefaultLineItem scrollEnabled={false} />
-      </View>
+      <Nested.ScrollView style={{ flex: 1 }}>
+        <View style={{ height: height - HEADER_HEIGHT, width }}>
+          <DefaultLineItem scrollEnabled={false} />
+        </View>
+      </Nested.ScrollView>
     );
   }
 
